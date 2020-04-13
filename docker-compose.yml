@@ -29,9 +29,6 @@ services:
     labels:
       - 'traefik.frontend.rule=Host:${PROJECT_BASE_URL}'
 
-  mailcatcher:
-    image: schickling/mailcatcher
-
   postgres:
     image: wodby/postgres:$POSTGRES_TAG
     container_name: "${PROJECT_NAME}_postgres"
