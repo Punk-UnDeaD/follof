@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  php:
+    image: wodby/drupal-php:$PHP_TAG
+    container_name: "${PROJECT_NAME}_php"
+    environment:
+      COLUMNS: 160 # Set 80 columns for docker exec -it.
+    volumes:
+      - ./:/var/www/html
+
+  nginx:
+    image: wodby/nginx:$NGINX_TAG
+    container_name: "${PROJECT_NAME}_nginx"
+    depends_on:
+      - php
+    environment:
+#    NGINX_PAGESPEED: "on"
+      NGINX_STATIC_OPEN_FILE_CACHE: "off"
+      NGINX_ERROR_LOG_LEVEL: debug
+      NGINX_BACKEND_HOST: php
+      NGINX_SERVER_ROOT: /var/www/html/public
+      NGINX_VHOST_PRESET: $NGINX_VHOST_PRESET
+      NGINX_BROTLI_COMP_LEVEL: 1
+    volumes:
+      - ./:/var/www/html
+      - ./etc/nginx/gotpl/presets/php.conf.tmpl:/etc/gotpl/presets/php.conf.tmpl
+      - ./etc/nginx/gotpl/nginx.conf.tmpl:/etc/gotpl/nginx.conf.tmpl
+    labels:
+      - 'traefik.frontend.rule=Host:${PROJECT_BASE_URL}'
+
+  mailcatcher:
+    image: schickling/mailcatcher
+
+  postgres:
+    image: wodby/postgres:$POSTGRES_TAG
+    container_name: "${PROJECT_NAME}_postgres"
+    stop_grace_period: 30s
+    environment:
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USER
+
+  rabbitmq:
+    image: rabbitmq:3.7-management
+
+  redis:
+    container_name: "${PROJECT_NAME}_redis"
+    image: wodby/redis:$REDIS_TAG
+
