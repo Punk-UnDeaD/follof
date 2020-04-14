@@ -4,6 +4,6 @@ test:
 prod-self-update:
 	docker-compose stop nginx
 	docker-compose exec php composer i -o --no-dev
-	docker-compose exec php bin/console console doctrine:migrations:migrate -n
+	docker-compose exec php bin/console doctrine:migrations:migrate -n
 	docker-compose up node
 	docker-compose up -d
