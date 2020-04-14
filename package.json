@@ -1,0 +1,28 @@
+{
+    "license": "UNLICENSED",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "@coreui/coreui": "^3.0.0",
+        "@popperjs/core": "^2.3.1",
+        "centrifuge": "^2.5.0",
+        "font-awesome": "^4.7.0",
+        "jquery": "^3.5.0",
+        "perfect-scrollbar": "^1.5.0",
+        "simple-line-icons": "^2.4.1",
+        "toastr": "^2.1.4"
+    },
+    "devDependencies": {
+        "@symfony/webpack-encore": "^0.28.2",
+        "core-js": "^3.0.0",
+        "node-sass": "^4.13.1",
+        "regenerator-runtime": "^0.13.2",
+        "sass-loader": "^7.3.1",
+        "webpack-notifier": "^1.6.0"
+    }
+}

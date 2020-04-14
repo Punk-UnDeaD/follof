@@ -45,3 +45,9 @@ services:
     container_name: "${PROJECT_NAME}_redis"
     image: wodby/redis:$REDIS_TAG
 
+  node:
+    image: wodby/node:$NODE_TAG
+    volumes:
+      - ./:/var/www/html
+    command: sh -c 'yarn install && npm run build'
+    working_dir: /var/www/html

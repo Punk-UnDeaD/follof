@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Home</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+{#    {{ work_projects_calendar() }}#}
+
+    <div class="row">
+        <div class="col-md-6">
+{#            {{ work_projects_own_tasks() }}#}
+        </div>
+        <div class="col-md-6">
+{#            {{ work_projects_tasks_for_me() }}#}
+        </div>
+    </div>
+
+{% endblock %}
