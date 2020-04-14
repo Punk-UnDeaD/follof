@@ -41,7 +41,9 @@
 <div class="app-body">
     <div class="sidebar">
         <nav class="sidebar-nav">
-{#            {{ knp_menu_render('sidebar', {'currentClass': 'active'}) }}#}
+            {% block sidebar_nav %}
+            {#            {{ knp_menu_render('sidebar', {'currentClass': 'active'}) }}#}
+            {% endblock %}
         </nav>
         <button class="sidebar-minimizer brand-minimizer" type="button"></button>
     </div>

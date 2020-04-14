@@ -81,6 +81,13 @@ class User
      * @ORM\OneToMany(targetEntity="Network", mappedBy="user", orphanRemoval=true, cascade={"persist"})
      */
     private $networks;
+
+    /**
+     * @var SipAccount[]|ArrayCollection
+     * @ORM\OneToMany(targetEntity="SipAccount", mappedBy="user", orphanRemoval=true, cascade={"persist"})
+     */
+    private $sipAccounts;
+
     /**
      * @ORM\Version()
      * @ORM\Column(type="integer")
@@ -94,6 +101,7 @@ class User
         $this->name = $name;
         $this->role = Role::user();
         $this->networks = new ArrayCollection();
+        $this->sipAccounts = new ArrayCollection();
     }
 
     public static function create(Id $id, \DateTimeImmutable $date, Name $name, Email $email, string $hash): self
@@ -102,16 +110,24 @@ class User
         $user->email = $email;
         $user->passwordHash = $hash;
         $user->status = self::STATUS_ACTIVE;
+
         return $user;
     }
 
-    public static function signUpByEmail(Id $id, \DateTimeImmutable $date, Name $name, Email $email, string $hash, string $token): self
-    {
+    public static function signUpByEmail(
+        Id $id,
+        \DateTimeImmutable $date,
+        Name $name,
+        Email $email,
+        string $hash,
+        string $token
+    ): self {
         $user = new self($id, $date, $name);
         $user->email = $email;
         $user->passwordHash = $hash;
         $user->confirmToken = $token;
         $user->status = self::STATUS_WAIT;
+
         return $user;
     }
 
@@ -125,11 +141,17 @@ class User
         $this->confirmToken = null;
     }
 
-    public static function signUpByNetwork(Id $id, \DateTimeImmutable $date, Name $name, string $network, string $identity): self
-    {
+    public static function signUpByNetwork(
+        Id $id,
+        \DateTimeImmutable $date,
+        Name $name,
+        string $network,
+        string $identity
+    ): self {
         $user = new self($id, $date, $name);
         $user->attachNetwork($network, $identity);
         $user->status = self::STATUS_ACTIVE;
+
         return $user;
     }
 
@@ -143,6 +165,17 @@ class User
         $this->networks->add(new Network($this, $network, $identity));
     }
 
+    public function attachSipAccount(string $login, string $password): void
+    {
+        foreach ($this->sipAccounts as $existing) {
+            if ($existing->isSameLogin($login)) {
+                throw new \DomainException('Same sip account is already attached.');
+            }
+
+        }
+        $this->sipAccounts->add(new SipAccount($this, $login, $password));
+    }
+
     public function detachNetwork(string $network, string $identity): void
     {
         foreach ($this->networks as $existing) {
@@ -151,6 +184,7 @@ class User
                     throw new \DomainException('Unable to detach the last identity.');
                 }
                 $this->networks->removeElement($existing);
+
                 return;
             }
         }
@@ -240,17 +274,18 @@ class User
         if ($this->isBlocked()) {
             throw new \DomainException('User is already blocked.');
         }
+        // @todo add block all related sip accounts
         $this->status = self::STATUS_BLOCKED;
     }
 
     public function isWait(): bool
     {
-         return $this->status === self::STATUS_WAIT;
+        return $this->status === self::STATUS_WAIT;
     }
 
     public function isActive(): bool
     {
-         return $this->status === self::STATUS_ACTIVE;
+        return $this->status === self::STATUS_ACTIVE;
     }
 
     public function isBlocked(): bool
@@ -319,6 +354,14 @@ class User
     public function getNetworks(): array
     {
         return $this->networks->toArray();
+    }
+
+    /**
+     * @return SipAccount[]
+     */
+    public function getSipAccounts(): array
+    {
+        return $this->sipAccounts->toArray();
     }
 
     /**

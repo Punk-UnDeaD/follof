@@ -1,0 +1,11 @@
+{% macro menu_item(route, label, is_current) %}
+<li>
+    <a href="{{ path(route) }}" class="{{ is_current?'active' }}">{{ label }}</a>
+</li>
+{% endmacro %}
+{% macro menu(current_route) %}
+    <ul>
+        {{ _self.menu_item('profile', 'Profile', 'profile' == current_route) }}
+        {{ _self.menu_item('profile.sipAccounts', 'Sip Accounts', 'profile.sipAccounts' == current_route) }}
+    </ul>
+{% endmacro %}

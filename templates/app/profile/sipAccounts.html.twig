@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% import 'app/profile/_partials.html.twig' as partials %}
+
+{% block sidebar_nav %}
+    {{ partials.menu("profile.sipAccounts") }}
+{% endblock %}
+
+{% block title %}Sip accounts{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('profile') }}">Profile</a></li>
+        <li class="breadcrumb-item active">Sip accounts</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+    <ul>
+        {% for account in accounts %}
+            <li>{{ account.login }} - {{ account.password }} - {{ user_status(account.status) }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+

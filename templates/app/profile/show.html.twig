@@ -1,4 +1,9 @@
 {% extends 'base.html.twig' %}
+{% import 'app/profile/_partials.html.twig' as partials %}
+
+{% block sidebar_nav %}
+    {{ partials.menu("profile") }}
+{% endblock %}
 
 {% block title %}Profile{% endblock %}
 
@@ -16,32 +21,34 @@
         <div class="card-body">
             <table class="table table-bordered mb-0">
                 <tbody>
-                    <tr>
-                        <th>Name</th>
-                        <td>
-                            {{ user.name.full }}
-                            <a href="{{ path('profile.name') }}" class="btn btn-sm btn-outline-primary"><span class="fa fa-pencil"></span></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Email</th>
-                        <td>
-                            {{ user.email ? user.email.value : '' }}
-                            <a href="{{ path('profile.email') }}" class="btn btn-sm btn-outline-primary"><span class="fa fa-pencil"></span></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Created</th>
-                        <td>{{ user.date|date('Y-m-d H:i:s') }}</td>
-                    </tr>
-                    <tr>
-                        <th>Role</th>
-                        <td>{{ user_role(user.role.name) }}</td>
-                    </tr>
-                    <tr>
-                        <th>Status</th>
-                        <td>{{ user_status(user.status) }}</td>
-                    </tr>
+                <tr>
+                    <th>Name</th>
+                    <td>
+                        {{ user.name.full }}
+                        <a href="{{ path('profile.name') }}" class="btn btn-sm btn-outline-primary"><span
+                                    class="fa fa-pencil"></span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>
+                        {{ user.email ? user.email.value : '' }}
+                        <a href="{{ path('profile.email') }}" class="btn btn-sm btn-outline-primary"><span
+                                    class="fa fa-pencil"></span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Created</th>
+                    <td>{{ user.date|date('Y-m-d H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Role</th>
+                    <td>{{ user_role(user.role.name) }}</td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>{{ user_status(user.status) }}</td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -53,25 +60,25 @@
             {% if user.networks %}
                 <table class="table table-bordered">
                     <tbody>
-                        {% for network in user.networks %}
-                            <tr>
-                                <th>{{ network.network }}</th>
-                                <td>{{ network.identity }}</td>
-                                <td>
-                                    <form
-                                            action="{{ url('profile.oauth.detach', {network: network.network, identity: network.identity}) }}"
-                                            method="post"
-                                            onsubmit="return confirm('Are you sure?')"
-                                    >
-                                        <input type="hidden" name="_method" value="DELETE" />
-                                        <input type="hidden" name="token" value="{{ csrf_token('delete') }}" />
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                    {% for network in user.networks %}
+                        <tr>
+                            <th>{{ network.network }}</th>
+                            <td>{{ network.identity }}</td>
+                            <td>
+                                <form
+                                        action="{{ url('profile.oauth.detach', {network: network.network, identity: network.identity}) }}"
+                                        method="post"
+                                        onsubmit="return confirm('Are you sure?')"
+                                >
+                                    <input type="hidden" name="_method" value="DELETE"/>
+                                    <input type="hidden" name="token" value="{{ csrf_token('delete') }}"/>
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             {% endif %}
