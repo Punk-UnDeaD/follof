@@ -1,3 +1,5 @@
+test-fixtures:
+	docker-compose exec php bin/console doctrine:fixtures:load -e test -q
 test:
 	docker-compose exec php bin/phpunit
 

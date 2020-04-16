@@ -40,7 +40,7 @@ class User
      * @var string|null
      * @ORM\Column(type="string", name="password_hash", nullable=true)
      */
-    private $passwordHash;
+    private string $passwordHash;
     /**
      * @var string|null
      * @ORM\Column(type="string", name="confirm_token", nullable=true)
@@ -82,18 +82,6 @@ class User
      */
     private $networks;
 
-    /**
-     * @var SipAccount[]|ArrayCollection
-     * @ORM\OneToMany(targetEntity="SipAccount", mappedBy="user", orphanRemoval=true, cascade={"persist"})
-     */
-    private $sipAccounts;
-
-    /**
-     * @ORM\Version()
-     * @ORM\Column(type="integer")
-     */
-    private $version;
-
     private function __construct(Id $id, \DateTimeImmutable $date, Name $name)
     {
         $this->id = $id;
@@ -101,7 +89,6 @@ class User
         $this->name = $name;
         $this->role = Role::user();
         $this->networks = new ArrayCollection();
-        $this->sipAccounts = new ArrayCollection();
     }
 
     public static function create(Id $id, \DateTimeImmutable $date, Name $name, Email $email, string $hash): self
@@ -163,17 +150,6 @@ class User
             }
         }
         $this->networks->add(new Network($this, $network, $identity));
-    }
-
-    public function attachSipAccount(string $login, string $password): void
-    {
-        foreach ($this->sipAccounts as $existing) {
-            if ($existing->isSameLogin($login)) {
-                throw new \DomainException('Same sip account is already attached.');
-            }
-
-        }
-        $this->sipAccounts->add(new SipAccount($this, $login, $password));
     }
 
     public function detachNetwork(string $network, string $identity): void
@@ -247,35 +223,43 @@ class User
         $this->name = $name;
     }
 
-    public function edit(Email $email, Name $name): void
+    public function edit(Email $email, Name $name): self
     {
         $this->name = $name;
         $this->email = $email;
+
+        return $this;
+
     }
 
-    public function changeRole(Role $role): void
+    public function changeRole(Role $role): self
     {
         if ($this->role->isEqual($role)) {
             throw new \DomainException('Role is already same.');
         }
         $this->role = $role;
+
+        return $this;
     }
 
-    public function activate(): void
+    public function activate(): self
     {
         if ($this->isActive()) {
             throw new \DomainException('User is already active.');
         }
         $this->status = self::STATUS_ACTIVE;
+
+        return $this;
     }
 
-    public function block(): void
+    public function block(): self
     {
         if ($this->isBlocked()) {
             throw new \DomainException('User is already blocked.');
         }
-        // @todo add block all related sip accounts
         $this->status = self::STATUS_BLOCKED;
+
+        return $this;
     }
 
     public function isWait(): bool
@@ -354,14 +338,6 @@ class User
     public function getNetworks(): array
     {
         return $this->networks->toArray();
-    }
-
-    /**
-     * @return SipAccount[]
-     */
-    public function getSipAccounts(): array
-    {
-        return $this->sipAccounts->toArray();
     }
 
     /**

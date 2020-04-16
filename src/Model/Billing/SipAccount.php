@@ -8,10 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="user_user_sip_accounts", uniqueConstraints={
- *     @ORM\UniqueConstraint(columns={"login"})
- * })
  */
 class SipAccount
 {

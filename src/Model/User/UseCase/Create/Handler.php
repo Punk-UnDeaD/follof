@@ -15,7 +15,7 @@ use App\Model\User\Service\PasswordHasher;
 
 class Handler
 {
-    private  $users;
+    private $users;
     private $hasher;
     private $generator;
     private $flusher;

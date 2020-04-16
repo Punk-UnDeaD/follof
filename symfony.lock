@@ -108,6 +108,9 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
+    "hackzilla/password-generator": {
+        "version": "1.5.0"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },

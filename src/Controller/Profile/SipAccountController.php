@@ -24,6 +24,6 @@ class SipAccountController extends AbstractController
     {
         $user = $this->users->get($this->getUser()->getId());
 
-        return $this->render('app/profile/sipAccounts.html.twig', ['accounts' => $user->getSipAccounts()]);
+        return $this->render('app/profile/sipAccounts.html.twig', ['accounts' => []]);
     }
 }

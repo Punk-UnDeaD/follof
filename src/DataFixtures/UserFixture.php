@@ -18,8 +18,9 @@ class UserFixture extends Fixture
 
     private $hasher;
 
-    public function __construct(PasswordHasher $hasher)
-    {
+    public function __construct(
+        PasswordHasher $hasher
+    ) {
         $this->hasher = $hasher;
     }
 
@@ -46,18 +47,17 @@ class UserFixture extends Fixture
             new Email('user@app.test'),
             $hash
         );
-        $confirmed->attachSipAccount('Brad', 'Pitt');
-        $confirmed->attachSipAccount('Pitt', 'Brad');
-        $sipAccount = $confirmed->getSipAccounts()[0];
-        $sipAccount->activate();
         $manager->persist($confirmed);
         $this->setReference(self::REFERENCE_USER, $confirmed);
+        $manager->flush();
 
         $admin = $this->createAdminByEmail(
             new Name('James', 'Bond'),
             new Email('admin@app.test'),
             $hash
         );
+
+
         $manager->persist($admin);
         $this->setReference(self::REFERENCE_ADMIN, $admin);
 
