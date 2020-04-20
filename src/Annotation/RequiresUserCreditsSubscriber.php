@@ -7,6 +7,7 @@ namespace App\Annotation;
 use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\User;
 use App\ReadModel\User\UserFetcher;
+use App\Security\MemberIdentity;
 use App\Security\UserIdentity;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Bundle\FrameworkBundle\Controller\RedirectController;
@@ -66,19 +67,19 @@ class RequiresUserCreditsSubscriber implements EventSubscriberInterface
                 throw new AccessDeniedException();
             }
 
-            if (!$identity instanceof UserIdentity) {
-                throw new AccessDeniedException();
+            if ($identity instanceof UserIdentity) {
+                $user = $this->users->get($identity->getId());
+
+                if (!$this->hasCredits($user)) {
+                    /** @var Session $session */
+                    $session = $event->getRequest()->getSession();
+                    $session->getFlashBag()->add('error', 'Set and confirm email for working.');
+                    $event->getRequest()->attributes->set('route', 'profile');
+                    $event->setController([$this->redirectController, 'redirectAction']);
+                }
             }
 
-            $user = $this->users->get($identity->getId());
 
-            if (!$this->hasCredits($user)) {
-                /** @var Session $session */
-                $session = $event->getRequest()->getSession();
-                $session->getFlashBag()->add('error', 'Set and confirm email for working.');
-                $event->getRequest()->attributes->set('route', 'profile');
-                $event->setController([$this->redirectController, 'redirectAction']);
-            }
         }
     }
 

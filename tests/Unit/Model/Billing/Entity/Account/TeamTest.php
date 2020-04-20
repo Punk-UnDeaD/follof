@@ -1,11 +1,9 @@
 <?php
 
-
 namespace App\Tests\Unit\Model\Billing\Entity\Account;
 
-
-use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\Team;
+use App\Model\User\Entity\User\Role;
 use App\Tests\Builder\Billing\TeamBuilder;
 use PHPUnit\Framework\TestCase;
 
@@ -14,24 +12,28 @@ class TeamTest extends TestCase
     public function testCreate()
     {
         $billingId = '000000';
-        $owner = Member::createFromUser((new TeamBuilder())->getUser());
-        $team = new Team($owner, $billingId);
+        $user = (new TeamBuilder())->getUser();
+        $team = new Team($user, $billingId);
         self::assertEquals(0.0, $team->getBallance()->getValue());
-        self::assertEquals($owner, $team->getOwner());
-        self::assertEquals($team, $owner->getTeam());
-        self::assertEquals($billingId, $team->getBillingId());
+        self::assertEquals($user, $team->getUser());
     }
 
     public function testCreateWithoutBillingId()
     {
         $this->expectExceptionMessage('Cannot create. Empty $billingId.');
-        new Team(Member::createFromUser((new TeamBuilder())->getUser()), '');
+        new Team((new TeamBuilder())->getUser(), '');
     }
 
-    public function testTeamTwiceCreate()
+    public function testBlockedUser()
     {
-        $this->expectExceptionMessage('Cannot create. $owner has team.');
-        new Team((new TeamBuilder())->getOwner(), '--');
+        $this->expectExceptionMessage('Cannot create. User not active.');
+        new Team((new TeamBuilder())->getUser()->block(), '--');
+    }
+
+    public function testRoleUser()
+    {
+        $this->expectExceptionMessage('Cannot create. Wrong user role.');
+        new Team((new TeamBuilder())->getUser()->changeRole(Role::admin()), '--');
     }
 
 }

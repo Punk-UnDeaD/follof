@@ -11,8 +11,7 @@ class TeamRemoveMemberTest extends TestCase
     {
         ['team' => $team, 'member' => $member] = (new TeamBuilder())->getAll();
         $team->removeMember($member);
-        $members = $team->getMembers();
-        self::assertNotContains($member, $members);
+        self::assertNotContains($member, $team->getMembers());
     }
 
     public function testTeamRemoveMemberTwice()

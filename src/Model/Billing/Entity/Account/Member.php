@@ -1,56 +1,82 @@
 <?php
 
-
 namespace App\Model\Billing\Entity\Account;
 
-
-use App\Model\User\Entity\User\User;
 use Webmozart\Assert\Assert;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Class Member
+ * @package App\Model\Billing\Entity\Account
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="billing_members")
+ *
+ */
 class Member
 {
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_BLOCKED = 'blocked';
+
+    /**
+     * @var Id
+     * @ORM\Column(type="billing_id")
+     * @ORM\Id
+     */
     private Id $id;
 
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=25, nullable=true))
+     */
     private ?string $login = null;
 
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=128, nullable=true))
+     */
     private ?string $email = null;
 
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", name="password_hash", nullable=true)
+     */
     private ?string $passwordHash = null;
 
+    /**
+     * @var Role
+     * @ORM\Column(type="billing_member_role", length=32)
+     */
     private Role $role;
 
-    private ?Team $team = null;
+    /**
+     * @ORM\ManyToOne(targetEntity="Team", inversedBy="members")
+     * @ORM\JoinColumn(name="team_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private Team $team;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=16)
+     */
+    private string $status;
 
     /**
      * Member constructor.
-     * @param Id $id
+     * @param Team $team
      */
-    private function __construct(Id $id)
+    public function __construct(Team $team)
     {
-        $this->id = $id;
+        $this->id = Id::next();
+        if ($team->getMembers()->count()) {
+            $this->role = Role::member();
+        } else {
+            $this->role = Role::owner();
+        }
+        $this->team = $team;
+        $this->status = static::STATUS_ACTIVE;
+        $team->addMember($this);
     }
-
-    static public function createFromUser(User $user)
-    {
-        Assert::true($user->isActive(), 'Cannot create. User not active.');
-        Assert::true($user->getRole()->isUser(), 'Cannot create. Wrong role.');
-        $member = new self(Id::next());
-        $member->email = $user->getEmail()->getValue();
-        $member->role = Role::owner();
-
-        return $member;
-    }
-
-    static public function createTeamMember(Team $team)
-    {
-        $member = new self(Id::next());
-        $member->role = Role::member();
-        $member->team = $team;
-        $team->addMember($member);
-
-        return $member;
-    }
-
 
     /**
      * @return Team|NULL
@@ -129,5 +155,28 @@ class Member
     {
         return $this->passwordHash;
     }
+
+    public function isActive(): bool
+    {
+        return $this->status === static::STATUS_ACTIVE;
+    }
+
+    public function activate(): self
+    {
+        Assert::false($this->isActive(), 'Already activated.');
+        $this->status = static::STATUS_ACTIVE;
+
+        return $this;
+    }
+
+    public function block(): self
+    {
+        Assert::true($this->isActive(), 'Already blocked.');
+        Assert::false($this->role->isOwner(), 'Cannot block owner.');
+        $this->status = static::STATUS_BLOCKED;
+
+        return $this;
+    }
+
 
 }

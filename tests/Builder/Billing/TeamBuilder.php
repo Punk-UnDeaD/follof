@@ -28,15 +28,15 @@ class TeamBuilder
     public function __construct()
     {
         $this->user = (new UserBuilder())->viaEmail()->build()->activate();
-        $this->owner = Member::createFromUser($this->user);
-        $this->team = new Team($this->owner, '--');
-        $this->member = Member::createTeamMember($this->team);
+        $this->team = new Team($this->user, '--');
+        $this->owner = $this->team->getOwner();
+        $this->member = new Member($this->team);
     }
 
     /**
      * @return array
      */
-    public function getAll():array
+    public function getAll(): array
     {
         return [
             'user' => $this->user,
@@ -60,5 +60,21 @@ class TeamBuilder
     public function getOwner(): Member
     {
         return $this->owner;
+    }
+
+    /**
+     * @return Member
+     */
+    public function getMember(): Member
+    {
+        return $this->member;
+    }
+
+    /**
+     * @return Team
+     */
+    public function getTeam(): Team
+    {
+        return $this->team;
     }
 }

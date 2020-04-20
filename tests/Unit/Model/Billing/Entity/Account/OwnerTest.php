@@ -5,29 +5,24 @@ namespace App\Tests\Unit\Model\Billing\Entity\Account;
 
 
 use App\Model\Billing\Entity\Account\Member;
+use App\Model\Billing\Entity\Account\Team;
 use App\Model\User\Entity\User\Role;
+use App\Model\User\Entity\User\User;
 use App\Tests\Builder\Billing\TeamBuilder;
 use PHPUnit\Framework\TestCase;
 
 class OwnerTest extends TestCase
 {
-    public function testCreateFromUser()
+    public function testOwner()
     {
-        ['user' => $user, 'owner' => $owner] = (new TeamBuilder())->getAll();
-        $this->assertEquals($user->getEmail()->getValue(), $owner->getEmail());
+        /** @var Team $team */
+        ['team' => $team] = (new TeamBuilder())->getAll();
+        $owner = $team->getOwner();
+        $this->assertEquals($team, $owner->getTeam(),);
+        $this->assertTrue($owner instanceof Member);
         $this->assertTrue($owner->getRole()->isOwner());
+        $this->assertContains($owner, $team->getMembers());
     }
 
-    public function testCreateFromNotActiveUser()
-    {
-        $this->expectExceptionMessage('Cannot create. User not active.');
-        Member::createFromUser((new TeamBuilder())->getUser()->block());
-    }
-
-    public function testCreateFromWrongRoleUser()
-    {
-        $this->expectExceptionMessage('Cannot create. Wrong role.');
-        Member::createFromUser((new TeamBuilder())->getUser()->changeRole(ROLE::admin()));
-    }
 
 }

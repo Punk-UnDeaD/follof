@@ -9,6 +9,8 @@ doctrine:
             user_user_id: 'App\Model\User\Entity\User\IdType'
             user_user_email: 'App\Model\User\Entity\User\EmailType'
             user_user_role: 'App\Model\User\Entity\User\RoleType'
+            billing_id: 'App\Model\Billing\Entity\Account\IdType'
+            billing_member_role: 'App\Model\Billing\Entity\Account\RoleType'
 
     orm:
         auto_generate_proxy_classes: true
@@ -27,3 +29,9 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Model/User/Entity'
                 prefix: 'App\Model\User\Entity'
                 alias: User
+            Billing:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Model/Billing/Entity'
+                prefix: 'App\Model\Billing\Entity'
+                alias: Billing

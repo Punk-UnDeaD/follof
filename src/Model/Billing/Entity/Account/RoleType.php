@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\StringType;
 
 class RoleType extends StringType
 {
-    public const NAME = 'role';
+    public const NAME = 'billing_member_role';
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
