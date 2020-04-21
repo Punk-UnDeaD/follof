@@ -3,11 +3,14 @@
 namespace App\ReadModel\Billing;
 
 use App\Model\Billing\Entity\Account\Member;
+use App\Model\Billing\Entity\Account\Role;
 use App\Model\User\Entity\User\User;
 use App\ReadModel\NotFoundException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class MemberFetcher
 {
@@ -19,12 +22,27 @@ class MemberFetcher
      * @var EntityManagerInterface
      */
     private EntityManagerInterface $em;
+    /**
+     * @var TagAwareCacheInterface
+     */
+    private TagAwareCacheInterface $cachePool;
 
-    public function __construct(Connection $connection, EntityManagerInterface $em)
+    public function __construct(Connection $connection, EntityManagerInterface $em, TagAwareCacheInterface $myCachePool)
     {
         $this->connection = $connection;
         $this->em = $em;
         $this->repository = $em->getRepository(Member::class);
+        $this->cachePool = $myCachePool;
+    }
+    private function ownerQuery(){
+        return $this->query()
+            ->addSelect(
+                'users.email as login',
+                'users.password_hash as password_hash',
+            )
+            ->where('member.role = :role')
+            ->setParameter(':role', Role::OWNER);
+
     }
 
     private function query()
@@ -33,6 +51,7 @@ class MemberFetcher
             ->select(
                 'member.id as id',
                 'team.id as team_id',
+                'users.id as user_id',
                 'users.status as user_status',
                 'member.status as member_status',
                 'member.role as role'
@@ -55,18 +74,26 @@ class MemberFetcher
 
     public function loadById($id): ?AuthView
     {
-        $query = $this->query()
-            ->addSelect(
-                'CASE 
-                    WHEN member.login IS NOT NULL THEN CONCAT(member.login, \'@\', team.billing_id)
-                    ELSE users.email
-                END as login',
-                'COALESCE(member.password_hash, users.password_hash) as password_hash',
-            )
-            ->where('member.id = :id')
-            ->setParameter(':id', $id);
+        return $this->cachePool->get(
+            md5(AuthView::class.':'.$id),
+            function (ItemInterface $item) use ($id) {
+                $item->expiresAfter(50);
+                $query = $this->query()
+                    ->addSelect(
+                        'CASE '.
+                        'WHEN member.login IS NOT NULL THEN CONCAT(member.login, \'@\', team.billing_id) '.
+                        '    ELSE users.email '.
+                        '    END as login',
+                        'COALESCE(member.password_hash, users.password_hash) as password_hash',
+                    )
+                    ->where('member.id = :id')
+                    ->setParameter(':id', $id);
+                $result = $this->getResult($query);
+                $item->tag([$result->user_id, $result->id]);
 
-        return $this->getResult($query);
+                return $result;
+            }
+        );
     }
 
 
@@ -89,8 +116,8 @@ class MemberFetcher
                 'CONCAT(member.login, \'@\', team.billing_id) as login',
                 'member.password_hash as password_hash',
             )
-            ->where('team.billing_id = :billing_id')
-            ->where('member.login = :login')
+            ->andWhere('team.billing_id = :billing_id')
+            ->andWhere('member.login = :login')
             ->setParameter(':login', $login[0])
             ->setParameter(':billing_id', $login[1]);
 
@@ -99,12 +126,8 @@ class MemberFetcher
 
     public function loadOwnerByLogin($login): ?AuthView
     {
-        $query = $this->query()
-            ->addSelect(
-                'users.email as login',
-                'users.password_hash as password_hash',
-            )
-            ->where('users.email = :login')
+        $query = $this->ownerQuery()
+            ->andWhere('users.email = :login')
             ->setParameter(':login', $login);
 
         return $this->getResult($query);
@@ -112,12 +135,8 @@ class MemberFetcher
 
     public function loadOwnerByBillingId($login): ?AuthView
     {
-        $query = $this->query()
-            ->addSelect(
-                'users.email as login',
-                'users.password_hash as password_hash',
-            )
-            ->where('team.billing_id = :login')
+        $query = $this->ownerQuery()
+            ->andWhere('team.billing_id = :login')
             ->setParameter(':login', $login);
 
         return $this->getResult($query);

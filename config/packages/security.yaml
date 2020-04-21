@@ -47,5 +47,6 @@ security:
         - { path: ^/oauth, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/signup, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/reset, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /profile/team, roles: ROLE_BILLING_TEAM_OWNER }
         - { path: ^/, roles: ROLE_USER }
 

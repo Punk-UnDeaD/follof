@@ -7,9 +7,13 @@ framework:
         # The data in this cache should persist between deploys.
         # Other options include:
 
-        # Redis
-        #app: cache.adapter.redis
-        #default_redis_provider: redis://localhost
+#        system: cache.adapter.apcu
+        app: cache.adapter.redis
+        default_redis_provider: redis://redis
+        pools:
+            my_cache_pool:
+                adapter: cache.adapter.redis
+                tags: true
 
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
         #app: cache.adapter.apcu

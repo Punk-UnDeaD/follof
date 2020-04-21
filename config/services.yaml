@@ -46,3 +46,7 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\EntityListener\EntityListener:
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Model\User\Entity\User\User'}
+            - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Model\Billing\Entity\Account\Member' }

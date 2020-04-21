@@ -12,17 +12,21 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class MemberIdentity implements UserInterface, EquatableInterface
 {
-    private $id;
-    private $username;
-    private $password;
-    private $display;
-    private $role;
-    private $user_status;
-    private $member_status;
+    private string $id;
+    private string $team_id;
+    private string $user_id;
+    private string $username;
+    private string $password;
+    private string $display;
+    private string $role;
+    private string $user_status;
+    private string $member_status;
 
     public function __construct(AuthView $member)
     {
         $this->id = $member->id;
+        $this->team_id = $member->team_id;
+        $this->user_id = $member->user_id;
         $this->password = $member->password_hash;
         $this->username = $this->display = $member->login;
         $this->role = $member->role;
@@ -83,5 +87,13 @@ class MemberIdentity implements UserInterface, EquatableInterface
             $this->role === $member->role &&
             $this->user_status === $member->user_status &&
             $this->member_status === $member->member_status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTeamId(): string
+    {
+        return $this->team_id;
     }
 }

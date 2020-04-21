@@ -32,12 +32,16 @@ class ShowController extends AbstractController
      */
     public function show(): Response
     {
-        if($this->getUser() instanceof MemberIdentity){
+        if ($this->getUser() instanceof MemberIdentity) {
             $member = $this->members->get($this->getUser()->getId());
-            return $this->render('app/member_profile/show.html.twig', [
-                'member'=> $member,
-                'team' => $member->getTeam()
-            ]);
+
+            return $this->render(
+                'app/member_profile/show.html.twig',
+                [
+                    'member' => $member,
+                    'team' => $member->getTeam(),
+                ]
+            );
         }
 
         $user = $this->users->get($this->getUser()->getId());
