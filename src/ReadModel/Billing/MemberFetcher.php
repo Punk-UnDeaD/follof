@@ -4,11 +4,13 @@ namespace App\ReadModel\Billing;
 
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\Role;
-use App\Model\User\Entity\User\User;
 use App\ReadModel\NotFoundException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\PDOStatement;
 use Doctrine\DBAL\FetchMode;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -34,7 +36,9 @@ class MemberFetcher
         $this->repository = $em->getRepository(Member::class);
         $this->cachePool = $myCachePool;
     }
-    private function ownerQuery(){
+
+    private function ownerQuery()
+    {
         return $this->query()
             ->addSelect(
                 'users.email as login',
@@ -64,7 +68,7 @@ class MemberFetcher
         return $query;
     }
 
-    private function getResult($query): ?AuthView
+    private function getAuthViewResult(QueryBuilder $query): ?AuthView
     {
         $query = $query->execute();
         $query->setFetchMode(FetchMode::CUSTOM_OBJECT, AuthView::class);
@@ -72,7 +76,7 @@ class MemberFetcher
         return $query->fetch() ?: null;
     }
 
-    public function loadById($id): ?AuthView
+    public function findAuthView($id): ?AuthView
     {
         return $this->cachePool->get(
             md5(AuthView::class.':'.$id),
@@ -88,14 +92,26 @@ class MemberFetcher
                     )
                     ->where('member.id = :id')
                     ->setParameter(':id', $id);
-                $result = $this->getResult($query);
-                $item->tag([$result->user_id, $result->id]);
+                $result = $this->getAuthViewResult($query);
+                if ($result) {
+                    $item->tag([$result->user_id, $result->id]);
+                } else {
+                    $item->expiresAfter(0);
+                }
 
                 return $result;
             }
         );
     }
 
+    public function getAuthView($id): AuthView
+    {
+        if (!$result = $this->findAuthView($id)) {
+            throw new NotFoundException('Member not found.');
+        }
+
+        return $result;
+    }
 
     public function loadByLogin($login): ?AuthView
     {
@@ -121,7 +137,7 @@ class MemberFetcher
             ->setParameter(':login', $login[0])
             ->setParameter(':billing_id', $login[1]);
 
-        return $this->getResult($query);
+        return $this->getAuthViewResult($query);
     }
 
     public function loadOwnerByLogin($login): ?AuthView
@@ -130,7 +146,7 @@ class MemberFetcher
             ->andWhere('users.email = :login')
             ->setParameter(':login', $login);
 
-        return $this->getResult($query);
+        return $this->getAuthViewResult($query);
     }
 
     public function loadOwnerByBillingId($login): ?AuthView
@@ -139,7 +155,7 @@ class MemberFetcher
             ->andWhere('team.billing_id = :login')
             ->setParameter(':login', $login);
 
-        return $this->getResult($query);
+        return $this->getAuthViewResult($query);
     }
 
     public function get($getId): Member

@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 
 
 use App\Model\Billing\Entity\Account\Member;
+use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\Entity\Account\Team;
 use App\Model\User\Entity\User\User;
 use App\Model\User\Service\PasswordHasher;
@@ -34,6 +35,8 @@ class BillingFixture extends Fixture implements DependentFixtureInterface
         $member = new Member($team);
         $member->setCredentials('putin', $this->hasher->hash('kadirov'));
         $manager->persist($team);
+        new SipAccount($member, 'putin', 'kadirov');
+
         $manager->flush();
     }
 

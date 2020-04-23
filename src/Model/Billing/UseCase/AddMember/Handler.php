@@ -12,7 +12,7 @@ use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
-    private $flusher;
+    private Flusher $flusher;
     private ObjectRepository $repository;
 
     public function __construct(EntityManagerInterface $em, Flusher $flusher)

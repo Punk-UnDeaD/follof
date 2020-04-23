@@ -9,8 +9,6 @@ use Webmozart\Assert\Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class Team
- * @package App\Model\Billing\Entity\Account
  * @ORM\Entity
  * @ORM\Table(name="billing_team")
  */
@@ -18,7 +16,7 @@ class Team
 {
     /**
      * @var Id
-     * @ORM\Column(type="billing_id")
+     * @ORM\Column(type="billing_guid")
      * @ORM\Id
      */
     private Id $id;

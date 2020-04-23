@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use Webmozart\Assert\Assert;
 
 /**
+ * @ORM\Entity
+ * @ORM\Table(name="billing_sip_accounts")
  */
 class SipAccount
 {
@@ -15,74 +17,66 @@ class SipAccount
     public const STATUS_BLOCKED = 'blocked';
 
     /**
-     * @var string
-     * @ORM\Column(type="guid")
+     * @var Id
+     * @ORM\Column(type="billing_guid")
      * @ORM\Id
      */
-    private $id;
-    /**
-     * @var User
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="networks")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
-    private $user;
+    private Id $id;
     /**
      * @var string
      * @ORM\Column(type="string", length=32)
      */
-    private string $login;
-
+    private ?string $login = null;
     /**
      * @var string
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=128)
      */
     private string $password;
-
     /**
      * @var string
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=32)
      */
     private string $status;
 
-    public function __construct(User $user, string $login, string $password)
+    /**
+     * @var Member
+     * @ORM\ManyToOne(targetEntity="App\Model\Billing\Entity\Account\Member", inversedBy="sipAccounts")
+     * @ORM\JoinColumn(name="member_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private ?Member $member = null;
+
+    public function __construct(Member $member, string $login, string $password)
     {
-        $this->id = Uuid::uuid4()->toString();
-        $this->user = $user;
-        $this->login = $login;
+        $this->id = Id::next();
         $this->password = $password;
         $this->status = self::STATUS_BLOCKED;
+        $member->addSipAccount($this);
+        $this->member = $member;
+        $this->setLogin($login);
     }
 
     /**
      * @return string
      */
-    public function getLogin(): string
+    public function getLogin(): ?string
     {
         return $this->login;
     }
 
-    /**
-     * @return string
-     */
-    public function getPassword(): string
+    public function activate(): self
     {
-        return $this->password;
-    }
-
-    public function activate(): void
-    {
-        if ($this->isActive()) {
-            throw new \DomainException('Sip account is already active.');
-        }
+        Assert::false($this->isActive(), 'Sip account is already active.');
         $this->status = self::STATUS_ACTIVE;
+
+        return $this;
     }
 
-    public function block(): void
+    public function block(): self
     {
-        if ($this->isBlocked()) {
-            throw new \DomainException('Sip account is already blocked.');
-        }
+        Assert::false($this->isBlocked(), 'Sip account is already blocked.');
         $this->status = self::STATUS_BLOCKED;
+
+        return $this;
     }
 
     public function isActive(): bool
@@ -101,19 +95,60 @@ class SipAccount
     }
 
     /**
-     * @return User
-     */
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    /**
      * @return string
      */
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    /**
+     * @return Member
+     */
+    public function getMember(): ?Member
+    {
+        return $this->member;
+    }
+
+    /**
+     * @param string $password
+     * @return SipAccount
+     */
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $login
+     */
+    public function setLogin(string $login): void
+    {
+        foreach ($this->getMember()->getTeam()->getMembers() as $member) {
+            foreach ($member->getSipAccounts() as $sipAccount) {
+                Assert::notSame($login, $sipAccount->getLogin(), 'Login already used.');
+            }
+        }
+
+        $this->login = $login;
+    }
+
+    /**
+     * @return Id
+     */
+    public function getId(): Id
+    {
+        return $this->id;
     }
 
 }

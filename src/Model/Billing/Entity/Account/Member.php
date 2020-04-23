@@ -2,8 +2,10 @@
 
 namespace App\Model\Billing\Entity\Account;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Webmozart\Assert\Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Class Member
@@ -20,7 +22,7 @@ class Member
 
     /**
      * @var Id
-     * @ORM\Column(type="billing_id")
+     * @ORM\Column(type="billing_guid")
      * @ORM\Id
      */
     private Id $id;
@@ -62,6 +64,12 @@ class Member
     private string $status;
 
     /**
+     * @var SipAccount[]|Collection
+     * @ORM\OneToMany(targetEntity="App\Model\Billing\Entity\Account\SipAccount", mappedBy="member", orphanRemoval=true, cascade={"all"})
+     */
+    private $sipAccounts;
+
+    /**
      * Member constructor.
      * @param Team $team
      */
@@ -76,6 +84,7 @@ class Member
         $this->team = $team;
         $this->status = static::STATUS_ACTIVE;
         $team->addMember($this);
+        $this->sipAccounts = new ArrayCollection();
     }
 
     /**
@@ -176,6 +185,20 @@ class Member
         $this->status = static::STATUS_BLOCKED;
 
         return $this;
+    }
+
+    public function addSipAccount(SipAccount $sipAccount)
+    {
+        Assert::null($sipAccount->getMember(), 'Already added.');
+        $this->sipAccounts->add($sipAccount);
+    }
+
+    /**
+     * @return SipAccount[]|Collection
+     */
+    public function getSipAccounts()
+    {
+        return $this->sipAccounts;
     }
 
 

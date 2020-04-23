@@ -9,6 +9,7 @@ use App\ReadModel\Billing;
 use App\ReadModel\Billing\MemberFetcher;
 use App\ReadModel\User\AuthView;
 use App\ReadModel\User\UserFetcher;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class UserProvider implements UserProviderInterface
 {
-    private $users;
+    private UserFetcher $users;
     /**
      * @var MemberFetcher
      */
@@ -43,9 +44,11 @@ class UserProvider implements UserProviderInterface
     public function refreshUser(UserInterface $identity): UserInterface
     {
         if ($identity instanceof MemberIdentity) {
-            $member = $this->members->loadById($identity->getId());
+            if ($member = $this->members->getAuthView($identity->getId())) {
+                return self::identityByMember($member);
+            }
+            throw new BadCredentialsException('');
 
-            return self::identityByMember($member);
         }
 
         if (!$identity instanceof UserIdentity) {
@@ -70,15 +73,9 @@ class UserProvider implements UserProviderInterface
             return $user;
         }
 
-        /**
-         * @todo добавить поиск в модели биллинга, если обнаружен овнер, то грузить его как биллинг аккаунт
-         */
-
-
         if ($user = $this->users->findForAuthByEmail($username)) {
             return $user;
         }
-
 
         throw new UsernameNotFoundException('');
     }

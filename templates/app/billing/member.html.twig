@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Member account{% endblock %}
+{% block body %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#
+            <th scope="col">Login
+            <th scope="col">Password
+            <th scope="col">Status
+        <tbody>
+        {% for account in member.sipAccounts %}
+        <tr>
+            <th scope="row">{{ account.id.value }}
+            <td>{{ account.login }}
+            <td>{{ account.password }}
+
+            <td><label class="switch switch-label switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" {{ account.active?"checked" }}
+                           is="x-auto-toggler"
+                           data-on="{{ path('billing.team.member.sipAccount.activate', {sipAccount: account.id, member:member.id }) }}"
+                           data-off="{{ path('billing.team.member.sipAccount.block', {sipAccount: account.id, member:member.id }) }}"
+                           data-csrf="{{ csrf_token("billing.team.member.sipAccount.toggleStatus") }}"
+                    >
+                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                </label>
+                {% endfor %}
+    </table>
+    <div class="actions">
+        <form action="{{ path('billing.team.member.addSipAccount', {member: member.id}) }}" method="POST">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('billing.team.member.addSipAccount') }}">
+            <button class="btn btn-primary" name="op" value="add">Add</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('x-auto-toggler') }}
+{% endblock %}

@@ -12,16 +12,17 @@
         <tbody>
         {% for member in members %}
         <tr>
-            <th scope="row">{{ member.id }}
+            <th scope="row"><a href="{{ path('billing.team.member.show', {member:member.id  }) }}">{{ member.id }}</a>
             <td>{{ member.login }}
             <td>{{ member.role.name }}
 
             <td><label class="switch switch-label switch-pill switch-success">
                     <input type="checkbox" class="switch-input" {{ member.active?"checked" }}
+                            {{ member.role.isOwner() ? "disabled" }}
                            is="x-auto-toggler"
                            data-on="{{ path('billing.team.member.activate', {member: member.id }) }}"
                            data-off="{{ path('billing.team.member.block', {member: member.id }) }}"
-                           data-csrf="{{ csrf_token("billing.team.member.toggle") }}"
+                           data-csrf="{{ csrf_token("billing.team.member.toggleStatus") }}"
                     >
                     <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
                 </label>
@@ -36,6 +37,6 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ encore_entry_script_tags('app') }}
+    {{ parent() }}
     {{ encore_entry_script_tags('x-auto-toggler') }}
 {% endblock %}

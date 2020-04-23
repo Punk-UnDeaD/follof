@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\GuidType;
 
 class IdType extends GuidType
 {
-    public const NAME = 'billing_id';
+    public const NAME = 'billing_guid';
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {

@@ -1,14 +1,12 @@
 customElements.define('x-auto-toggler', class extends HTMLInputElement {
     onChange() {
-        const url = this.checked ? this.dataset.on : this.dataset.off;
-        const csrf = this.dataset.csrf;
         this.disabled = true;
-        fetch(url,
+        fetch(this.checked ? this.dataset.on : this.dataset.off,
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Csrf-token': csrf
+                    'Csrf-token': this.dataset.csrf,
                 }
             })
             .then(() => this.disabled = false)
