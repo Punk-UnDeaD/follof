@@ -87,9 +87,6 @@
       "require": "5.0.*"
     },
     "patches": {
-      "doctrine/doctrine-bundle": {
-        "profiler": "https://github.com/doctrine/DoctrineBundle/commit/acd3d636a3f403879bd479c82cec2b36eea8d1ea.diff"
-      }
     }
   }
 }

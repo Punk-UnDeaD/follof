@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ccea1086b95edbf9bfc9b038366b5e8c",
+    "content-hash": "8cf2893445501e6b8d4d019a804e95a9",
     "packages": [
         {
             "name": "brick/math",
@@ -559,16 +559,16 @@
         },
         {
             "name": "doctrine/doctrine-bundle",
-            "version": "2.0.7",
+            "version": "2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "6926771140ee87a823c3b2c72602de9dda4490d3"
+                "reference": "b0e0deb6e700438401ede433a15a6372d2285202"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/6926771140ee87a823c3b2c72602de9dda4490d3",
-                "reference": "6926771140ee87a823c3b2c72602de9dda4490d3",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/b0e0deb6e700438401ede433a15a6372d2285202",
+                "reference": "b0e0deb6e700438401ede433a15a6372d2285202",
                 "shasum": ""
             },
             "require": {
@@ -611,9 +611,7 @@
                 "branch-alias": {
                     "dev-master": "2.0.x-dev"
                 },
-                "patches_applied": {
-                    "profiler": "https://github.com/doctrine/DoctrineBundle/commit/acd3d636a3f403879bd479c82cec2b36eea8d1ea.diff"
-                }
+                "patches_applied": []
             },
             "autoload": {
                 "psr-4": {
@@ -650,7 +648,21 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2020-01-18T11:56:15+00:00"
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fdoctrine-bundle",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-04-23T10:52:09+00:00"
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
@@ -1675,16 +1687,16 @@
         },
         {
             "name": "knplabs/knp-components",
-            "version": "v2.3.3",
+            "version": "v2.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/knp-components.git",
-                "reference": "5a89e60dfe93179f329e35f92ed9348d52143f7b"
+                "reference": "a57e196b8ab413cb409aa49a5bd28fea61f619b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/knp-components/zipball/5a89e60dfe93179f329e35f92ed9348d52143f7b",
-                "reference": "5a89e60dfe93179f329e35f92ed9348d52143f7b",
+                "url": "https://api.github.com/repos/KnpLabs/knp-components/zipball/a57e196b8ab413cb409aa49a5bd28fea61f619b2",
+                "reference": "a57e196b8ab413cb409aa49a5bd28fea61f619b2",
                 "shasum": ""
             },
             "require": {
@@ -1746,7 +1758,7 @@
                 "pager",
                 "paginator"
             ],
-            "time": "2020-02-24T15:11:24+00:00"
+            "time": "2020-04-24T07:13:34+00:00"
         },
         {
             "name": "knplabs/knp-paginator-bundle",
@@ -7903,7 +7915,8 @@
     "platform": {
         "php": "^7.4",
         "ext-ctype": "*",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "ext-json": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "1.1.0"
