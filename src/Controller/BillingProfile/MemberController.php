@@ -8,14 +8,17 @@ use App\Model\Billing\Entity\Account\MemberRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Model\Billing\UseCase\BlockMember;
 use App\Model\Billing\UseCase\ActivateMember;
 use App\Model\Billing\UseCase\AddSipAccount;
+use App\Model\Billing\UseCase\UpdateMemberCredentials;
 
 /**
- * @Route("/profile/team/{member}")
+ * @Route("/profile/team/{member}", requirements={"member"="[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}" })
  * @RequiresSameTeamMember(key="member")
  */
 class MemberController extends AbstractController
@@ -32,12 +35,11 @@ class MemberController extends AbstractController
         return $this->render('app/billing/member.html.twig', ['member' => $members->get($member)]);
     }
 
-
     /**
      * @param string $member
      * @param AddSipAccount\Handler $handler
      * @return Response
-     * @Route("/addSip", name="billing.team.member.addSipAccount")
+     * @Route("/addSipAccount", name="billing.team.member.addSipAccount")
      */
     public function addSipAccount(string $member, AddSipAccount\Handler $handler): Response
     {
@@ -87,5 +89,24 @@ class MemberController extends AbstractController
 //
 //        return $this->json(['status' => 'ok']);
 //    }
+    /**
+     * @Route("/updateCredentials", name="billing.team.member.updateCredentials")
+     * @RequiresCsrf
+     * @param string $member
+     * @param UpdateMemberCredentials\Handler $handler
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function updateCredentials(string $member, UpdateMemberCredentials\Handler $handler, Request $request)
+    {
+        $login = $request->get('login');
+        $password = $request->get('password');
+        try {
+            $handler(new UpdateMemberCredentials\Command($member, $login, $password));
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
 
+        return $this->redirectToRoute('billing.team.member.show', ['member' => $member]);
+    }
 }

@@ -56,7 +56,7 @@ class MemberCredentialsTest extends TestCase
     {
         /** @var Team $team */
         ['team' => $team] = (new TeamBuilder())->getAll();
-        $this->expectExceptionMessage('$login already used in Team.');
+        $this->expectExceptionMessage('Login already used in Team.');
         (new Member($team))->setCredentials('login', '~~');
         (new Member($team))->setCredentials('login', '~~');
     }

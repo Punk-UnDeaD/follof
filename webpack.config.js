@@ -25,6 +25,8 @@ Encore
      */
     .addEntry('app', './assets/js/app.js')
     .addEntry('x-auto-toggler', './assets/js/components/x-auto-toggler.js')
+    .addEntry('x-auto-password', './assets/js/components/x-auto-password.js')
+    .addEntry('x-auto-save-button', './assets/js/components/x-auto-save-button.js')
     //.addEntry('page1', './assets/js/page1.js')
     //.addEntry('page2', './assets/js/page2.js')
 

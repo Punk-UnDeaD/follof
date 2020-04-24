@@ -1,41 +1,85 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Member account{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Home</li>
+        <li class="breadcrumb-item">Team</li>
+        <li class="breadcrumb-item">Member account</li>
+    </ol>
+{% endblock %}
 {% block body %}
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">#
-            <th scope="col">Login
-            <th scope="col">Password
-            <th scope="col">Status
-        <tbody>
-        {% for account in member.sipAccounts %}
-        <tr>
-            <th scope="row">{{ account.id.value }}
-            <td>{{ account.login }}
-            <td>{{ account.password }}
+    <div class="card">
+        <div class="card-body">
+            {% if not member.role.isOwner() %}
 
-            <td><label class="switch switch-label switch-pill switch-success">
-                    <input type="checkbox" class="switch-input" {{ account.active?"checked" }}
-                           is="x-auto-toggler"
-                           data-on="{{ path('billing.team.member.sipAccount.activate', {sipAccount: account.id, member:member.id }) }}"
-                           data-off="{{ path('billing.team.member.sipAccount.block', {sipAccount: account.id, member:member.id }) }}"
-                           data-csrf="{{ csrf_token("billing.team.member.sipAccount.toggleStatus") }}"
-                    >
-                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                </label>
-                {% endfor %}
-    </table>
-    <div class="actions">
-        <form action="{{ path('billing.team.member.addSipAccount', {member: member.id}) }}" method="POST">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('billing.team.member.addSipAccount') }}">
-            <button class="btn btn-primary" name="op" value="add">Add</button>
-        </form>
+                <form action="{{ path("billing.team.member.updateCredentials", {member: member.id }) }}"
+                      class="form-inline mb-3" method="post">
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token("billing.team.member.updateCredentials") }}">
+                    <div class="form-group mr-3">
+                        <label>Login <input class="ml-1" type="text" name="login" value="{{ member.login }}"></label>
+                    </div>
+                    <div class="form-group mr-3">
+                        <label for="password">Password</label>
+                        <input class="ml-1" type="password" name="password" placeholder="*********" id="password">
+                        <button class="btn btn-dark btn-sm" data-for="password" is="x-auto-password"><i class="icon-reload"></i></button>
+                    </div>
+                    <div class="form-group">
+                        <button name="op" value="save" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            {% endif %}
+            <h2>Sip accounts</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">#
+                    <th scope="col">Login
+                    <th scope="col">Password
+                    <th scope="col">Status
+                <tbody>
+                {% for account in member.sipAccounts %}
+                <tr>
+                    <th scope="row">{{ account.id.value }}
+                    <td>{{ account.login }}
+                    <td>
+                        <div class="d-inline-flex w-75" >
+                        <input class="ml-1 form-control" type="text" name="password" value="{{ account.password }}" id="id-password-{{ account.id.value }}">
+                        </div>
+                        <button class="btn btn-dark btn-sm" data-for="id-password-{{ account.id.value }}" is="x-auto-password"><i class="icon-reload"></i></button>
+                        <button class="btn btn-dark btn-sm" data-for="id-password-{{ account.id.value }}" is="x-auto-save-button"
+                                data-save="{{ path('billing.team.member.sipAccount.updatePassword', {sipAccount: account.id, member:member.id }) }}"
+                                data-csrf="{{ csrf_token("billing.team.member.sipAccount.updatePassword") }}"
+
+                        ><i class="fa-save fa"></i></button>
+
+                    <td><label class="switch switch-label switch-pill switch-success">
+                            <input type="checkbox" class="switch-input" {{ account.active?"checked" }}
+                                   is="x-auto-toggler"
+                                   data-on="{{ path('billing.team.member.sipAccount.activate', {sipAccount: account.id, member:member.id }) }}"
+                                   data-off="{{ path('billing.team.member.sipAccount.block', {sipAccount: account.id, member:member.id }) }}"
+                                   data-csrf="{{ csrf_token("billing.team.member.sipAccount.toggleStatus") }}"
+                            >
+                            <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                        </label>
+                        {% endfor %}
+            </table>
+            <div class="actions">
+                <form action="{{ path('billing.team.member.addSipAccount', {member: member.id}) }}" method="POST">
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('billing.team.member.addSipAccount') }}">
+                    <button class="btn btn-primary" name="op" value="add">Add</button>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}
+
 
 {% block javascripts %}
     {{ parent() }}
     {{ encore_entry_script_tags('x-auto-toggler') }}
+    {{ encore_entry_script_tags('x-auto-password') }}
+    {{ encore_entry_script_tags('x-auto-save-button') }}
 {% endblock %}

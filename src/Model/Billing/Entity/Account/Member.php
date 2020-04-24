@@ -124,6 +124,14 @@ class Member
         return $this->role;
     }
 
+    public function removeCredentials(): self
+    {
+        $this->passwordHash = null;
+        $this->login = null;
+
+        return $this;
+    }
+
     public function setCredentials(string $login, string $passwordHash): self
     {
         Assert::false($this->getRole()->isOwner(), 'Can\'t set owner credentials.');
@@ -134,7 +142,7 @@ class Member
             return $this;
         }
         foreach ($this->getTeam()->getMembers() as $member) {
-            Assert::notEq($login, $member->getLogin(), '$login already used in Team.');
+            Assert::notEq($login, $member->getLogin(), 'Login already used in Team.');
         }
         $this->login = $login;
 
@@ -200,6 +208,5 @@ class Member
     {
         return $this->sipAccounts;
     }
-
 
 }

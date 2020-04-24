@@ -23,7 +23,8 @@ class SipAccountTest extends TestCase
         $this->assertFalse($sipAccount->isActive());
     }
 
-    public function testLogin(){
+    public function testLogin()
+    {
         $sipAccount = (new TeamBuilder())->getSipAccount();
 
         $login_alpha = 'login_alpha';
@@ -46,6 +47,25 @@ class SipAccountTest extends TestCase
         new SipAccount($member, $login, $password);
     }
 
+    public function testPassword()
+    {
+
+        $sipAccount = (new TeamBuilder())->getSipAccount();
+        $password_alpha = 'password_alpha';
+        $sipAccount->setPassword($password_alpha);
+        $this->assertSame($password_alpha, $sipAccount->getPassword());
+
+        $password_bravo = 'password_bravo';
+        $sipAccount->setPassword($password_bravo);
+        $this->assertSame($password_bravo, $sipAccount->getPassword());
+    }
+
+    public function testEmptyPassword()
+    {
+        $this->expectExceptionMessage('Can\'t set empty password.');
+        (new TeamBuilder())->getSipAccount()->setPassword('');
+    }
+
     public function testAdding()
     {
         $sipAccount = (new TeamBuilder())->getSipAccount();
@@ -63,6 +83,7 @@ class SipAccountTest extends TestCase
         $this->assertTrue($sipAccount->isBlocked());
         $this->assertFalse($sipAccount->isActive());
     }
+
     public function testTwiceActivate()
     {
         $this->expectExceptionMessage('Sip account is already active.');
@@ -74,5 +95,6 @@ class SipAccountTest extends TestCase
         $this->expectExceptionMessage('Sip account is already blocked.');
         (new TeamBuilder())->getSipAccount()->block();
     }
+
 
 }

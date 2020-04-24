@@ -116,6 +116,7 @@ class SipAccount
      */
     public function setPassword(string $password): self
     {
+        Assert::notEmpty($password, 'Can\'t set empty password.');
         $this->password = $password;
 
         return $this;

@@ -7,21 +7,38 @@ namespace App\Controller\BillingProfile;
 use App\Annotation\RequiresCsrf;
 use App\Annotation\RequiresSameMemberSipAccount;
 use App\Annotation\RequiresSameTeamMember;
-use App\Model\Billing\Entity\Account\SipAccount;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Model\Billing\UseCase\ActivateSipAccount;
 use App\Model\Billing\UseCase\BlockSipAccount;
+use App\Model\Billing\UseCase\SipAccount\UpdatePassword;
 
 /**
  * @Route("/profile/team/{member}/{sipAccount}")
  * @RequiresSameTeamMember(key="member")
  * @RequiresSameMemberSipAccount
  */
-
 class SipAccountController extends AbstractController
 {
+
+    /**
+     * @param string $sipAccount
+     * @param UpdatePassword\Handler $handler
+     * @param Request $request
+     * @return JsonResponse
+     * @Route("/updatePassword", name="billing.team.member.sipAccount.updatePassword", format="json")
+     * @RequiresCsrf()
+     */
+    public function updatePassword(string $sipAccount, UpdatePassword\Handler $handler, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $handler(new UpdatePassword\Command($sipAccount, $data['value']));
+
+        return $this->json(['status' => 'ok']);
+    }
+
     /**
      * @Route("/block", name="billing.team.member.sipAccount.block", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.sipAccount.toggleStatus")
@@ -29,9 +46,9 @@ class SipAccountController extends AbstractController
      * @param BlockSipAccount\Handler $handler
      * @return JsonResponse
      */
-    public function block(SipAccount $sipAccount, BlockSipAccount\Handler $handler): JsonResponse
+    public function block(string $sipAccount, BlockSipAccount\Handler $handler): JsonResponse
     {
-        $handler(new BlockSipAccount\Command($sipAccount->getId()->getValue()));
+        $handler(new BlockSipAccount\Command($sipAccount));
 
         return $this->json(['status' => 'ok']);
     }
