@@ -133,8 +133,12 @@ class SipAccount
     /**
      * @param string $login
      */
-    public function setLogin(string $login): void
+    public function setLogin(string $login): self
     {
+        Assert::notEmpty($login, 'Can\'t set empty login.');
+        if ($this->login === $login) {
+            return $this;
+        }
         foreach ($this->getMember()->getTeam()->getMembers() as $member) {
             foreach ($member->getSipAccounts() as $sipAccount) {
                 Assert::notSame($login, $sipAccount->getLogin(), 'Login already used.');
@@ -142,6 +146,8 @@ class SipAccount
         }
 
         $this->login = $login;
+
+        return $this;
     }
 
     /**

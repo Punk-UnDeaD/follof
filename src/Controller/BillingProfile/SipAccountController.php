@@ -14,10 +14,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Model\Billing\UseCase\ActivateSipAccount;
 use App\Model\Billing\UseCase\BlockSipAccount;
 use App\Model\Billing\UseCase\SipAccount\UpdatePassword;
+use App\Model\Billing\UseCase\SipAccount\UpdateLogin;
 
 /**
  * @Route("/profile/team/{member}/{sipAccount}")
- * @RequiresSameTeamMember(key="member")
+ * @RequiresSameTeamMember
  * @RequiresSameMemberSipAccount
  */
 class SipAccountController extends AbstractController
@@ -38,6 +39,23 @@ class SipAccountController extends AbstractController
 
         return $this->json(['status' => 'ok']);
     }
+
+    /**
+     * @param string $sipAccount
+     * @param UpdatePassword\Handler $handler
+     * @param Request $request
+     * @return JsonResponse
+     * @Route("/updateLogin", name="billing.team.member.sipAccount.updateLogin", format="json")
+     * @RequiresCsrf()
+     */
+    public function updateLogin(string $sipAccount, UpdateLogin\Handler $handler, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $handler(new UpdateLogin\Command($sipAccount, $data['value']));
+
+        return $this->json(['status' => 'ok']);
+    }
+
 
     /**
      * @Route("/block", name="billing.team.member.sipAccount.block", defaults={"_format": "json"})

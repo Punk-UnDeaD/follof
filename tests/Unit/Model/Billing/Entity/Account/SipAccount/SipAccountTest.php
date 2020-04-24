@@ -32,7 +32,7 @@ class SipAccountTest extends TestCase
         $this->assertSame($login_alpha, $sipAccount->getLogin());
 
         $login_bravo = 'login_bravo';
-        $sipAccount->setLogin($login_bravo);
+        $sipAccount->setLogin($login_bravo)->setLogin($login_bravo);
         $this->assertSame($login_bravo, $sipAccount->getLogin());
 
     }
@@ -45,6 +45,12 @@ class SipAccountTest extends TestCase
         new SipAccount($member, $login, $password);
         $this->expectExceptionMessage('Login already used.');
         new SipAccount($member, $login, $password);
+    }
+
+    public function testEmptyLogin()
+    {
+        $this->expectExceptionMessage('Can\'t set empty login.');
+        (new TeamBuilder())->getSipAccount()->setLogin('');
     }
 
     public function testPassword()

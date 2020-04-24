@@ -12,7 +12,6 @@
     <div class="card">
         <div class="card-body">
             {% if not member.role.isOwner() %}
-
                 <form action="{{ path("billing.team.member.updateCredentials", {member: member.id }) }}"
                       class="form-inline mb-3" method="post">
                     <input type="hidden" name="_csrf_token"
@@ -42,9 +41,19 @@
                 {% for account in member.sipAccounts %}
                 <tr>
                     <th scope="row">{{ account.id.value }}
-                    <td>{{ account.login }}
                     <td>
-                        <div class="d-inline-flex w-75" >
+                        <div class="d-inline-flex w-20em">
+                            <input class="ml-1 form-control" type="text" name="login" value="{{ account.login }}" id="id-login-{{ account.id.value }}">
+                        </div>
+                        <button class="btn btn-dark btn-sm" data-for="id-login-{{ account.id.value }}" is="x-auto-save-button"
+                                data-save="{{ path('billing.team.member.sipAccount.updateLogin', {sipAccount: account.id, member:member.id }) }}"
+                                data-csrf="{{ csrf_token("billing.team.member.sipAccount.updateLogin") }}"
+
+                        ><i class="fa-save fa"></i></button>
+
+                        </div>
+                    <td>
+                        <div class="d-inline-flex w-20em">
                         <input class="ml-1 form-control" type="text" name="password" value="{{ account.password }}" id="id-password-{{ account.id.value }}">
                         </div>
                         <button class="btn btn-dark btn-sm" data-for="id-password-{{ account.id.value }}" is="x-auto-password"><i class="icon-reload"></i></button>
@@ -75,8 +84,10 @@
         </div>
     </div>
 {% endblock %}
-
-
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('x-auto-save-button') }}
+{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     {{ encore_entry_script_tags('x-auto-toggler') }}

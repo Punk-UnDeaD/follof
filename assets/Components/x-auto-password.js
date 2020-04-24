@@ -14,6 +14,7 @@ customElements.define('x-auto-password', class extends HTMLButtonElement {
             .then(resp => resp.json())
             .then(data => {
                 input.value = data.password;
+                input.dispatchEvent(new Event('change'));
                 input.disabled = false;
             })
     }

@@ -1,0 +1,38 @@
+.toolpip {
+  display: none;
+  position: absolute;
+  opacity: 0;
+
+  transition: opacity ease 0.2s;
+  padding: 0.5ex 0.5em;
+  background: var(--danger);
+  border-radius: .5em;
+  color: var(--white);
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  font-size: 90%;
+
+  &::after {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    content: '';
+    border: solid 1ex;
+    border-color: var(--danger) transparent transparent;
+    transform: translateX(-50%);
+  }
+
+  &.shown {
+    display: block;
+    opacity: 1;
+  }
+
+  &.top {
+    transform: translateY(-100%) translateX(-50%);
+  }
+
+  .toolpip-title {
+    text-align: center;
+    font-weight: bold;
+  }
+
+}

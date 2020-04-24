@@ -19,7 +19,7 @@ use App\Model\Billing\UseCase\UpdateMemberCredentials;
 
 /**
  * @Route("/profile/team/{member}", requirements={"member"="[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}" })
- * @RequiresSameTeamMember(key="member")
+ * @RequiresSameTeamMember
  */
 class MemberController extends AbstractController
 {

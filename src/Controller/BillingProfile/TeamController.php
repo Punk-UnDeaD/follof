@@ -6,6 +6,7 @@ namespace App\Controller\BillingProfile;
 
 use App\Annotation\RequiresCsrf;
 use App\Model\Billing\Entity\Account\Member;
+use App\Model\Billing\Entity\Account\MemberRepository;
 use App\Model\Billing\UseCase\AddMember;
 use App\ReadModel\User\UserFetcher;
 use App\Security\MemberIdentity;
@@ -20,19 +21,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class TeamController extends AbstractController
 {
 
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    private $members;
-    /**
-     * @var UserFetcher
-     */
+    private MemberRepository $members;
+
     private UserFetcher $users;
 
-    public function __construct(UserFetcher $users, EntityManagerInterface $em)
+    public function __construct(UserFetcher $users, MemberRepository $em)
     {
         $this->users = $users;
-        $this->members = $em->getRepository(Member::class);
+        $this->members = $em;
     }
 
     /**
