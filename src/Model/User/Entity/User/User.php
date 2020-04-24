@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
 
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use DomainException;
 
 /**
  * @ORM\Entity
@@ -25,64 +28,54 @@ class User
      * @ORM\Column(type="user_user_id")
      * @ORM\Id
      */
-    private $id;
+    private Id $id;
     /**
-     * @var \DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
      */
-    private $date;
+    private DateTimeImmutable $date;
     /**
-     * @var Email|null
      * @ORM\Column(type="user_user_email", nullable=true)
      */
-    private $email;
+    private ?Email $email = null;
     /**
-     * @var string|null
      * @ORM\Column(type="string", name="password_hash", nullable=true)
      */
-    private string $passwordHash;
+    private ?string $passwordHash = null;
     /**
-     * @var string|null
      * @ORM\Column(type="string", name="confirm_token", nullable=true)
      */
-    private $confirmToken;
+    private ?string $confirmToken = null;
     /**
-     * @var Name
      * @ORM\Embedded(class="Name")
      */
-    private $name;
+    private Name $name;
     /**
-     * @var Email|null
      * @ORM\Column(type="user_user_email", name="new_email", nullable=true)
      */
-    private $newEmail;
+    private ?Email $newEmail;
     /**
-     * @var string|null
      * @ORM\Column(type="string", name="new_email_token", nullable=true)
      */
-    private $newEmailToken;
+    private ?string $newEmailToken = null;
     /**
-     * @var ResetToken|null
      * @ORM\Embedded(class="ResetToken", columnPrefix="reset_token_")
      */
-    private $resetToken;
+    private ?ResetToken $resetToken = null;
     /**
-     * @var string
      * @ORM\Column(type="string", length=16)
      */
-    private $status;
+    private string $status;
     /**
-     * @var Role
      * @ORM\Column(type="user_user_role", length=16)
      */
-    private $role;
+    private Role $role;
     /**
-     * @var Network[]|ArrayCollection
+     * @var Network[]|Collection
      * @ORM\OneToMany(targetEntity="Network", mappedBy="user", orphanRemoval=true, cascade={"persist"})
      */
-    private $networks;
+    private Collection $networks;
 
-    private function __construct(Id $id, \DateTimeImmutable $date, Name $name)
+    private function __construct(Id $id, DateTimeImmutable $date, Name $name)
     {
         $this->id = $id;
         $this->date = $date;
@@ -91,7 +84,7 @@ class User
         $this->networks = new ArrayCollection();
     }
 
-    public static function create(Id $id, \DateTimeImmutable $date, Name $name, Email $email, string $hash): self
+    public static function create(Id $id, DateTimeImmutable $date, Name $name, Email $email, string $hash): self
     {
         $user = new self($id, $date, $name);
         $user->email = $email;
@@ -103,7 +96,7 @@ class User
 
     public static function signUpByEmail(
         Id $id,
-        \DateTimeImmutable $date,
+        DateTimeImmutable $date,
         Name $name,
         Email $email,
         string $hash,
@@ -121,7 +114,7 @@ class User
     public function confirmSignUp(): void
     {
         if (!$this->isWait()) {
-            throw new \DomainException('User is already confirmed.');
+            throw new DomainException('User is already confirmed.');
         }
 
         $this->status = self::STATUS_ACTIVE;
@@ -130,7 +123,7 @@ class User
 
     public static function signUpByNetwork(
         Id $id,
-        \DateTimeImmutable $date,
+        DateTimeImmutable $date,
         Name $name,
         string $network,
         string $identity
@@ -146,7 +139,7 @@ class User
     {
         foreach ($this->networks as $existing) {
             if ($existing->isForNetwork($network)) {
-                throw new \DomainException('Network is already attached.');
+                throw new DomainException('Network is already attached.');
             }
         }
         $this->networks->add(new Network($this, $network, $identity));
@@ -156,38 +149,38 @@ class User
     {
         foreach ($this->networks as $existing) {
             if ($existing->isFor($network, $identity)) {
-                if (!$this->email && $this->networks->count() === 1) {
-                    throw new \DomainException('Unable to detach the last identity.');
+                if (!$this->email && 1 === $this->networks->count()) {
+                    throw new DomainException('Unable to detach the last identity.');
                 }
                 $this->networks->removeElement($existing);
 
                 return;
             }
         }
-        throw new \DomainException('Network is not attached.');
+        throw new DomainException('Network is not attached.');
     }
 
-    public function requestPasswordReset(ResetToken $token, \DateTimeImmutable $date): void
+    public function requestPasswordReset(ResetToken $token, DateTimeImmutable $date): void
     {
         if (!$this->isActive()) {
-            throw new \DomainException('User is not active.');
+            throw new DomainException('User is not active.');
         }
         if (!$this->email) {
-            throw new \DomainException('Email is not specified.');
+            throw new DomainException('Email is not specified.');
         }
         if ($this->resetToken && !$this->resetToken->isExpiredTo($date)) {
-            throw new \DomainException('Resetting is already requested.');
+            throw new DomainException('Resetting is already requested.');
         }
         $this->resetToken = $token;
     }
 
-    public function passwordReset(\DateTimeImmutable $date, string $hash): void
+    public function passwordReset(DateTimeImmutable $date, string $hash): void
     {
         if (!$this->resetToken) {
-            throw new \DomainException('Resetting is not requested.');
+            throw new DomainException('Resetting is not requested.');
         }
         if ($this->resetToken->isExpiredTo($date)) {
-            throw new \DomainException('Reset token is expired.');
+            throw new DomainException('Reset token is expired.');
         }
         $this->passwordHash = $hash;
         $this->resetToken = null;
@@ -196,10 +189,10 @@ class User
     public function requestEmailChanging(Email $email, string $token): void
     {
         if (!$this->isActive()) {
-            throw new \DomainException('User is not active.');
+            throw new DomainException('User is not active.');
         }
         if ($this->email && $this->email->isEqual($email)) {
-            throw new \DomainException('Email is already same.');
+            throw new DomainException('Email is already same.');
         }
         $this->newEmail = $email;
         $this->newEmailToken = $token;
@@ -208,10 +201,10 @@ class User
     public function confirmEmailChanging(string $token): void
     {
         if (!$this->newEmailToken) {
-            throw new \DomainException('Changing is not requested.');
+            throw new DomainException('Changing is not requested.');
         }
         if ($this->newEmailToken !== $token) {
-            throw new \DomainException('Incorrect changing token.');
+            throw new DomainException('Incorrect changing token.');
         }
         $this->email = $this->newEmail;
         $this->newEmail = null;
@@ -229,13 +222,12 @@ class User
         $this->email = $email;
 
         return $this;
-
     }
 
     public function changeRole(Role $role): self
     {
         if ($this->role->isEqual($role)) {
-            throw new \DomainException('Role is already same.');
+            throw new DomainException('Role is already same.');
         }
         $this->role = $role;
 
@@ -245,7 +237,7 @@ class User
     public function activate(): self
     {
         if ($this->isActive()) {
-            throw new \DomainException('User is already active.');
+            throw new DomainException('User is already active.');
         }
         $this->status = self::STATUS_ACTIVE;
 
@@ -255,7 +247,7 @@ class User
     public function block(): self
     {
         if ($this->isBlocked()) {
-            throw new \DomainException('User is already blocked.');
+            throw new DomainException('User is already blocked.');
         }
         $this->status = self::STATUS_BLOCKED;
 
@@ -264,17 +256,17 @@ class User
 
     public function isWait(): bool
     {
-        return $this->status === self::STATUS_WAIT;
+        return self::STATUS_WAIT === $this->status;
     }
 
     public function isActive(): bool
     {
-        return $this->status === self::STATUS_ACTIVE;
+        return self::STATUS_ACTIVE === $this->status;
     }
 
     public function isBlocked(): bool
     {
-        return $this->status === self::STATUS_BLOCKED;
+        return self::STATUS_BLOCKED === $this->status;
     }
 
     public function getId(): Id
@@ -282,7 +274,7 @@ class User
         return $this->id;
     }
 
-    public function getDate(): \DateTimeImmutable
+    public function getDate(): DateTimeImmutable
     {
         return $this->date;
     }

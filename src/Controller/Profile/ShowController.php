@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Profile;
 
-use App\Model\Billing\Entity\Account\Member;
 use App\ReadModel\Billing\MemberFetcher;
 use App\ReadModel\User\UserFetcher;
 use App\Security\MemberIdentity;
@@ -15,9 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ShowController extends AbstractController
 {
     private $users;
-    /**
-     * @var MemberFetcher
-     */
+
     private MemberFetcher $members;
 
     public function __construct(UserFetcher $users, MemberFetcher $members)
@@ -28,7 +25,6 @@ class ShowController extends AbstractController
 
     /**
      * @Route("/profile", name="profile")
-     * @return Response
      */
     public function show(): Response
     {

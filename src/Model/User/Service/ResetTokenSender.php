@@ -15,9 +15,7 @@ class ResetTokenSender
 {
     private $mailer;
     private $twig;
-    /**
-     * @var string
-     */
+
     private string $robotEmail;
 
     public function __construct(MailerInterface $mailer, Environment $twig, string $robotEmail)
@@ -41,6 +39,5 @@ class ResetTokenSender
         } catch (TransportExceptionInterface $e) {
             throw new \RuntimeException('Unable to send message.');
         }
-
     }
 }

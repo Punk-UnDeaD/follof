@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Model\Billing\Entity\Account;
 
@@ -11,14 +12,10 @@ use Doctrine\ORM\Mapping as ORM;
 class Ballance
 {
     /**
-     * @var float
      * @ORM\Column(type="decimal", precision=8, scale=2)
      */
     private float $value = 0.0;
 
-    /**
-     * @return float|int
-     */
     public function getValue(): float
     {
         return $this->value;

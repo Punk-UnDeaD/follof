@@ -6,18 +6,11 @@ namespace App\Model\User\UseCase\Network\Detach;
 
 class Command
 {
-    /**
-     * @var string
-     */
-    public $user;
-    /**
-     * @var string
-     */
-    public $network;
-    /**
-     * @var string
-     */
-    public $identity;
+    public string $user;
+
+    public string $network;
+
+    public string $identity;
 
     public function __construct(string $user, string $network, string $identity)
     {

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Profile;
 
+use App\Controller\ErrorHandler;
 use App\Model\User\UseCase\Name;
 use App\ReadModel\User\UserFetcher;
-use App\Controller\ErrorHandler;
+use DomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,9 +29,6 @@ class NameController extends AbstractController
 
     /**
      * @Route("", name="profile.name")
-     * @param Request $request
-     * @param Name\Handler $handler
-     * @return Response
      */
     public function request(Request $request, Name\Handler $handler): Response
     {
@@ -44,15 +42,19 @@ class NameController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $handler->handle($command);
+
                 return $this->redirectToRoute('profile');
-            } catch (\DomainException $e) {
+            } catch (DomainException $e) {
                 $this->errors->handle($e);
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render('app/profile/name.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'app/profile/name.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
 }

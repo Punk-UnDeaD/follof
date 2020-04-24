@@ -41,8 +41,8 @@ class MemberIdentity implements UserInterface, EquatableInterface
 
     public function isActive(): bool
     {
-        return $this->user_status === User::STATUS_ACTIVE
-            && $this->member_status === Member::STATUS_ACTIVE;
+        return User::STATUS_ACTIVE === $this->user_status
+            && Member::STATUS_ACTIVE === $this->member_status;
     }
 
     public function getDisplay(): string
@@ -72,7 +72,6 @@ class MemberIdentity implements UserInterface, EquatableInterface
 
     public function eraseCredentials(): void
     {
-
     }
 
     public function isEqualTo(UserInterface $member): bool
@@ -89,9 +88,6 @@ class MemberIdentity implements UserInterface, EquatableInterface
             $this->member_status === $member->member_status;
     }
 
-    /**
-     * @return string
-     */
     public function getTeamId(): string
     {
         return $this->team_id;

@@ -6,8 +6,8 @@ namespace App\Model\User\UseCase\Edit;
 
 use App\Model\Flusher;
 use App\Model\User\Entity\User\Email;
-use App\Model\User\Entity\User\Name;
 use App\Model\User\Entity\User\Id;
+use App\Model\User\Entity\User\Name;
 use App\Model\User\Entity\User\UserRepository;
 
 class Handler

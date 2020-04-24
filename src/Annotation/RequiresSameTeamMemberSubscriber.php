@@ -13,13 +13,8 @@ use Symfony\Component\Security\Core\Security;
 
 class RequiresSameTeamMemberSubscriber extends BaseAnnotationChecker
 {
-    /**
-     * @var Security
-     */
     private Security $security;
-    /**
-     * @var MemberFetcher
-     */
+
     private MemberFetcher $members;
 
     public const ANNOTATION = RequiresSameTeamMember::class;
@@ -34,9 +29,7 @@ class RequiresSameTeamMemberSubscriber extends BaseAnnotationChecker
         $this->members = $members;
     }
 
-
     /**
-     * @param ControllerArgumentsEvent $event
      * @param RequiresSameTeamMember|object $annotation
      */
     protected function checkAnnotation(ControllerArgumentsEvent $event, object $annotation)

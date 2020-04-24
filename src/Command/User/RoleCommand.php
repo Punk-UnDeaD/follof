@@ -55,8 +55,9 @@ class RoleCommand extends Command
 
         if ($violations->count()) {
             foreach ($violations as $violation) {
-                $output->writeln('<error>' . $violation->getPropertyPath() . ': ' . $violation->getMessage() . '</error>');
+                $output->writeln('<error>'.$violation->getPropertyPath().': '.$violation->getMessage().'</error>');
             }
+
             return;
         }
 

@@ -8,8 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class Flusher
 {
-    private $em;
-    private $dispatcher;
+    private EntityManagerInterface $em;
+    private EventDispatcher $dispatcher;
 
     public function __construct(EntityManagerInterface $em, EventDispatcher $dispatcher)
     {

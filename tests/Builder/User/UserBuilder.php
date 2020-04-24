@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Tests\Builder\User;
 
 use App\Model\User\Entity\User\Email;
+use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\Name;
 use App\Model\User\Entity\User\Role;
 use App\Model\User\Entity\User\User;
-use App\Model\User\Entity\User\Id;
 
 class UserBuilder
 {
@@ -39,6 +39,7 @@ class UserBuilder
         $clone->email = $email ?? new Email('mail@app.test');
         $clone->hash = $hash ?? 'hash';
         $clone->token = $token ?? 'token';
+
         return $clone;
     }
 
@@ -46,6 +47,7 @@ class UserBuilder
     {
         $clone = clone $this;
         $clone->confirmed = true;
+
         return $clone;
     }
 
@@ -54,6 +56,7 @@ class UserBuilder
         $clone = clone $this;
         $clone->network = $network ?? 'vk';
         $clone->identity = $identity ?? '0001';
+
         return $clone;
     }
 
@@ -61,6 +64,7 @@ class UserBuilder
     {
         $clone = clone $this;
         $clone->id = $id;
+
         return $clone;
     }
 
@@ -68,6 +72,7 @@ class UserBuilder
     {
         $clone = clone $this;
         $clone->name = $name;
+
         return $clone;
     }
 
@@ -75,6 +80,7 @@ class UserBuilder
     {
         $clone = clone $this;
         $clone->role = $role;
+
         return $clone;
     }
 

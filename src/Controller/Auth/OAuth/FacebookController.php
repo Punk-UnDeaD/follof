@@ -13,8 +13,6 @@ class FacebookController extends AbstractController
 {
     /**
      * @Route("/oauth/facebook", name="oauth.facebook")
-     * @param ClientRegistry $clientRegistry
-     * @return Response
      */
     public function connect(ClientRegistry $clientRegistry): Response
     {
@@ -25,7 +23,6 @@ class FacebookController extends AbstractController
 
     /**
      * @Route("/oauth/facebook/check", name="oauth.facebook_check")
-     * @return Response
      */
     public function check(): Response
     {

@@ -22,8 +22,7 @@ class Handler
         ResetTokenizer $tokenizer,
         Flusher $flusher,
         ResetTokenSender $sender
-    )
-    {
+    ) {
         $this->users = $users;
         $this->tokenizer = $tokenizer;
         $this->flusher = $flusher;

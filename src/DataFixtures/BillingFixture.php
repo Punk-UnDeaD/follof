@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\DataFixtures;
-
 
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\SipAccount;
@@ -15,15 +15,10 @@ use Doctrine\Persistence\ObjectManager;
 
 class BillingFixture extends Fixture implements DependentFixtureInterface
 {
-
-    /**
-     * @var PasswordHasher
-     */
     private PasswordHasher $hasher;
 
-    public function __construct(
-        PasswordHasher $hasher
-    ) {
+    public function __construct(PasswordHasher $hasher)
+    {
         $this->hasher = $hasher;
     }
 

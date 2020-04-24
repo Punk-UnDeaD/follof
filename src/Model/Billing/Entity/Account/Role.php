@@ -12,7 +12,7 @@ class Role
     public const ADMIN = 'ROLE_BILLING_TEAM_ADMIN';
     public const MEMBER = 'ROLE_BILLING_TEAM_MEMBER';
 
-    private $name;
+    private string $name;
 
     public function __construct(string $name)
     {
@@ -45,17 +45,17 @@ class Role
 
     public function isOwner(): bool
     {
-        return  $this->name === self::OWNER;
+        return self::OWNER === $this->name;
     }
 
     public function isAdmin(): bool
     {
-        return $this->name === self::ADMIN || $this->name === self::OWNER;
+        return self::ADMIN === $this->name || self::OWNER === $this->name;
     }
 
     public function isMember(): bool
     {
-        return $this->name === self::MEMBER;
+        return self::MEMBER === $this->name;
     }
 
     public function isEqual(self $role): bool

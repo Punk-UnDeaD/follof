@@ -1,12 +1,9 @@
 <?php
 
-
 namespace App\Tests\Unit\Model\Billing\Entity\Account\TeamMember;
-
 
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\Team;
-use App\Model\User\Entity\User\User;
 use App\Tests\Builder\Billing\TeamBuilder;
 use PHPUnit\Framework\TestCase;
 
@@ -43,5 +40,4 @@ class TeamAddMembersTest extends TestCase
         $this->expectExceptionMessage('$member in other Team.');
         (new TeamBuilder())->getTeam()->addMember((new TeamBuilder())->getMember());
     }
-
 }

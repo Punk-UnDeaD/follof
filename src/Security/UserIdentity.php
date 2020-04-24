@@ -24,8 +24,7 @@ class UserIdentity implements UserInterface, EquatableInterface
         string $display,
         string $role,
         string $status
-    )
-    {
+    ) {
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
@@ -41,7 +40,7 @@ class UserIdentity implements UserInterface, EquatableInterface
 
     public function isActive(): bool
     {
-        return $this->status === User::STATUS_ACTIVE;
+        return User::STATUS_ACTIVE === $this->status;
     }
 
     public function getDisplay(): string
@@ -71,7 +70,6 @@ class UserIdentity implements UserInterface, EquatableInterface
 
     public function eraseCredentials(): void
     {
-
     }
 
     public function isEqualTo(UserInterface $user): bool

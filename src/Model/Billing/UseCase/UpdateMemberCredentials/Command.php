@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Model\Billing\UseCase\UpdateMemberCredentials;
-
 
 class Command
 {

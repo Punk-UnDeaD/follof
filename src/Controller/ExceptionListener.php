@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Controller;
+declare(strict_types=1);
 
+namespace App\Controller;
 
 use App\ReadModel\NotFoundException;
 use Doctrine\ORM\EntityNotFoundException;
+use LogicException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -25,7 +27,7 @@ class ExceptionListener
                 case $exception instanceof EntityNotFoundException:
                     $response->setStatusCode(404);
                     break;
-                case $exception instanceof \LogicException:
+                case $exception instanceof LogicException:
                     $response->setStatusCode(422);
                     break;
                 case $exception instanceof HttpException:

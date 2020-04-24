@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class SipAccountTest extends TestCase
 {
-
     public function test()
     {
         $member = (new TeamBuilder())->getMember();
@@ -34,7 +33,6 @@ class SipAccountTest extends TestCase
         $login_bravo = 'login_bravo';
         $sipAccount->setLogin($login_bravo)->setLogin($login_bravo);
         $this->assertSame($login_bravo, $sipAccount->getLogin());
-
     }
 
     public function testSameLogin()
@@ -55,7 +53,6 @@ class SipAccountTest extends TestCase
 
     public function testPassword()
     {
-
         $sipAccount = (new TeamBuilder())->getSipAccount();
         $password_alpha = 'password_alpha';
         $sipAccount->setPassword($password_alpha);
@@ -101,6 +98,4 @@ class SipAccountTest extends TestCase
         $this->expectExceptionMessage('Sip account is already blocked.');
         (new TeamBuilder())->getSipAccount()->block();
     }
-
-
 }

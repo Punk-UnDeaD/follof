@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\ReadModel\Billing;
-
 use App\ReadModel\Billing\MemberFetcher;
 use App\ReadModel\User\AuthView;
 use App\ReadModel\User\UserFetcher;
@@ -18,9 +17,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class UserProvider implements UserProviderInterface
 {
     private UserFetcher $users;
-    /**
-     * @var MemberFetcher
-     */
+
     private MemberFetcher $members;
 
     public function __construct(UserFetcher $users, MemberFetcher $members)
@@ -29,12 +26,10 @@ class UserProvider implements UserProviderInterface
         $this->members = $members;
     }
 
-
     public function loadUserByUsername($username): UserInterface
     {
         if ($member = $this->members->loadByLogin($username)) {
             return self::identityByMember($member);
-
         }
         $user = $this->loadUser($username);
 
@@ -48,7 +43,6 @@ class UserProvider implements UserProviderInterface
                 return self::identityByMember($member);
             }
             throw new BadCredentialsException('');
-
         }
 
         if (!$identity instanceof UserIdentity) {
@@ -62,14 +56,14 @@ class UserProvider implements UserProviderInterface
 
     public function supportsClass($class): bool
     {
-        return $class === UserIdentity::class || $class === MemberIdentity::class;
+        return UserIdentity::class === $class || MemberIdentity::class === $class;
     }
 
     private function loadUser($username): AuthView
     {
         $chunks = explode(':', $username);
 
-        if (\count($chunks) === 2 && $user = $this->users->findForAuthByNetwork($chunks[0], $chunks[1])) {
+        if (2 === \count($chunks) && $user = $this->users->findForAuthByNetwork($chunks[0], $chunks[1])) {
             return $user;
         }
 

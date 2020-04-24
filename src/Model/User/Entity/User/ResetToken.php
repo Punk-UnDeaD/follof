@@ -40,7 +40,6 @@ class ResetToken
 
     /**
      * @internal for postLoad callback
-     * @return bool
      */
     public function isEmpty(): bool
     {

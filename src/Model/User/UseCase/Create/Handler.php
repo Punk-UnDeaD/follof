@@ -6,9 +6,9 @@ namespace App\Model\User\UseCase\Create;
 
 use App\Model\Flusher;
 use App\Model\User\Entity\User\Email;
+use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\Name;
 use App\Model\User\Entity\User\User;
-use App\Model\User\Entity\User\Id;
 use App\Model\User\Entity\User\UserRepository;
 use App\Model\User\Service\PasswordGenerator;
 use App\Model\User\Service\PasswordHasher;
@@ -25,8 +25,7 @@ class Handler
         PasswordHasher $hasher,
         PasswordGenerator $generator,
         Flusher $flusher
-    )
-    {
+    ) {
         $this->users = $users;
         $this->hasher = $hasher;
         $this->generator = $generator;

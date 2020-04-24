@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Auth;
 
+use App\Controller\ErrorHandler;
 use App\Model\User\UseCase\SignUp;
 use App\ReadModel\User\UserFetcher;
 use App\Security\LoginFormAuthenticator;
-use App\Controller\ErrorHandler;
+use DomainException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,9 +29,6 @@ class SignUpController extends AbstractController
 
     /**
      * @Route("/signup", name="auth.signup")
-     * @param Request $request
-     * @param SignUp\Request\Handler $handler
-     * @return Response
      */
     public function request(Request $request, SignUp\Request\Handler $handler): Response
     {
@@ -43,27 +41,24 @@ class SignUpController extends AbstractController
             try {
                 $handler->handle($command);
                 $this->addFlash('success', 'Check your email.');
+
                 return $this->redirectToRoute('home');
-            } catch (\DomainException $e) {
+            } catch (DomainException $e) {
                 $this->errors->handle($e);
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
-        return $this->render('app/auth/signup.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render(
+            'app/auth/signup.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
     }
 
     /**
      * @Route("/signup/{token}", name="auth.signup.confirm")
-     * @param Request $request
-     * @param string $token
-     * @param SignUp\Confirm\ByToken\Handler $handler
-     * @param UserProviderInterface $userProvider
-     * @param GuardAuthenticatorHandler $guardHandler
-     * @param LoginFormAuthenticator $authenticator
-     * @return Response
      */
     public function confirm(
         Request $request,
@@ -72,10 +67,10 @@ class SignUpController extends AbstractController
         UserProviderInterface $userProvider,
         GuardAuthenticatorHandler $guardHandler,
         LoginFormAuthenticator $authenticator
-    ): Response
-    {
+    ): Response {
         if (!$user = $this->users->findBySignUpConfirmToken($token)) {
             $this->addFlash('error', 'Incorrect or already confirmed token.');
+
             return $this->redirectToRoute('auth.signup');
         }
 
@@ -83,15 +78,17 @@ class SignUpController extends AbstractController
 
         try {
             $handler->handle($command);
+
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $userProvider->loadUserByUsername($user->email),
                 $request,
                 $authenticator,
                 'main'
             );
-        } catch (\DomainException $e) {
+        } catch (DomainException $e) {
             $this->errors->handle($e);
             $this->addFlash('error', $e->getMessage());
+
             return $this->redirectToRoute('auth.signup');
         }
     }

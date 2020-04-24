@@ -23,10 +23,6 @@ class SignUpConfirmTokenSender
         $this->robotEmail = $robotEmail;
     }
 
-    /**
-     * @param Email $email
-     * @param string $token
-     */
     public function send(Email $email, string $token): void
     {
         try {

@@ -17,33 +17,28 @@ class SipAccount
     public const STATUS_BLOCKED = 'blocked';
 
     /**
-     * @var Id
      * @ORM\Column(type="billing_guid")
      * @ORM\Id
      */
     private Id $id;
     /**
-     * @var string
      * @ORM\Column(type="string", length=32)
      */
     private ?string $login = null;
     /**
-     * @var string
      * @ORM\Column(type="string", length=128)
      */
     private string $password;
     /**
-     * @var string
      * @ORM\Column(type="string", length=32)
      */
     private string $status;
 
     /**
-     * @var Member
      * @ORM\ManyToOne(targetEntity="App\Model\Billing\Entity\Account\Member", inversedBy="sipAccounts")
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    private ?Member $member = null;
+    private Member $member;
 
     public function __construct(Member $member, string $login, string $password)
     {
@@ -55,84 +50,11 @@ class SipAccount
         $this->setLogin($login);
     }
 
-    /**
-     * @return string
-     */
     public function getLogin(): ?string
     {
         return $this->login;
     }
 
-    public function activate(): self
-    {
-        Assert::false($this->isActive(), 'Sip account is already active.');
-        $this->status = self::STATUS_ACTIVE;
-
-        return $this;
-    }
-
-    public function block(): self
-    {
-        Assert::false($this->isBlocked(), 'Sip account is already blocked.');
-        $this->status = self::STATUS_BLOCKED;
-
-        return $this;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->status === self::STATUS_ACTIVE;
-    }
-
-    public function isBlocked(): bool
-    {
-        return $this->status === self::STATUS_BLOCKED;
-    }
-
-    public function isSameLogin($login): bool
-    {
-        return $this->login === $login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @return Member
-     */
-    public function getMember(): ?Member
-    {
-        return $this->member;
-    }
-
-    /**
-     * @param string $password
-     * @return SipAccount
-     */
-    public function setPassword(string $password): self
-    {
-        Assert::notEmpty($password, 'Can\'t set empty password.');
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param string $login
-     */
     public function setLogin(string $login): self
     {
         Assert::notEmpty($login, 'Can\'t set empty login.');
@@ -150,12 +72,62 @@ class SipAccount
         return $this;
     }
 
-    /**
-     * @return Id
-     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        Assert::notEmpty($password, 'Can\'t set empty password.');
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function activate(): self
+    {
+        Assert::false($this->isActive(), 'Sip account is already active.');
+        $this->status = self::STATUS_ACTIVE;
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return self::STATUS_ACTIVE === $this->status;
+    }
+
+    public function block(): self
+    {
+        Assert::false($this->isBlocked(), 'Sip account is already blocked.');
+        $this->status = self::STATUS_BLOCKED;
+
+        return $this;
+    }
+
+    public function isBlocked(): bool
+    {
+        return self::STATUS_BLOCKED === $this->status;
+    }
+
+    public function isSameLogin($login): bool
+    {
+        return $this->login === $login;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function getMember(): ?Member
+    {
+        return $this->member;
+    }
+
     public function getId(): Id
     {
         return $this->id;
     }
-
 }

@@ -16,10 +16,13 @@ class Role
 
     public function __construct(string $name)
     {
-        Assert::oneOf($name, [
-            self::USER,
-            self::ADMIN,
-        ]);
+        Assert::oneOf(
+            $name,
+            [
+                self::USER,
+                self::ADMIN,
+            ]
+        );
 
         $this->name = $name;
     }
@@ -36,12 +39,12 @@ class Role
 
     public function isUser(): bool
     {
-        return $this->name === self::USER;
+        return self::USER === $this->name;
     }
 
     public function isAdmin(): bool
     {
-        return $this->name === self::ADMIN;
+        return self::ADMIN === $this->name;
     }
 
     public function isEqual(self $role): bool

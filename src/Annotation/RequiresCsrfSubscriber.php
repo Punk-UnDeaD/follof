@@ -13,9 +13,6 @@ class RequiresCsrfSubscriber extends BaseAnnotationChecker
 {
     public const ANNOTATION = RequiresCsrf::class;
 
-    /**
-     * @var CsrfTokenManagerInterface
-     */
     private CsrfTokenManagerInterface $csrfTokenManager;
 
     public function __construct(
@@ -27,7 +24,6 @@ class RequiresCsrfSubscriber extends BaseAnnotationChecker
     }
 
     /**
-     * @param ControllerArgumentsEvent $event
      * @param object|RequiresCsrf $annotation
      */
     protected function checkAnnotation(ControllerArgumentsEvent $event, object $annotation)

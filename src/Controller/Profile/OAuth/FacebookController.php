@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Profile\OAuth;
 
+use App\Controller\ErrorHandler;
 use App\Model\User\UseCase\Network\Attach\Command;
 use App\Model\User\UseCase\Network\Attach\Handler;
+use DomainException;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
-use App\Controller\ErrorHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,8 +27,6 @@ class FacebookController extends AbstractController
 
     /**
      * @Route("/attach", name="profile.oauth.facebook")
-     * @param ClientRegistry $clientRegistry
-     * @return Response
      */
     public function connect(ClientRegistry $clientRegistry): Response
     {
@@ -38,9 +37,6 @@ class FacebookController extends AbstractController
 
     /**
      * @Route("/check", name="profile.oauth.facebook_check")
-     * @param ClientRegistry $clientRegistry
-     * @param Handler $handler
-     * @return Response
      */
     public function check(ClientRegistry $clientRegistry, Handler $handler): Response
     {
@@ -55,10 +51,12 @@ class FacebookController extends AbstractController
         try {
             $handler->handle($command);
             $this->addFlash('success', 'Facebook is successfully attached.');
+
             return $this->redirectToRoute('profile');
-        } catch (\DomainException $e) {
+        } catch (DomainException $e) {
             $this->errors->handle($e);
             $this->addFlash('error', $e->getMessage());
+
             return $this->redirectToRoute('profile');
         }
     }

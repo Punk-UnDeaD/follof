@@ -1,9 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
-
 namespace App\Model\Billing\UseCase\SipAccount\UpdateLogin;
-
 
 class Command
 {

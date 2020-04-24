@@ -1,15 +1,11 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\BlockMember;
 
-
-use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\MemberRepository;
-use App\Model\Billing\Entity\Account\Team;
 use App\Model\Flusher;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {

@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\SipAccount\UpdatePassword;
-
 
 use App\Model\Billing\Entity\Account\SipAccountRepository;
 use App\Model\Flusher;

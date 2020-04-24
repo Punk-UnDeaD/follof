@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model\Billing\UseCase\BlockSipAccount;
 
 use App\Model\Billing\Entity\Account\SipAccountRepository;

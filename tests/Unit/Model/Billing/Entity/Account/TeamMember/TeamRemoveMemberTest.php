@@ -36,5 +36,4 @@ class TeamRemoveMemberTest extends TestCase
         $this->expectExceptionMessage('$member in other Team.');
         $team->removeMember($member);
     }
-
 }

@@ -1,32 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\ReadModel\Billing;
 
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\Role;
 use App\ReadModel\NotFoundException;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\PDOStatement;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class MemberFetcher
 {
-    /**
-     * @var Connection
-     */
     private Connection $connection;
-    /**
-     * @var EntityManagerInterface
-     */
+
     private EntityManagerInterface $em;
-    /**
-     * @var TagAwareCacheInterface
-     */
+
     private TagAwareCacheInterface $cachePool;
 
     public function __construct(Connection $connection, EntityManagerInterface $em, TagAwareCacheInterface $myCachePool)
@@ -46,12 +39,11 @@ class MemberFetcher
             )
             ->where('member.role = :role')
             ->setParameter(':role', Role::OWNER);
-
     }
 
     private function query()
     {
-        $query = $this->connection->createQueryBuilder()
+        return $this->connection->createQueryBuilder()
             ->select(
                 'member.id as id',
                 'team.id as team_id',
@@ -64,8 +56,6 @@ class MemberFetcher
             ->join('member', 'billing_team', 'team', 'member.team_id=team.id')
             ->join('team', 'user_users', 'users', 'team.user_id=users.id')
             ->setMaxResults(1);
-
-        return $query;
     }
 
     private function getAuthViewResult(QueryBuilder $query): ?AuthView
@@ -166,5 +156,4 @@ class MemberFetcher
 
         throw new NotFoundException('Member is not found');
     }
-
 }

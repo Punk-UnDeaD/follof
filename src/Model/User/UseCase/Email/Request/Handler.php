@@ -23,8 +23,7 @@ class Handler
         NewEmailConfirmTokenizer $tokenizer,
         NewEmailConfirmTokenSender $sender,
         Flusher $flusher
-    )
-    {
+    ) {
         $this->users = $users;
         $this->tokenizer = $tokenizer;
         $this->sender = $sender;

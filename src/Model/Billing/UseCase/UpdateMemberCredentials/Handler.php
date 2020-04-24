@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\UpdateMemberCredentials;
-
 
 use App\Model\Billing\Entity\Account\MemberRepository;
 use App\Model\Flusher;

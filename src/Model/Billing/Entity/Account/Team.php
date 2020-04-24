@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\User\Entity\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Webmozart\Assert\Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Webmozart\Assert\Assert;
 
 /**
  * @ORM\Entity
@@ -15,50 +17,41 @@ use Doctrine\ORM\Mapping as ORM;
 class Team
 {
     /**
-     * @var Id
      * @ORM\Column(type="billing_guid")
      * @ORM\Id
      */
     private Id $id;
 
     /**
-     * @var string
      * @ORM\Column(type="string", name="billing_id")
      */
     private string $billingId;
 
     /**
-     * @var Member
      * @ORM\OneToOne(targetEntity="Member")
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
      */
     private Member $owner;
 
     /**
-     * @var User
      * @ORM\ManyToOne(targetEntity="App\Model\User\Entity\User\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id",  nullable=false)
      */
     private User $user;
 
-
     /**
      * @var Member[]|Collection
      * @ORM\OneToMany(targetEntity="Member", mappedBy="team", orphanRemoval=true, cascade={"all"})
      */
-    private $members;
-
+    private Collection $members;
 
     /**
-     * @var Ballance
      * @ORM\Embedded(class="Ballance")
      */
     private Ballance $ballance;
 
     /**
      * Team constructor.
-     * @param User $user
-     * @param string $billingId
      */
     public function __construct(User $user, string $billingId)
     {
@@ -73,9 +66,6 @@ class Team
         $this->user = $user;
     }
 
-    /**
-     * @return Member
-     */
     public function getOwner(): Member
     {
         return $this->owner;
@@ -108,37 +98,23 @@ class Team
         return $this;
     }
 
-
-    /**
-     * @return string
-     */
     public function getBillingId(): string
     {
         return $this->billingId;
     }
 
-    /**
-     * @return Ballance
-     */
     public function getBallance(): Ballance
     {
         return $this->ballance;
     }
 
-    /**
-     * @return Id
-     */
     public function getId(): Id
     {
         return $this->id;
     }
 
-    /**
-     * @return User
-     */
     public function getUser(): User
     {
         return $this->user;
     }
-
 }

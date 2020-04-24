@@ -23,9 +23,7 @@ class RequiresSameMemberSipAccountSubscriber extends BaseAnnotationChecker
         $this->sipAccounts = $sipAccounts;
     }
 
-
     /**
-     * @param ControllerArgumentsEvent $event
      * @param RequiresSameMemberSipAccount|object $annotation
      */
     protected function checkAnnotation(ControllerArgumentsEvent $event, object $annotation)

@@ -1,29 +1,21 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\AddSipAccount;
 
-
-use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\MemberRepository;
 use App\Model\Billing\Entity\Account\SipAccount;
-use App\Model\Billing\Entity\Account\Team;
 use App\Model\Billing\Service\SipLoginGenerator;
 use App\Model\Flusher;
 use App\Model\User\Service\HumanStrongPasswordGenerator;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectRepository;
 
 class Handler
 {
     private Flusher $flusher;
-    /**
-     * @var SipLoginGenerator
-     */
+
     private SipLoginGenerator $loginGenerator;
-    /**
-     * @var HumanStrongPasswordGenerator
-     */
+
     private HumanStrongPasswordGenerator $passwordGenerator;
 
     public function __construct(

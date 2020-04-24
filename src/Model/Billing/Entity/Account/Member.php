@@ -1,19 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model\Billing\Entity\Account;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Webmozart\Assert\Assert;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Webmozart\Assert\Assert;
 
 /**
- * Class Member
- * @package App\Model\Billing\Entity\Account
+ * Class Member.
  *
  * @ORM\Entity
  * @ORM\Table(name="billing_members")
- *
  */
 class Member
 {
@@ -21,32 +21,27 @@ class Member
     public const STATUS_BLOCKED = 'blocked';
 
     /**
-     * @var Id
      * @ORM\Column(type="billing_guid")
      * @ORM\Id
      */
     private Id $id;
 
     /**
-     * @var string|null
      * @ORM\Column(type="string", length=25, nullable=true))
      */
     private ?string $login = null;
 
     /**
-     * @var string|null
      * @ORM\Column(type="string", length=128, nullable=true))
      */
     private ?string $email = null;
 
     /**
-     * @var string|null
      * @ORM\Column(type="string", name="password_hash", nullable=true)
      */
     private ?string $passwordHash = null;
 
     /**
-     * @var Role
      * @ORM\Column(type="billing_member_role", length=32)
      */
     private Role $role;
@@ -58,7 +53,6 @@ class Member
     private Team $team;
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=16)
      */
     private string $status;
@@ -67,11 +61,10 @@ class Member
      * @var SipAccount[]|Collection
      * @ORM\OneToMany(targetEntity="App\Model\Billing\Entity\Account\SipAccount", mappedBy="member", orphanRemoval=true, cascade={"all"})
      */
-    private $sipAccounts;
+    private Collection $sipAccounts;
 
     /**
      * Member constructor.
-     * @param Team $team
      */
     public function __construct(Team $team)
     {
@@ -87,41 +80,9 @@ class Member
         $this->sipAccounts = new ArrayCollection();
     }
 
-    /**
-     * @return Team|NULL
-     */
-    public function getTeam(): ?Team
-    {
-        return $this->team;
-    }
-
-    /**
-     * @return Id
-     */
     public function getId(): Id
     {
         return $this->id;
-    }
-
-    /**
-     * @param Team $team
-     * @return Member
-     */
-    public function setTeam(Team $team): self
-    {
-        Assert::true($this->role->isOwner());
-        Assert::null($this->team, 'Cannot change team');
-        $this->team = $team;
-
-        return $this;
-    }
-
-    /**
-     * @return Role
-     */
-    public function getRole(): Role
-    {
-        return $this->role;
     }
 
     public function removeCredentials(): self
@@ -149,33 +110,38 @@ class Member
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
+    public function getRole(): Role
+    {
+        return $this->role;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(Team $team): self
+    {
+        Assert::true($this->role->isOwner());
+        Assert::null($this->team, 'Cannot change team');
+        $this->team = $team;
+
+        return $this;
+    }
+
     public function getLogin(): ?string
     {
         return $this->login;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPasswordHash(): ?string
     {
         return $this->passwordHash;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->status === static::STATUS_ACTIVE;
     }
 
     public function activate(): self
@@ -184,6 +150,11 @@ class Member
         $this->status = static::STATUS_ACTIVE;
 
         return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === static::STATUS_ACTIVE;
     }
 
     public function block(): self
@@ -195,18 +166,19 @@ class Member
         return $this;
     }
 
-    public function addSipAccount(SipAccount $sipAccount)
+    public function addSipAccount(SipAccount $sipAccount): self
     {
         Assert::null($sipAccount->getMember(), 'Already added.');
         $this->sipAccounts->add($sipAccount);
+
+        return $this;
     }
 
     /**
      * @return SipAccount[]|Collection
      */
-    public function getSipAccounts()
+    public function getSipAccounts(): Collection
     {
         return $this->sipAccounts;
     }
-
 }

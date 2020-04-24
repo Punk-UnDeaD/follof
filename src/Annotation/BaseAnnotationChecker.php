@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Annotation;
-
 
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -12,9 +12,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 abstract class BaseAnnotationChecker implements EventSubscriberInterface
 {
     const ANNOTATION = '';
-    /**
-     * @var Reader
-     */
+
     private Reader $reader;
 
     public function __construct(
@@ -49,8 +47,7 @@ abstract class BaseAnnotationChecker implements EventSubscriberInterface
 
     /**
      * @param $controller
-     * @param string $method
-     * @return Object|null
+     *
      * @throws \ReflectionException
      */
     private function getAnnotation($controller, string $method): ?object
@@ -63,5 +60,4 @@ abstract class BaseAnnotationChecker implements EventSubscriberInterface
     }
 
     abstract protected function checkAnnotation(ControllerArgumentsEvent $event, object $annotation);
-
 }

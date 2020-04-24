@@ -13,15 +13,13 @@ use Webmozart\Assert\Assert;
 class Name
 {
     /**
-     * @var string
      * @ORM\Column(type="string")
      */
-    private $first;
+    private string $first;
     /**
-     * @var string
      * @ORM\Column(type="string")
      */
-    private $last;
+    private string $last;
 
     public function __construct(string $first, string $last)
     {
@@ -44,6 +42,6 @@ class Name
 
     public function getFull(): string
     {
-        return $this->first . ' ' . $this->last;
+        return $this->first.' '.$this->last;
     }
 }

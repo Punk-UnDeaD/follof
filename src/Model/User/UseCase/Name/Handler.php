@@ -24,10 +24,12 @@ class Handler
     {
         $user = $this->users->get(new Id($command->id));
 
-        $user->changeName(new Name(
-            $command->first,
-            $command->last
-        ));
+        $user->changeName(
+            new Name(
+                $command->first,
+                $command->last
+            )
+        );
 
         $this->flusher->flush();
     }

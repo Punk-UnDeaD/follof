@@ -12,7 +12,6 @@ class UserChecker implements UserCheckerInterface
 {
     public function checkPreAuth(UserInterface $identity): void
     {
-
         if (!$identity->isActive()) {
             $exception = new DisabledException('User account is disabled.');
             $exception->setUser($identity);

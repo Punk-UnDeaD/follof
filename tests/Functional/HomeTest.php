@@ -1,14 +1,12 @@
 <?php
 
-
 namespace App\Tests\Functional;
-
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class HomeTest extends WebTestCase
 {
-    function testGuest()
+    public function testGuest()
     {
         $client = static::createClient();
         $client->request('GET', '/');
@@ -18,11 +16,10 @@ class HomeTest extends WebTestCase
         $this->assertRouteSame('app_login');
     }
 
-    function testUser()
+    public function testUser()
     {
         $client = static::createClient([], AuthFixture::adminCredentials());
         $client->request('GET', '/');
         $this->assertResponseIsSuccessful();
     }
-
 }

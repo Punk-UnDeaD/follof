@@ -10,9 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class HumanPasswordCommand extends Command
 {
     protected static $defaultName = 'app:human-password';
-    /**
-     * @var HumanStrongPasswordGenerator
-     */
+
     private HumanStrongPasswordGenerator $passwordGenerator;
 
     public function __construct(HumanStrongPasswordGenerator $passwordGenerator)

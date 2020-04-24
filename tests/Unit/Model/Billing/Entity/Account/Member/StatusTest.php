@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Tests\Unit\Model\Billing\Entity\Account\Member;
-
 
 use App\Model\Billing\Entity\Account\Member;
 use App\Tests\Builder\Billing\TeamBuilder;
@@ -12,7 +10,6 @@ class StatusTest extends TestCase
 {
     public function testStatus()
     {
-
         /** @var Member $member */
         /** @var Member $owner */
         ['owner' => $owner, 'member' => $member] = (new TeamBuilder())->getAll();

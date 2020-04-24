@@ -9,7 +9,6 @@ use App\Model\Billing\Entity\Account\Team;
 
 class SipLoginGenerator
 {
-
     public function generate(Member $member): string
     {
         do {
@@ -32,4 +31,3 @@ class SipLoginGenerator
         return true;
     }
 }
-

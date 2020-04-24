@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Tests\Unit\Model\Billing\Entity\Account\Member;
-
 
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\Team;
@@ -60,5 +58,4 @@ class MemberCredentialsTest extends TestCase
         (new Member($team))->setCredentials('login', '~~');
         (new Member($team))->setCredentials('login', '~~');
     }
-
 }

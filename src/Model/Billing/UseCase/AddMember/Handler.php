@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\AddMember;
-
 
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\Team;
@@ -27,8 +27,8 @@ class Handler
         if ($team = $this->repository->find($command->team_id)) {
             new Member($team);
             $this->flusher->flush();
+
             return;
         }
-
     }
 }

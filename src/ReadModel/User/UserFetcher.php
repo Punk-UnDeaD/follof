@@ -29,11 +29,11 @@ class UserFetcher
     public function existsByResetToken(string $token): bool
     {
         return $this->connection->createQueryBuilder()
-            ->select('COUNT (*)')
-            ->from('user_users')
-            ->where('reset_token_token = :token')
-            ->setParameter(':token', $token)
-            ->execute()->fetchColumn() > 0;
+                ->select('COUNT (*)')
+                ->from('user_users')
+                ->where('reset_token_token = :token')
+                ->setParameter(':token', $token)
+                ->execute()->fetchColumn() > 0;
     }
 
     public function findForAuthByEmail(string $email): ?AuthView
@@ -127,17 +127,10 @@ class UserFetcher
         if (!$user = $this->repository->find($id)) {
             throw new NotFoundException('User is not found');
         }
+
         return $user;
     }
 
-    /**
-     * @param Filter $filter
-     * @param int $page
-     * @param int $size
-     * @param string $sort
-     * @param string $direction
-     * @return PaginationInterface
-     */
     public function all(Filter $filter, int $page, int $size, string $sort, string $direction): PaginationInterface
     {
         $qb = $this->connection->createQueryBuilder()
@@ -153,12 +146,12 @@ class UserFetcher
 
         if ($filter->name) {
             $qb->andWhere($qb->expr()->like('LOWER(CONCAT(name_first, \' \', name_last))', ':name'));
-            $qb->setParameter(':name', '%' . mb_strtolower($filter->name) . '%');
+            $qb->setParameter(':name', '%'.mb_strtolower($filter->name).'%');
         }
 
         if ($filter->email) {
             $qb->andWhere($qb->expr()->like('LOWER(email)', ':email'));
-            $qb->setParameter(':email', '%' . mb_strtolower($filter->email) . '%');
+            $qb->setParameter(':email', '%'.mb_strtolower($filter->email).'%');
         }
 
         if ($filter->status) {
@@ -172,10 +165,10 @@ class UserFetcher
         }
 
         if (!\in_array($sort, ['date', 'name', 'email', 'role', 'status'], true)) {
-            throw new \UnexpectedValueException('Cannot sort by ' . $sort);
+            throw new \UnexpectedValueException('Cannot sort by '.$sort);
         }
 
-        $qb->orderBy($sort, $direction === 'desc' ? 'desc' : 'asc');
+        $qb->orderBy($sort, 'desc' === $direction ? 'desc' : 'asc');
 
         return $this->paginator->paginate($qb, $page, $size);
     }

@@ -35,5 +35,4 @@ class TeamTest extends TestCase
         $this->expectExceptionMessage('Cannot create. Wrong user role.');
         new Team((new TeamBuilder())->getUser()->changeRole(Role::admin()), '--');
     }
-
 }

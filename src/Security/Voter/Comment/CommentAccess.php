@@ -24,7 +24,7 @@ class CommentAccess extends Voter
 
     protected function supports($attribute, $subject): bool
     {
-        return $attribute === self::MANAGE && ($subject instanceof Comment || $subject instanceof CommentRow);
+        return self::MANAGE === $attribute && ($subject instanceof Comment || $subject instanceof CommentRow);
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool

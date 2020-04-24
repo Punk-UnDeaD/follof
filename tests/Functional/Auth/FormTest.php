@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Tests\Functional\Auth;
-
 
 use App\Tests\Functional\AuthFixture;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -22,7 +20,6 @@ class FormTest extends WebTestCase
         $client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertRouteSame('home');
-
     }
 
     public function testWrongPassword()

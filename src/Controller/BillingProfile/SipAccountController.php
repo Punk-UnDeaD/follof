@@ -1,20 +1,20 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controller\BillingProfile;
-
 
 use App\Annotation\RequiresCsrf;
 use App\Annotation\RequiresSameMemberSipAccount;
 use App\Annotation\RequiresSameTeamMember;
+use App\Model\Billing\UseCase\ActivateSipAccount;
+use App\Model\Billing\UseCase\BlockSipAccount;
+use App\Model\Billing\UseCase\SipAccount\UpdateLogin;
+use App\Model\Billing\UseCase\SipAccount\UpdatePassword;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Model\Billing\UseCase\ActivateSipAccount;
-use App\Model\Billing\UseCase\BlockSipAccount;
-use App\Model\Billing\UseCase\SipAccount\UpdatePassword;
-use App\Model\Billing\UseCase\SipAccount\UpdateLogin;
 
 /**
  * @Route("/profile/team/{member}/{sipAccount}")
@@ -23,12 +23,7 @@ use App\Model\Billing\UseCase\SipAccount\UpdateLogin;
  */
 class SipAccountController extends AbstractController
 {
-
     /**
-     * @param string $sipAccount
-     * @param UpdatePassword\Handler $handler
-     * @param Request $request
-     * @return JsonResponse
      * @Route("/updatePassword", name="billing.team.member.sipAccount.updatePassword", format="json")
      * @RequiresCsrf()
      */
@@ -41,10 +36,7 @@ class SipAccountController extends AbstractController
     }
 
     /**
-     * @param string $sipAccount
      * @param UpdatePassword\Handler $handler
-     * @param Request $request
-     * @return JsonResponse
      * @Route("/updateLogin", name="billing.team.member.sipAccount.updateLogin", format="json")
      * @RequiresCsrf()
      */
@@ -56,13 +48,9 @@ class SipAccountController extends AbstractController
         return $this->json(['status' => 'ok']);
     }
 
-
     /**
      * @Route("/block", name="billing.team.member.sipAccount.block", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.sipAccount.toggleStatus")
-     * @param string $sipAccount
-     * @param BlockSipAccount\Handler $handler
-     * @return JsonResponse
      */
     public function block(string $sipAccount, BlockSipAccount\Handler $handler): JsonResponse
     {
@@ -74,9 +62,6 @@ class SipAccountController extends AbstractController
     /**
      * @Route("/activate", name="billing.team.member.sipAccount.activate", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.sipAccount.toggleStatus")
-     * @param string $sipAccount
-     * @param ActivateSipAccount\Handler $handler
-     * @return JsonResponse
      */
     public function activate(string $sipAccount, ActivateSipAccount\Handler $handler): JsonResponse
     {

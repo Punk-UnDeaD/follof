@@ -10,15 +10,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Command
 {
     /**
-     * @var string
      * @Assert\NotBlank()
      */
-    public $id;
+    public string $id;
     /**
-     * @var string
      * @Assert\NotBlank()
      */
-    public $role;
+    public string $role;
 
     public function __construct(string $id)
     {
@@ -29,6 +27,7 @@ class Command
     {
         $command = new self($user->getId()->getValue());
         $command->role = $user->getRole()->getName();
+
         return $command;
     }
 }

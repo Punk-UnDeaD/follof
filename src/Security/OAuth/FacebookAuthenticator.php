@@ -6,10 +6,10 @@ namespace App\Security\OAuth;
 
 use App\Model\User\UseCase\Network\Auth\Command;
 use App\Model\User\UseCase\Network\Auth\Handler;
-use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
-use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
-use KnpU\OAuth2ClientBundle\Client\Provider\FacebookClient;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
+use KnpU\OAuth2ClientBundle\Client\OAuth2Client;
+use KnpU\OAuth2ClientBundle\Client\Provider\FacebookClient;
+use KnpU\OAuth2ClientBundle\Security\Authenticator\SocialAuthenticator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +35,7 @@ class FacebookAuthenticator extends SocialAuthenticator
 
     public function supports(Request $request): bool
     {
-        return $request->attributes->get('_route') === 'oauth.facebook_check';
+        return 'oauth.facebook_check' === $request->attributes->get('_route');
     }
 
     public function getCredentials(Request $request)
@@ -49,7 +49,7 @@ class FacebookAuthenticator extends SocialAuthenticator
 
         $network = 'facebook';
         $id = $facebookUser->getId();
-        $username = $network . ':' . $id;
+        $username = $network.':'.$id;
 
         $command = new Command($network, $id);
         $command->firstName = $facebookUser->getFirstName();
@@ -59,6 +59,7 @@ class FacebookAuthenticator extends SocialAuthenticator
             return $userProvider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
             $this->handler->handle($command);
+
             return $userProvider->loadUserByUsername($username);
         }
     }
