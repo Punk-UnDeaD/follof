@@ -20,8 +20,9 @@ class Handler
 
     public function __invoke(Command $command): void
     {
-        $this->repository->get($command->sipAccount_id)->block();
-        $this->flusher->flush();
+        $sipAccount = $this->repository->get($command->sipAccount_id);
+        $sipAccount->block();
+        $this->flusher->flush($sipAccount);
 
         return;
     }

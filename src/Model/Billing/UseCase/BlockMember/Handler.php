@@ -20,7 +20,8 @@ class Handler
 
     public function __invoke(Command $command): void
     {
-        $this->repository->get($command->member_id)->block();
-        $this->flusher->flush();
+        $member = $this->repository->get($command->member_id);
+        $member->block();
+        $this->flusher->flush($member);
     }
 }

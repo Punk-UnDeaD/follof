@@ -6,7 +6,7 @@ use App\Model\Billing\Entity\Account\Member;
 use App\Model\User\Entity\User\User;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-class EntityListener
+class CacheTagsInvalidator
 {
     private TagAwareCacheInterface $cachePool;
 

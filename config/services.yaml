@@ -4,55 +4,55 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    default_admin_email: 'admin@%env(PROJECT_BASE_URL)%'
-    default_robot_email: 'robot@%env(PROJECT_BASE_URL)%'
-    default_domain: '%env(PROJECT_BASE_URL)%'
-    default_scheme: '%env(PROJECT_BASE_URL_SCHEME)%'
-    router.request_context.host: '%env(PROJECT_BASE_URL)%'
-    router.request_context.scheme: '%env(PROJECT_BASE_URL_SCHEME)%'
+  default_admin_email: 'admin@%env(PROJECT_BASE_URL)%'
+  default_robot_email: 'robot@%env(PROJECT_BASE_URL)%'
+  default_domain: '%env(PROJECT_BASE_URL)%'
+  default_scheme: '%env(PROJECT_BASE_URL_SCHEME)%'
+  router.request_context.host: '%env(PROJECT_BASE_URL)%'
+  router.request_context.scheme: '%env(PROJECT_BASE_URL_SCHEME)%'
 
 
 services:
-    # default configuration for services in *this* file
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        bind:
-            $adminEmail: "%env(string:default:default_admin_email:ADMIN_EMAIL)%"
-            $robotEmail: "%env(string:default:default_robot_email:ROBOT_EMAIL)%"
+  # default configuration for services in *this* file
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    bind:
+      $adminEmail: "%env(string:default:default_admin_email:ADMIN_EMAIL)%"
+      $robotEmail: "%env(string:default:default_robot_email:ROBOT_EMAIL)%"
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    App\:
-        resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Model/User/Entity,Model/Billing/Entity,Model/Work/Entity,Migrations,Tests,Kernel.php}'
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{DependencyInjection,Model/User/Entity,Model/Billing/Entity,Model/Work/Entity,Migrations,Tests,Kernel.php}'
 
-    App\Model\User\Entity\User\UserRepository: ~
-    App\Model\Billing\Entity\Account\MemberRepository: ~
-    App\Model\Billing\Entity\Account\SipAccountRepository: ~
-#    App\Model\Work\Entity\Members\Group\GroupRepository: ~
-#    App\Model\Work\Entity\Members\Member\MemberRepository: ~
-#    App\Model\Work\Entity\Projects\Role\RoleRepository: ~
-#    App\Model\Work\Entity\Projects\Project\ProjectRepository: ~
-#    App\Model\Work\Entity\Projects\Task\TaskRepository: ~
+  App\Model\User\Entity\User\UserRepository: ~
+  App\Model\Billing\Entity\Account\MemberRepository: ~
+  App\Model\Billing\Entity\Account\SipAccountRepository: ~
+  #    App\Model\Work\Entity\Members\Group\GroupRepository: ~
+  #    App\Model\Work\Entity\Members\Member\MemberRepository: ~
+  #    App\Model\Work\Entity\Projects\Role\RoleRepository: ~
+  #    App\Model\Work\Entity\Projects\Project\ProjectRepository: ~
+  #    App\Model\Work\Entity\Projects\Task\TaskRepository: ~
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/Controller'
-        tags: ['controller.service_arguments']
+  # controllers are imported separately to make sure services can be injected
+  # as action arguments even if you don't extend any base controller class
+  App\Controller\:
+    resource: '../src/Controller'
+    tags: ['controller.service_arguments']
 
-    App\Model\User\Service\ResetTokenizer:
-        factory: 'App\Container\Model\User\Service\ResetTokenizerFactory::create'
-        arguments: ['PT1H']
+  App\Model\User\Service\ResetTokenizer:
+    factory: 'App\Container\Model\User\Service\ResetTokenizerFactory::create'
+    arguments: ['PT1H']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
-    App\EntityListener\EntityListener:
-        tags:
-            - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Model\User\Entity\User\User'}
-            - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Model\Billing\Entity\Account\Member' }
+  # add more service definitions when explicit configuration is needed
+  # please note that last definitions always *replace* previous ones
+  App\EntityListener\CacheTagsInvalidator:
+    tags:
+      - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Model\User\Entity\User\User'}
+      - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Model\Billing\Entity\Account\Member' }
 
-    App\Controller\ExceptionListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, priority: 5000 }
+  App\Controller\ExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception, priority: 5000 }

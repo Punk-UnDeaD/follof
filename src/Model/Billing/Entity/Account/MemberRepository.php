@@ -24,4 +24,12 @@ class MemberRepository extends ServiceEntityRepository
 
         return $member;
     }
+
+    public function find($id, $lockMode = null, $lockVersion = null): ?Member
+    {
+        /** @var Member|null $member */
+        $member = parent::find($id, $lockMode, $lockVersion);
+
+        return $member;
+    }
 }

@@ -13,13 +13,11 @@ use Twig\Environment;
 class NewEmailConfirmTokenSender
 {
     private MailerInterface $mailer;
-    private Environment $twig;
     private string $robotEmail;
 
     public function __construct(MailerInterface $mailer, Environment $twig, string $robotEmail)
     {
         $this->mailer = $mailer;
-        $this->twig = $twig;
         $this->robotEmail = $robotEmail;
     }
 

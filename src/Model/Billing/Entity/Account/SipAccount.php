@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\Entity\Account;
 
+use App\Model\AggregateRoot;
+use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert;
 
@@ -11,8 +13,10 @@ use Webmozart\Assert\Assert;
  * @ORM\Entity
  * @ORM\Table(name="billing_sip_accounts")
  */
-class SipAccount
+class SipAccount implements AggregateRoot
 {
+    use EventsTrait;
+
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
 
@@ -69,6 +73,10 @@ class SipAccount
 
         $this->login = $login;
 
+        if ($this->isActive()) {
+            $this->recordEvent(new Event\MemberSipPoolUpdated($this->getMember()->getId()->getValue()));
+        }
+
         return $this;
     }
 
@@ -82,13 +90,9 @@ class SipAccount
         Assert::notEmpty($password, 'Can\'t set empty password.');
         $this->password = $password;
 
-        return $this;
-    }
-
-    public function activate(): self
-    {
-        Assert::false($this->isActive(), 'Sip account is already active.');
-        $this->status = self::STATUS_ACTIVE;
+        if ($this->isActive()) {
+            $this->recordEvent(new Event\MemberSipPoolUpdated($this->getMember()->getId()->getValue()));
+        }
 
         return $this;
     }
@@ -98,10 +102,25 @@ class SipAccount
         return self::STATUS_ACTIVE === $this->status;
     }
 
+    public function getMember(): ?Member
+    {
+        return $this->member;
+    }
+
+    public function activate(): self
+    {
+        Assert::false($this->isActive(), 'Sip account is already active.');
+        $this->status = self::STATUS_ACTIVE;
+        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getMember()->getId()->getValue()));
+
+        return $this;
+    }
+
     public function block(): self
     {
         Assert::false($this->isBlocked(), 'Sip account is already blocked.');
         $this->status = self::STATUS_BLOCKED;
+        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getMember()->getId()->getValue()));
 
         return $this;
     }
@@ -119,11 +138,6 @@ class SipAccount
     public function getStatus(): string
     {
         return $this->status;
-    }
-
-    public function getMember(): ?Member
-    {
-        return $this->member;
     }
 
     public function getId(): Id

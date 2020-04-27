@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\Entity\Account;
 
+use App\Model\AggregateRoot;
+use App\Model\EventsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,8 +17,9 @@ use Webmozart\Assert\Assert;
  * @ORM\Entity
  * @ORM\Table(name="billing_members")
  */
-class Member
+class Member implements AggregateRoot
 {
+    use EventsTrait;
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
 
@@ -148,6 +151,7 @@ class Member
     {
         Assert::false($this->isActive(), 'Already activated.');
         $this->status = static::STATUS_ACTIVE;
+        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -162,6 +166,7 @@ class Member
         Assert::true($this->isActive(), 'Already blocked.');
         Assert::false($this->role->isOwner(), 'Cannot block owner.');
         $this->status = static::STATUS_BLOCKED;
+        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
 
         return $this;
     }
