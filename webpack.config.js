@@ -60,10 +60,10 @@ Encore
     // })
 
     // enables Sass/SCSS support
-    .enableSassLoader()
-    if(Encore.isProduction()) {
-        Encore.addPlugin(new BrotliPlugin())
-    }
+    .enableSassLoader();
+if (Encore.isProduction()) {
+    Encore.addPlugin(new BrotliPlugin());
+}
 // uncomment if you use TypeScript
 //.enableTypeScriptLoader()
 
@@ -77,6 +77,5 @@ Encore
 // uncomment if you use API Platform Admin (composer req api-admin)
 //.enableReactPreset()
 //.addEntry('admin', './assets/js/admin.js')
-;
 
 module.exports = Encore.getWebpackConfig();
