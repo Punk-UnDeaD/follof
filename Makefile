@@ -4,8 +4,17 @@ test:
 	docker-compose exec php bin/phpunit
 
 prod-self-update:
-	docker-compose stop nginx
+	make pause
 	docker-compose exec php composer i -o --no-dev
 	docker-compose exec php bin/console doctrine:migrations:migrate -n
 	docker-compose up node
-	docker-compose up -d
+	make play
+pause:
+	touch .stopped
+	docker-compose stop nginx
+	docker-compose exec php bin/console messenger:stop-workers
+
+play:
+	if [ -f .stopped ]; then (rm .stopped) fi
+	docker-compose up -d nginx
+	docker-compose up -d php-workers
