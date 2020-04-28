@@ -1,5 +1,5 @@
-var Encore = require('@symfony/webpack-encore');
-
+const Encore = require('@symfony/webpack-encore');
+const BrotliPlugin = require('brotli-webpack-plugin');
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -61,7 +61,9 @@ Encore
 
     // enables Sass/SCSS support
     .enableSassLoader()
-
+    if(Encore.isProduction()) {
+        Encore.addPlugin(new BrotliPlugin())
+    }
 // uncomment if you use TypeScript
 //.enableTypeScriptLoader()
 
