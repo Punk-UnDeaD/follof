@@ -8,6 +8,21 @@ services:
       COLUMNS: 160 # Set 80 columns for docker exec -it.
     volumes:
       - ./:/var/www/html
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+
+  php-workers:
+    image: wodby/drupal-php:$PHP_TAG
+    container_name: "${PROJECT_NAME}_php_workers"
+    command: sh -c 'until [ -f .stopped ]; do console messenger:consume async --limit=3 -vv; done'
+    environment:
+      COLUMNS: 160 # Set 80 columns for docker exec -it.
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - php
 
   nginx:
     image: wodby/nginx:$NGINX_TAG
