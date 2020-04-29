@@ -6,7 +6,7 @@ namespace App\Event\Dispatcher\Message;
 
 class Message
 {
-    private $event;
+    private object $event;
 
     public function __construct(object $event)
     {

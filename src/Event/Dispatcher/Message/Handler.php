@@ -9,7 +9,7 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class Handler implements MessageHandlerInterface
 {
-    private $dispatcher;
+    private EventDispatcherInterface $dispatcher;
 
     public function __construct(EventDispatcherInterface $dispatcher)
     {
