@@ -42,7 +42,7 @@ class SipAccount implements AggregateRoot
      * @ORM\ManyToOne(targetEntity="App\Model\Billing\Entity\Account\Member", inversedBy="sipAccounts")
      * @ORM\JoinColumn(name="member_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    private Member $member;
+    private ?Member $member = null;
 
     public function __construct(Member $member, string $login, string $password)
     {

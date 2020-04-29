@@ -7,7 +7,6 @@ namespace App\Event\Dispatcher;
 use App\Event\Dispatcher\Message\Message;
 use App\Model\EventDispatcher;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 class MessengerEventDispatcher implements EventDispatcher
 {
