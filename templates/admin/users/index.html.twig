@@ -1,10 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base.html.twig' %}
 
 {% block title %}Users{% endblock %}
 
 {% block breadcrumbs %}
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+        <li class="breadcrumb-item">Admin</li>
         <li class="breadcrumb-item active">Users</li>
     </ol>
 {% endblock %}
@@ -12,7 +13,7 @@
 {% block body %}
 
     <div class="controls">
-        <a href="{{ path('users.create') }}" class="btn btn-success">Create User</a>
+        <a href="{{ path('admin.users.create') }}" class="btn btn-success">Create User</a>
     </div>
 
     <div class="card">
@@ -26,7 +27,7 @@
                 <div class="col-md-2">{{ form_widget(form.status) }}</div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary">Filter</button>
-                    <a href="{{ path('users') }}" class="btn btn-outline-secondary">Reset</a>
+                    <a href="{{ path('admin.users') }}" class="btn btn-outline-secondary">Reset</a>
                 </div>
             </div>
             {{ form_end(form) }}
@@ -49,7 +50,8 @@
             {% for user in pagination %}
                 <tr>
                     <td>{{ user.date|date('Y-m-d') }}</td>
-                    <td><a href="{{ path('users.show', {'id': user.id}) }}">{{ user.name }}</a></td>
+{#                    <td><a href="{{ path('users.show', {'id': user.id}) }}">{{ user.name }}</a></td>#}
+                    <td><a href="#">{{ user.name }}</a></td>
                     <td>{{ user.email }}</td>
                     <td>{{ user_role(user.role) }}</td>
                     <td>{{ user_status(user.status) }}</td>

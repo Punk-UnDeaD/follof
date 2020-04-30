@@ -12,7 +12,7 @@ class Role
     public const ADMIN = 'ROLE_ADMIN';
     public const MANAGER = 'ROLE_MANAGER';
 
-    private $name;
+    private string $name;
 
     public function __construct(string $name)
     {
@@ -21,6 +21,7 @@ class Role
             [
                 self::USER,
                 self::ADMIN,
+                self::MANAGER,
             ]
         );
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\SignUp\Confirm\ByToken;
 
-use App\Model\Billing\Service\TeamBillingIdGenerator;
 use App\Model\Billing\UseCase\CreateTeam;
 use App\Model\Flusher;
 use App\Model\User\Entity\User\UserRepository;
@@ -13,8 +12,6 @@ class Handler
 {
     private $users;
     private $flusher;
-
-    private TeamBillingIdGenerator $billingIdGenerator;
 
     private CreateTeam\Handler $teamHandler;
 

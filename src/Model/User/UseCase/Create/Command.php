@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\Create;
 
+use App\Model\User\Entity\User\Role;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Command
@@ -12,15 +13,17 @@ class Command
      * @Assert\NotBlank()
      * @Assert\Email()
      */
-    public $email;
+    public string $email = '';
     /**
      * @Assert\NotBlank()
      */
-    public $firstName;
+    public string $firstName = '';
     /**
      * @Assert\NotBlank()
      */
-    public $lastName;
+    public string $lastName = '';
 
-    public bool $is_notify = true;
+    public bool $isNotify = true;
+
+    public string $role = Role::USER;
 }

@@ -66,3 +66,6 @@ services:
       - ./:/var/www/html
     command: sh -c 'yarn install && npm run build'
     working_dir: /var/www/html
+
+#  opensmtpd:
+#    image: wodby/opensmtpd

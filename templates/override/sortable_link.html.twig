@@ -1,0 +1,10 @@
+<a{% for attr, value  in options %} {{ attr }}="{{ value }}"{% endfor %}>
+<span class="pull-right">
+        {% if sorted %}
+            <x-icon icon="sort-by-attributes{{ direction == 'desc'?'-alt' }}"></x-icon>
+        {% else %}
+            <x-icon icon="sort" style="color: #d2d6de;"></x-icon>
+        {% endif %}
+    </span>
+{{ title }}
+</a>
