@@ -35,7 +35,7 @@ class Team
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\User\Entity\User\User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id",  nullable=false)
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private User $user;
 

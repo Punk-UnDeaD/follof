@@ -16,11 +16,11 @@ use App\Model\User\Service\SignUpConfirmTokenSender;
 
 class Handler
 {
-    private $users;
-    private $hasher;
-    private $tokenizer;
-    private $sender;
-    private $flusher;
+    private UserRepository $users;
+    private PasswordHasher $hasher;
+    private SignUpConfirmTokenizer $tokenizer;
+    private SignUpConfirmTokenSender $sender;
+    private Flusher $flusher;
 
     public function __construct(
         UserRepository $users,
@@ -60,6 +60,6 @@ class Handler
 
         $this->sender->send($email, $token);
 
-        $this->flusher->flush();
+        $this->flusher->flush($user);
     }
 }

@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\SignUp\Confirm\ByToken;
 
-use App\Model\Billing\UseCase\CreateTeam;
 use App\Model\Flusher;
 use App\Model\User\Entity\User\UserRepository;
 
 class Handler
 {
-    private $users;
-    private $flusher;
+    private UserRepository $users;
+    private Flusher $flusher;
 
-    private CreateTeam\Handler $teamHandler;
-
-    public function __construct(UserRepository $users, Flusher $flusher, CreateTeam\Handler $teamHandler)
+    public function __construct(UserRepository $users, Flusher $flusher)
     {
         $this->users = $users;
         $this->flusher = $flusher;
-        $this->teamHandler = $teamHandler;
     }
 
     public function handle(Command $command): void
@@ -29,7 +25,6 @@ class Handler
         }
 
         $user->confirmSignUp();
-        ($this->teamHandler)(new CreateTeam\Command($user->getId()->getValue()));
 
         $this->flusher->flush();
     }

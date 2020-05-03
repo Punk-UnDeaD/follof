@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity\User;
 
+use App\Model\AggregateRoot;
+use App\Model\EventsTrait;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,8 +20,10 @@ use DomainException;
  *     @ORM\UniqueConstraint(columns={"reset_token_token"})
  * })
  */
-class User
+class User implements AggregateRoot
 {
+    use EventsTrait;
+
     public const STATUS_WAIT = 'wait';
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
@@ -82,6 +86,7 @@ class User
         $this->name = $name;
         $this->role = Role::user();
         $this->networks = new ArrayCollection();
+        $this->recordEvent(new Event\UserCreated($this->id->getValue()));
     }
 
     public static function create(Id $id, DateTimeImmutable $date, Name $name, Email $email, string $hash): self
@@ -111,16 +116,6 @@ class User
         return $user;
     }
 
-    public function confirmSignUp(): void
-    {
-        if (!$this->isWait()) {
-            throw new DomainException('User is already confirmed.');
-        }
-
-        $this->status = self::STATUS_ACTIVE;
-        $this->confirmToken = null;
-    }
-
     public static function signUpByNetwork(
         Id $id,
         DateTimeImmutable $date,
@@ -143,6 +138,21 @@ class User
             }
         }
         $this->networks->add(new Network($this, $network, $identity));
+    }
+
+    public function confirmSignUp(): void
+    {
+        if (!$this->isWait()) {
+            throw new DomainException('User is already confirmed.');
+        }
+
+        $this->status = self::STATUS_ACTIVE;
+        $this->confirmToken = null;
+    }
+
+    public function isWait(): bool
+    {
+        return self::STATUS_WAIT === $this->status;
     }
 
     public function detachNetwork(string $network, string $identity): void
@@ -172,6 +182,11 @@ class User
             throw new DomainException('Resetting is already requested.');
         }
         $this->resetToken = $token;
+    }
+
+    public function isActive(): bool
+    {
+        return self::STATUS_ACTIVE === $this->status;
     }
 
     public function passwordReset(DateTimeImmutable $date, string $hash): void
@@ -252,16 +267,6 @@ class User
         $this->status = self::STATUS_BLOCKED;
 
         return $this;
-    }
-
-    public function isWait(): bool
-    {
-        return self::STATUS_WAIT === $this->status;
-    }
-
-    public function isActive(): bool
-    {
-        return self::STATUS_ACTIVE === $this->status;
     }
 
     public function isBlocked(): bool

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Model\User\UseCase\Create;
 
-use App\Model\Billing\UseCase\CreateTeam;
 use App\Model\Flusher;
 use App\Model\User\Entity\User\Email;
 use App\Model\User\Entity\User\Id;
@@ -17,25 +16,21 @@ use App\Model\User\Service\PasswordHasher;
 
 class Handler
 {
-    private $users;
-    private $hasher;
-    private $generator;
-    private $flusher;
-
-    private CreateTeam\Handler $teamHandler;
+    private UserRepository $users;
+    private PasswordHasher $hasher;
+    private PasswordGenerator $generator;
+    private Flusher $flusher;
 
     public function __construct(
         UserRepository $users,
         PasswordHasher $hasher,
         PasswordGenerator $generator,
-        Flusher $flusher,
-        CreateTeam\Handler $teamHandler
+        Flusher $flusher
     ) {
         $this->users = $users;
         $this->hasher = $hasher;
         $this->generator = $generator;
         $this->flusher = $flusher;
-        $this->teamHandler = $teamHandler;
     }
 
     public function handle(Command $command): void
@@ -60,10 +55,7 @@ class Handler
 
         if (Role::USER !== $command->role) {
             $user->changeRole(new Role($command->role));
-        } else {
-            ($this->teamHandler)(new CreateTeam\Command($user->getId()->getValue()));
         }
-
-        $this->flusher->flush();
+        $this->flusher->flush($user);
     }
 }
