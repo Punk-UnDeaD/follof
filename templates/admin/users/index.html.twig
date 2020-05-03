@@ -49,12 +49,29 @@
             <tbody>
             {% for user in pagination %}
                 <tr>
-                    <td>{{ user.date|date('Y-m-d') }}</td>
+                    <td>{{ user.date|date('Y-m-d') }}
 {#                    <td><a href="{{ path('users.show', {'id': user.id}) }}">{{ user.name }}</a></td>#}
-                    <td><a href="#">{{ user.name }}</a></td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user_role(user.role) }}</td>
-                    <td>{{ user_status(user.status) }}</td>
+                    <td><a href="#">{{ user.name }}</a>
+                    <td>{{ user.email }}
+                    <td>{{ user_role(user.role) }}
+                    <td>
+                        {% if user.status in ['active', 'blocked'] %}
+
+
+                        <label class="switch switch-label switch-pill switch-success">
+                            <input type="checkbox" class="switch-input" {{ user.status=='active'? "checked" }}
+{#                                    {{ member.role.isOwner() ? "disabled" }}#}
+                                   is="x-auto-toggler"
+                                   data-on="{{ path('admin.users.user.activate', {user: user.id }) }}"
+                                   data-off="{{ path('admin.users.user.block', {user: user.id }) }}"
+                                   data-csrf="{{ csrf_token("admin.users.user.toggleStatus") }}"
+                            >
+                            <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                        </label>
+                            {% else %}
+                    {{ user_status(user.status) }}
+
+                    {% endif %}
                 </tr>
             {% endfor %}
             </tbody>

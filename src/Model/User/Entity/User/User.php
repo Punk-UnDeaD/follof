@@ -255,6 +255,7 @@ class User implements AggregateRoot
             throw new DomainException('User is already active.');
         }
         $this->status = self::STATUS_ACTIVE;
+        $this->recordEvent(new Event\UserActivated($this->id->getValue()));
 
         return $this;
     }
@@ -265,6 +266,7 @@ class User implements AggregateRoot
             throw new DomainException('User is already blocked.');
         }
         $this->status = self::STATUS_BLOCKED;
+        $this->recordEvent(new Event\UserBlocked($this->id->getValue()));
 
         return $this;
     }

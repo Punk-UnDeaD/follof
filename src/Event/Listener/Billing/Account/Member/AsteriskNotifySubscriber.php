@@ -32,7 +32,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
     {
         $member = $this->repository->find($event->memberId);
         $accounts = [];
-        if ($member && $member->isActive()) {
+        if ($member && $member->isActive() && $member->getTeam()->getUser()->isActive()) {
             foreach ($member->getSipAccounts() as $account) {
                 if ($account->isActive()) {
                     $accounts[] = [

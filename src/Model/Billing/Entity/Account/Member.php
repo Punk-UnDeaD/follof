@@ -175,6 +175,7 @@ class Member implements AggregateRoot
     {
         Assert::null($sipAccount->getMember(), 'Already added.');
         $this->sipAccounts->add($sipAccount);
+        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
 
         return $this;
     }

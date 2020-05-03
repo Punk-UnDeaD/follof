@@ -36,7 +36,6 @@ class SipAccountController extends AbstractController
     }
 
     /**
-     * @param UpdatePassword\Handler $handler
      * @Route("/updateLogin", name="billing.team.member.sipAccount.updateLogin", format="json")
      * @RequiresCsrf()
      */

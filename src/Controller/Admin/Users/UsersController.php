@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin\Users;
 
+use App\Annotation\Guid;
+use App\Annotation\RequiresCsrf;
 use App\Controller\ErrorHandler;
+use App\Model\User\UseCase\Activate;
+use App\Model\User\UseCase\Block;
 use App\Model\User\UseCase\Create;
 use App\ReadModel\User\Filter;
 use App\ReadModel\User\UserFetcher;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,5 +88,27 @@ class UsersController extends AbstractController
                 'form' => $form->createView(),
             ]
         );
+    }
+
+    /**
+     * @Route("/{user}/activate", name=".user.activate", requirements={"user"=Guid::PATTERN})
+     * @RequiresCsrf(tokenId="admin.users.user.toggleStatus")
+     */
+    public function activate(string $user, Activate\Handler $handler): JsonResponse
+    {
+        $handler->handle(new Activate\Command($user));
+
+        return $this->json(['status' => 'ok']);
+    }
+
+    /**
+     * @Route("/{user}/block", name=".user.block", requirements={"user"=Guid::PATTERN})
+     * @RequiresCsrf(tokenId="admin.users.user.toggleStatus")
+     */
+    public function block(string $user, Block\Handler $handler): JsonResponse
+    {
+        $handler->handle(new Block\Command($user));
+
+        return $this->json(['status' => 'ok']);
     }
 }

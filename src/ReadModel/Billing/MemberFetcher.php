@@ -18,15 +18,11 @@ class MemberFetcher
 {
     private Connection $connection;
 
-    private EntityManagerInterface $em;
-
     private TagAwareCacheInterface $cachePool;
 
     public function __construct(Connection $connection, EntityManagerInterface $em, TagAwareCacheInterface $myCachePool)
     {
         $this->connection = $connection;
-        $this->em = $em;
-        $this->repository = $em->getRepository(Member::class);
         $this->cachePool = $myCachePool;
     }
 
