@@ -36,7 +36,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
             foreach ($member->getSipAccounts() as $account) {
                 if ($account->isActive()) {
                     $accounts[] = [
-                        'login' => $account->getLogin().'@'.$member->getTeam()->getBillingId(),
+                        'login' => $account->getLogin().'/'.$member->getTeam()->getBillingId(),
                         'password' => $account->getPassword(),
                     ];
                 }

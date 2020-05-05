@@ -11,14 +11,12 @@ use Symfony\Component\Mailer\MailerInterface;
 class AsteriskNotificator
 {
     private MailerInterface $mailer;
-    private string $robotEmail;
     private string $asteriskApiUrl;
     private Client $client;
 
-    public function __construct(MailerInterface $mailer, string $robotEmail, string $asteriskApiUrl, Client $client)
+    public function __construct(MailerInterface $mailer, string $asteriskApiUrl, Client $client)
     {
         $this->mailer = $mailer;
-        $this->robotEmail = $robotEmail;
         $this->asteriskApiUrl = $asteriskApiUrl;
         $this->client = $client;
     }
