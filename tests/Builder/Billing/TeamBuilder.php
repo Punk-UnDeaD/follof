@@ -2,9 +2,11 @@
 
 namespace App\Tests\Builder\Billing;
 
+use App\Model\Billing\Entity\Account\InternalNumber;
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\Entity\Account\Team;
+use App\Model\Billing\Entity\Account\VoiceMenu;
 use App\Model\User\Entity\User\User;
 use App\Tests\Builder\User\UserBuilder;
 
@@ -20,6 +22,8 @@ class TeamBuilder
 
     private SipAccount $sipAccount;
 
+    private VoiceMenu $voiceMenu;
+
     public function __construct()
     {
         $this->user = (new UserBuilder())->viaEmail()->build()->activate();
@@ -27,6 +31,7 @@ class TeamBuilder
         $this->owner = $this->team->getOwner();
         $this->member = new Member($this->team);
         $this->sipAccount = new SipAccount($this->member, '~~', '~~');
+        $this->voiceMenu = new VoiceMenu($this->team, new InternalNumber('1'), '~/file.mp3');
     }
 
     public function getAll(): array
@@ -37,6 +42,7 @@ class TeamBuilder
             'team' => $this->team,
             'member' => $this->member,
             'sipAccount' => $this->sipAccount,
+            'voiceMenu' => $this->voiceMenu,
         ];
     }
 
@@ -63,5 +69,10 @@ class TeamBuilder
     public function getSipAccount(): SipAccount
     {
         return $this->sipAccount;
+    }
+
+    public function getVoiceMenu(): VoiceMenu
+    {
+        return $this->voiceMenu;
     }
 }

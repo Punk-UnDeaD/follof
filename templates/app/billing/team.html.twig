@@ -11,22 +11,23 @@
             <th scope="col">Status
         <tbody>
         {% for member in members %}
-        <tr>
-            <th scope="row"><a href="{{ path('billing.team.member.show', {member:member.id  }) }}">{{ member.id }}</a>
-            <td>{{ member.login }}
-            <td>{{ member.role.name }}
-
-            <td><label class="switch switch-label switch-pill switch-success">
-                    <input type="checkbox" class="switch-input" {{ member.active?"checked" }}
-                            {{ member.role.isOwner() ? "disabled" }}
-                           is="x-auto-toggler"
-                           data-on="{{ path('billing.team.member.activate', {member: member.id }) }}"
-                           data-off="{{ path('billing.team.member.block', {member: member.id }) }}"
-                           data-csrf="{{ csrf_token("billing.team.member.toggleStatus") }}"
-                    >
-                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                </label>
-                {% endfor %}
+            <tr>
+                <th scope="row"><a
+                            href="{{ path('billing.team.member.show', {member:member.id  }) }}">{{ member.id }}</a>
+                <td>{{ member.login }}
+                <td>{{ member.role.name }}
+                <td><label class="switch switch-label switch-pill switch-success">
+                        <input type="checkbox" class="switch-input" {{ member.active?"checked" }}
+                                {{ member.role.isOwner() ? "disabled" }}
+                               is="x-auto-toggler"
+                               data-on="{{ path('billing.team.member.activate', {member: member.id }) }}"
+                               data-off="{{ path('billing.team.member.block', {member: member.id }) }}"
+                               data-csrf="{{ csrf_token("billing.team.member.toggleStatus") }}"
+                        >
+                        <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+            </tr>
+        {% endfor %}
     </table>
     <div class="actions">
         <form action="{{ path('billing.team.addMember') }}" method="POST">
@@ -34,6 +35,33 @@
             <button class="btn btn-primary" name="op" value="add">Add</button>
         </form>
     </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#
+            <th scope="col">Internal number
+            <th scope="col">File
+            <th scope="col">Status
+        <tbody>
+
+        {% for vm in voiceMenus %}
+            <tr>
+                <th class="row">{{ vm.id }}
+                <td>{{ vm.internalNumber }}
+                <td>{{ vm.file }}
+                <td><label class="switch switch-label switch-pill switch-success">
+                        <input type="checkbox" class="switch-input" {{ vm.active?"checked" }}
+                               is="x-auto-toggler"
+                               data-on="{{ path('billing.team.voiceMenu.activate', {voiceMenu: vm.id }) }}"
+                               data-off="{{ path('billing.team.voiceMenu.block', {voiceMenu: vm.id }) }}"
+                               data-csrf="{{ csrf_token("billing.team.voiceMenu.toggleStatus") }}"
+                        ><span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
 
 {% block javascripts %}

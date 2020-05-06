@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/profile/team/{member}", requirements={"member"=Guid::PATTERN})
+ * @Route("/profile/team/member/{member}", requirements={"member"=Guid::PATTERN})
  * @RequiresSameTeamMember
  */
 class MemberController extends AbstractController

@@ -74,11 +74,12 @@ class Member implements AggregateRoot
         $this->id = Id::next();
         if ($team->getMembers()->count()) {
             $this->role = Role::member();
+            $this->status = static::STATUS_BLOCKED;
         } else {
             $this->role = Role::owner();
+            $this->status = static::STATUS_ACTIVE;
         }
         $this->team = $team;
-        $this->status = static::STATUS_ACTIVE;
         $team->addMember($this);
         $this->sipAccounts = new ArrayCollection();
     }

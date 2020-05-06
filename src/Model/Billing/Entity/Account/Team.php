@@ -46,6 +46,12 @@ class Team
     private Collection $members;
 
     /**
+     * @var VoiceMenu[]|Collection
+     * @ORM\OneToMany(targetEntity="VoiceMenu", mappedBy="team", orphanRemoval=true, cascade={"all"})
+     */
+    private Collection $voiceMenus;
+
+    /**
      * @ORM\Embedded(class="Ballance")
      */
     private Ballance $ballance;
@@ -59,6 +65,7 @@ class Team
         Assert::true($user->isActive(), 'Cannot create. User not active.');
         Assert::notEmpty($billingId, 'Cannot create. Empty $billingId.');
         $this->members = new ArrayCollection();
+        $this->voiceMenus = new ArrayCollection();
         $this->owner = new Member($this);
         $this->id = Id::next();
         $this->ballance = new Ballance();
@@ -116,5 +123,32 @@ class Team
     public function getUser(): User
     {
         return $this->user;
+    }
+
+    public function addVoiceMenu(VoiceMenu $voiceMenu): self
+    {
+        Assert::null($voiceMenu->getTeam(), 'Already added.');
+        $this->voiceMenus->add($voiceMenu);
+
+        return $this;
+    }
+
+    public function checkInternalNumberFor(InternalNumber $number, HasNumber $entity): bool
+    {
+        foreach ($this->getVoiceMenus() as $voiceMenu) {
+            if ($voiceMenu->getInternalNumber()->isSame($number)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @return VoiceMenu[]
+     */
+    public function getVoiceMenus(): Collection
+    {
+        return $this->voiceMenus;
     }
 }

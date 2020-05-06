@@ -14,23 +14,23 @@ class StatusTest extends TestCase
         /** @var Member $owner */
         ['owner' => $owner, 'member' => $member] = (new TeamBuilder())->getAll();
         $this->assertTrue($owner->isActive());
-        $this->assertTrue($member->isActive());
-        $member->block();
         $this->assertFalse($member->isActive());
         $member->activate();
         $this->assertTrue($member->isActive());
+        $member->block();
+        $this->assertFalse($member->isActive());
     }
 
     public function testTwiceBlock()
     {
         $this->expectExceptionMessage('Already blocked.');
-        (new TeamBuilder())->getMember()->block()->block();
+        (new TeamBuilder())->getMember()->block();
     }
 
     public function testTwiceActivate()
     {
         $this->expectExceptionMessage('Already activated.');
-        (new TeamBuilder())->getMember()->activate();
+        (new TeamBuilder())->getMember()->activate()->activate();
     }
 
     public function testOwnerBlock()

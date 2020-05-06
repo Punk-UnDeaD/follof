@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Model\Billing\Entity\Account\InternalNumber;
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\Entity\Account\Team;
+use App\Model\Billing\Entity\Account\VoiceMenu;
 use App\Model\User\Entity\User\User;
 use App\Model\User\Service\PasswordHasher;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -32,6 +34,10 @@ class BillingFixture extends Fixture implements DependentFixtureInterface
         $manager->persist($team);
         new SipAccount($member, 'putin', 'kadirov');
 
+        $voiceMenu = new VoiceMenu($team, new InternalNumber('123-0'), 'menu.mp3');
+        $voiceMenu->addPoint('1', new InternalNumber('123-1'));
+        $voiceMenu->addPoint('11', new InternalNumber('123-11'));
+        $voiceMenu->addPoint('2', new InternalNumber('123-12'));
         $manager->flush();
     }
 

@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/profile/team/{member}/{sipAccount}")
+ * @Route("/profile/team/member/{member}/{sipAccount}")
  * @RequiresSameTeamMember
  * @RequiresSameMemberSipAccount
  */

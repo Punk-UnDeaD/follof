@@ -7,9 +7,12 @@ namespace App\Controller\BillingProfile;
 use App\Annotation\RequiresCsrf;
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\MemberRepository;
+use App\Model\Billing\Entity\Account\VoiceMenu;
 use App\Model\Billing\UseCase\AddMember;
 use App\ReadModel\User\UserFetcher;
 use App\Security\MemberIdentity;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,11 +25,13 @@ class TeamController extends AbstractController
     private MemberRepository $members;
 
     private UserFetcher $users;
+    private ObjectRepository $voiceMenus;
 
-    public function __construct(UserFetcher $users, MemberRepository $em)
+    public function __construct(UserFetcher $users, MemberRepository $memberRepository, EntityManagerInterface $em)
     {
         $this->users = $users;
-        $this->members = $em;
+        $this->members = $memberRepository;
+        $this->voiceMenus = $em->getRepository(VoiceMenu::class);
     }
 
     /**
@@ -40,10 +45,12 @@ class TeamController extends AbstractController
         $member = $this->members->find($member_id);
         $team = $member->getTeam();
         $members = $this->members->findBy(['team' => $team], ['id' => 'ASC']);
+        /** @var VoiceMenu[] $voiceMenus */
+        $voiceMenus = $this->voiceMenus->findBy(['team' => $team], ['id' => 'ASC']);
 
         return $this->render(
             'app/billing/team.html.twig',
-            ['member' => $member, 'team' => $team, 'members' => $members]
+            ['member' => $member, 'team' => $team, 'members' => $members, 'voiceMenus' => $voiceMenus]
         );
     }
 
