@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\Entity\Account;
 
+use App\Model\AggregateRoot;
+use App\Model\EventsTrait;
 use App\Model\User\Entity\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,8 +16,9 @@ use Webmozart\Assert\Assert;
  * @ORM\Entity
  * @ORM\Table(name="billing_team")
  */
-class Team
+class Team implements AggregateRoot
 {
+    use EventsTrait;
     /**
      * @ORM\Column(type="billing_guid")
      * @ORM\Id

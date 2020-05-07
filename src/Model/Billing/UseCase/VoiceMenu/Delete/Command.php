@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\UseCase\VoiceMenu\Block;
+namespace App\Model\Billing\UseCase\VoiceMenu\Delete;
 
 use App\Model\Billing\UseCase\VoiceMenu\AbstractCommand;
 

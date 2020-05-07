@@ -4,26 +4,15 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\SipAccount\UpdatePassword;
 
-use App\Model\Billing\Entity\Account\SipAccountRepository;
-use App\Model\Flusher;
+use App\Model\Billing\Entity\Account\SipAccount;
+use App\Model\Billing\UseCase\SipAccount\BaseHandlerTrait;
 
 class Handler
 {
-    private Flusher $flusher;
-    private SipAccountRepository $repository;
+    use BaseHandlerTrait;
 
-    public function __construct(SipAccountRepository $repository, Flusher $flusher)
+    protected function handle(SipAccount $sipAccount, Command $command): void
     {
-        $this->repository = $repository;
-        $this->flusher = $flusher;
-    }
-
-    public function __invoke(Command $command): void
-    {
-        $sipAccount = $this->repository->get($command->sipAccount_id);
         $sipAccount->setPassword($command->password);
-        $this->flusher->flush($sipAccount);
-
-        return;
     }
 }

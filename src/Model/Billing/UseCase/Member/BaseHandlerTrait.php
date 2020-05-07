@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\UseCase\ActivateMember;
+namespace App\Model\Billing\UseCase\Member;
 
+use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\MemberRepository;
 use App\Model\Flusher;
 
-class Handler
+/**
+ * Class AbstractHandler.
+ */
+trait BaseHandlerTrait
 {
     private Flusher $flusher;
     private MemberRepository $repository;
@@ -18,12 +22,12 @@ class Handler
         $this->flusher = $flusher;
     }
 
-    public function __invoke(Command $command): void
+    public function __invoke($command): void
     {
-        $member = $this->repository->get($command->member_id);
-        $member->activate();
+        $member = $this->repository->get($command->id);
+        $this->handle($member, $command);
         $this->flusher->flush($member);
-
-        return;
     }
+
+    abstract public function handle(Member $member, $command): void;
 }

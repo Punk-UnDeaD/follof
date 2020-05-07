@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Annotation;
 
 use App\Model\Billing\Entity\Account\VoiceMenu;
-use App\ReadModel\Billing\MemberFetcher;
 use App\Security\MemberIdentity;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\EntityManagerInterface;

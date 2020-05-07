@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\UseCase\CreateTeam;
+namespace App\Model\Billing\UseCase\Member;
 
-class Command
+trait BaseCommandTrait
 {
+    /**
+     * @Assert\NotBlank()
+     */
     public string $id;
 
     public function __construct(string $id)

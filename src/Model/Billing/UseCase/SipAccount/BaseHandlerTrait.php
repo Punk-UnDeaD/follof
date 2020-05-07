@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\UseCase\BlockSipAccount;
+namespace App\Model\Billing\UseCase\SipAccount;
 
+use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\Entity\Account\SipAccountRepository;
 use App\Model\Flusher;
 
-class Handler
+trait BaseHandlerTrait
 {
     private Flusher $flusher;
     private SipAccountRepository $repository;
@@ -18,12 +19,12 @@ class Handler
         $this->flusher = $flusher;
     }
 
-    public function __invoke(Command $command): void
+    public function __invoke($command): void
     {
-        $sipAccount = $this->repository->get($command->sipAccount_id);
-        $sipAccount->block();
+        $sipAccount = $this->repository->get($command->id);
+        $this->handle($sipAccount, $command);
         $this->flusher->flush($sipAccount);
-
-        return;
     }
+
+    abstract public function handle(SipAccount $sipAccount, $command): void;
 }

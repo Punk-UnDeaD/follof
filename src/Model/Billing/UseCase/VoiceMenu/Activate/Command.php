@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\VoiceMenu\Activate;
 
-class Command
-{
-    public string $id;
+use App\Model\Billing\UseCase\VoiceMenu\AbstractCommand;
 
-    public function __construct(string $id)
-    {
-        $this->id = $id;
-    }
+class Command extends AbstractCommand
+{
 }

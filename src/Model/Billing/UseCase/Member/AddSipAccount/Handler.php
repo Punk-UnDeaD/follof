@@ -2,17 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\UseCase\AddSipAccount;
+namespace App\Model\Billing\UseCase\Member\AddSipAccount;
 
+use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\MemberRepository;
 use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\Service\SipLoginGenerator;
+use App\Model\Billing\UseCase\Member\BaseHandlerTrait;
 use App\Model\Flusher;
 use App\Model\User\Service\HumanStrongPasswordGenerator;
 
 class Handler
 {
-    private Flusher $flusher;
+    use BaseHandlerTrait{
+        __construct as private baseConstruct;
+    }
 
     private SipLoginGenerator $loginGenerator;
 
@@ -24,20 +28,17 @@ class Handler
         SipLoginGenerator $loginGenerator,
         HumanStrongPasswordGenerator $passwordGenerator
     ) {
-        $this->repository = $repository;
-        $this->flusher = $flusher;
+        $this->baseConstruct($repository, $flusher);
         $this->loginGenerator = $loginGenerator;
         $this->passwordGenerator = $passwordGenerator;
     }
 
-    public function __invoke(Command $command): void
+    protected function handle(Member $member): void
     {
-        $member = $this->repository->get($command->member_id);
         new SipAccount(
             $member,
             $this->loginGenerator->generate($member),
             $this->passwordGenerator->generate()
         );
-        $this->flusher->flush();
     }
 }

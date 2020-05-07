@@ -35,7 +35,7 @@ class Handler
 
     public function __invoke(Command $command)
     {
-        $user = $this->users->get(new Id($command->userId));
+        $user = $this->users->get(new Id($command->id));
         $this->em->persist(new Team($user, $this->billingIdGenerator->generate()));
 
         $this->flusher->flush();

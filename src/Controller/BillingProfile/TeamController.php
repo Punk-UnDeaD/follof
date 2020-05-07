@@ -8,7 +8,7 @@ use App\Annotation\RequiresCsrf;
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\MemberRepository;
 use App\Model\Billing\Entity\Account\VoiceMenu;
-use App\Model\Billing\UseCase\AddMember;
+use App\Model\Billing\UseCase\Team\AddMember;
 use App\ReadModel\User\UserFetcher;
 use App\Security\MemberIdentity;
 use Doctrine\ORM\EntityManagerInterface;
@@ -55,7 +55,7 @@ class TeamController extends AbstractController
     }
 
     /**
-     * @Route("/add", name="billing.team.addMember", methods={"POST"})
+     * @Route("/addMember", name="billing.team.addMember", methods={"POST"})
      * @RequiresCsrf(tokenId="b.t.a")
      */
     public function addMember(AddMember\Handler $handler): Response
@@ -64,6 +64,15 @@ class TeamController extends AbstractController
         $member = $this->getUser();
         $handler(new AddMember\Command($member->getTeamId()));
 
+        return $this->redirectToRoute('billing.team');
+    }
+
+    /**
+     * @Route("/addVoiceMenu", name="billing.team.addVoiceMenu")
+     * @RequiresCsrf(tokenId="b.t.a.v")
+     */
+    public function addVoiceMenu(): Response
+    {
         return $this->redirectToRoute('billing.team');
     }
 }

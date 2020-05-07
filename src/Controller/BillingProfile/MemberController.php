@@ -8,10 +8,10 @@ use App\Annotation\Guid;
 use App\Annotation\RequiresCsrf;
 use App\Annotation\RequiresSameTeamMember;
 use App\Model\Billing\Entity\Account\MemberRepository;
-use App\Model\Billing\UseCase\ActivateMember;
-use App\Model\Billing\UseCase\AddSipAccount;
-use App\Model\Billing\UseCase\BlockMember;
-use App\Model\Billing\UseCase\UpdateMemberCredentials;
+use App\Model\Billing\UseCase\Member\Activate;
+use App\Model\Billing\UseCase\Member\AddSipAccount;
+use App\Model\Billing\UseCase\Member\Block;
+use App\Model\Billing\UseCase\Member\UpdateCredentials;
 use Doctrine\ORM\EntityNotFoundException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,9 +50,9 @@ class MemberController extends AbstractController
      * @Route("/block", name="billing.team.member.block", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.toggleStatus")
      */
-    public function block(string $member, BlockMember\Handler $handler): JsonResponse
+    public function block(string $member, Block\Handler $handler): JsonResponse
     {
-        $handler(new BlockMember\Command($member));
+        $handler(new Block\Command($member));
 
         return $this->json(['status' => 'ok']);
     }
@@ -61,9 +61,9 @@ class MemberController extends AbstractController
      * @Route("/activate", name="billing.team.member.activate", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.toggleStatus")
      */
-    public function activate(string $member, ActivateMember\Handler $handler): JsonResponse
+    public function activate(string $member, Activate\Handler $handler): JsonResponse
     {
-        $handler(new ActivateMember\Command($member));
+        $handler(new Activate\Command($member));
 
         return $this->json(['status' => 'ok']);
     }
@@ -87,13 +87,13 @@ class MemberController extends AbstractController
      */
     public function updateCredentials(
         string $member,
-        UpdateMemberCredentials\Handler $handler,
+        UpdateCredentials\Handler $handler,
         Request $request
     ): RedirectResponse {
         $login = $request->get('login');
         $password = $request->get('password');
         try {
-            $handler(new UpdateMemberCredentials\Command($member, $login, $password));
+            $handler(new UpdateCredentials\Command($member, $login, $password));
         } catch (Exception $e) {
             $this->addFlash('error', $e->getMessage());
         }

@@ -7,8 +7,8 @@ namespace App\Controller\BillingProfile;
 use App\Annotation\RequiresCsrf;
 use App\Annotation\RequiresSameMemberSipAccount;
 use App\Annotation\RequiresSameTeamMember;
-use App\Model\Billing\UseCase\ActivateSipAccount;
-use App\Model\Billing\UseCase\BlockSipAccount;
+use App\Model\Billing\UseCase\SipAccount\Activate;
+use App\Model\Billing\UseCase\SipAccount\Block;
 use App\Model\Billing\UseCase\SipAccount\UpdateLogin;
 use App\Model\Billing\UseCase\SipAccount\UpdatePassword;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,9 +51,9 @@ class SipAccountController extends AbstractController
      * @Route("/block", name="billing.team.member.sipAccount.block", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.sipAccount.toggleStatus")
      */
-    public function block(string $sipAccount, BlockSipAccount\Handler $handler): JsonResponse
+    public function block(string $sipAccount, Block\Handler $handler): JsonResponse
     {
-        $handler(new BlockSipAccount\Command($sipAccount));
+        $handler(new Block\Command($sipAccount));
 
         return $this->json(['status' => 'ok']);
     }
@@ -62,9 +62,9 @@ class SipAccountController extends AbstractController
      * @Route("/activate", name="billing.team.member.sipAccount.activate", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.sipAccount.toggleStatus")
      */
-    public function activate(string $sipAccount, ActivateSipAccount\Handler $handler): JsonResponse
+    public function activate(string $sipAccount, Activate\Handler $handler): JsonResponse
     {
-        $handler(new ActivateSipAccount\Command($sipAccount));
+        $handler(new Activate\Command($sipAccount));
 
         return $this->json(['status' => 'ok']);
     }

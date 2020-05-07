@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\SipAccount\UpdatePassword;
 
+use App\Model\Billing\UseCase\SipAccount\BaseCommandTrait;
+
 class Command
 {
-    /**
-     * @Assert\NotBlank()
-     */
-    public string $sipAccount_id;
+    use BaseCommandTrait;
+
     public string $password;
 
-    public function __construct(string $sipAccount_id, string $password)
+    public function __construct(string $id, string $password)
     {
-        $this->sipAccount_id = $sipAccount_id;
+        $this->id = $id;
         $this->password = $password;
     }
 }
