@@ -174,6 +174,6 @@ class VoiceMenuController extends AbstractController
             throw $e;
         }
 
-        return $this->json(['status' => 'ok', 'reload'=> true]);
+        return $this->json(['status' => 'ok', 'reload' => true]);
     }
 }
