@@ -43,25 +43,29 @@
             <th scope="col">Internal number
             <th scope="col">File
             <th scope="col">Status
+            <th scope="col">
         <tbody>
-
         {% for vm in voiceMenus %}
             <tr>
-                <th class="row">{{ vm.id }}
+                <th scope="row"><a href="{{ path('billing.team.voiceMenu', {voiceMenu: vm.id  }) }}">{{ vm.label?:vm.id }}</a>
                 <td>{{ vm.internalNumber }}
                 <td>{{ vm.file }}
                 <td><label class="switch switch-label switch-pill switch-success">
                         <input type="checkbox" class="switch-input" {{ vm.active?"checked" }}
                                is="x-auto-toggler"
+                                {{ vm.activated ?: "disabled" }}
                                data-on="{{ path('billing.team.voiceMenu.activate', {voiceMenu: vm.id }) }}"
                                data-off="{{ path('billing.team.voiceMenu.block', {voiceMenu: vm.id }) }}"
                                data-csrf="{{ csrf_token("billing.team.voiceMenu.toggleStatus") }}"
                         ><span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
                     </label>
-
+                <td><a href="{{ path('billing.team.voiceMenu.delete', {_csrf_token: csrf_token('billing.team.voiceMenu.delete'), 'voiceMenu': vm.id }) }}" class="btn btn-danger btn-sm">Delete</a>
             </tr>
         {% endfor %}
     </table>
+    <div class="controls">
+        <a href="{{ path('billing.team.addVoiceMenu') }}" class="btn btn-success">Add voice menu</a>
+    </div>
 {% endblock %}
 
 {% block javascripts %}

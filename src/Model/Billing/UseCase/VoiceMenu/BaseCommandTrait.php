@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\VoiceMenu;
 
-abstract class AbstractCommand implements AbstractCommandInterface
+use Symfony\Component\Validator\Constraints as Assert;
+
+trait BaseCommandTrait
 {
     /**
      * @Assert\NotBlank()

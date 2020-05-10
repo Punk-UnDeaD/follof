@@ -19,44 +19,29 @@ class VoiceMenuTest extends TestCase
     public function test()
     {
         $team = (new TeamBuilder())->getTeam();
-        $voiceMenu = new VoiceMenu($team, new InternalNumber(self::NUMBER_ALPHA), self::FILE_ALPHA);
+        $voiceMenu = new VoiceMenu($team);
         $this->assertEquals($team, $voiceMenu->getTeam());
-        $this->assertEquals(self::NUMBER_ALPHA, $voiceMenu->getInternalNumber()->getNumber());
-        $this->assertEquals(self::FILE_ALPHA, $voiceMenu->getFile());
+        $this->assertNull($voiceMenu->getInternalNumber());
+        $this->assertNull($voiceMenu->getFile());
         $voiceMenu->setInternalNumber(new InternalNumber(self::NUMBER_ALPHA));
         $this->assertEquals(self::NUMBER_ALPHA, $voiceMenu->getInternalNumber()->getNumber());
         $voiceMenu->setInternalNumber(new InternalNumber(self::NUMBER_BRAVO));
         $this->assertEquals(self::NUMBER_BRAVO, $voiceMenu->getInternalNumber()->getNumber());
+        $voiceMenu->setFile(self::FILE_ALPHA);
+        $this->assertEquals(self::FILE_ALPHA, $voiceMenu->getFile());
         $voiceMenu->setFile(self::FILE_BRAVO);
         $this->assertEquals(self::FILE_BRAVO, $voiceMenu->getFile());
         $this->assertEquals([], $voiceMenu->getPoints());
         $this->assertFalse($voiceMenu->isActive());
-
+        $this->assertTrue($voiceMenu->isActivated());
+        $this->assertNull($voiceMenu->getLabel());
     }
 
     public function testAdding()
     {
         $team = (new TeamBuilder())->getTeam();
-        $voiceMenu = new VoiceMenu($team, new InternalNumber(self::NUMBER_ALPHA), self::FILE_ALPHA);
+        $voiceMenu = new VoiceMenu($team);
         $this->expectExceptionMessage('Already added.');
         $team->addVoiceMenu($voiceMenu);
     }
-
-    public function testNumberCreate()
-    {
-        $team = (new TeamBuilder())->getTeam();
-        $this->expectExceptionMessage('Number can\'t be used.');
-        new VoiceMenu($team, new InternalNumber(self::NUMBER_ALPHA), self::FILE_ALPHA);
-        new VoiceMenu($team, new InternalNumber(self::NUMBER_ALPHA), self::FILE_ALPHA);
-    }
-
-    public function testNumberSet()
-    {
-        $team = (new TeamBuilder())->getTeam();
-        $this->expectExceptionMessage('Number can\'t be used.');
-        new VoiceMenu($team, new InternalNumber(self::NUMBER_ALPHA), self::FILE_ALPHA);
-        $voiceMenu = new VoiceMenu($team, new InternalNumber(self::NUMBER_BRAVO), self::FILE_ALPHA);
-        $voiceMenu->setInternalNumber(new InternalNumber(self::NUMBER_ALPHA));
-    }
-
 }

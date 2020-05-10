@@ -5,17 +5,22 @@ declare(strict_types=1);
 namespace App\Model\Billing\UseCase\VoiceMenu\Delete;
 
 use App\Model\Billing\Entity\Account\VoiceMenu;
-use App\Model\Billing\UseCase\VoiceMenu\AbstractHandler;
+use App\Model\Billing\UseCase\VoiceMenu\BaseHandlerTrait;
 use App\Model\Flusher;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class Handler extends AbstractHandler
+class Handler
 {
+    use BaseHandlerTrait {
+        __construct as traitConstruct;
+    }
+
     private EntityManagerInterface $em;
 
-    public function __construct(EntityManagerInterface $em, Flusher $flusher)
+    public function __construct(EntityManagerInterface $em, Flusher $flusher, ValidatorInterface $validator)
     {
-        parent::__construct($em, $flusher);
+        $this->traitConstruct($em, $flusher, $validator);
         $this->em = $em;
     }
 

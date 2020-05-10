@@ -2,7 +2,6 @@
 
 namespace App\Tests\Builder\Billing;
 
-use App\Model\Billing\Entity\Account\InternalNumber;
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\Entity\Account\Team;
@@ -31,7 +30,7 @@ class TeamBuilder
         $this->owner = $this->team->getOwner();
         $this->member = new Member($this->team);
         $this->sipAccount = new SipAccount($this->member, '~~', '~~');
-        $this->voiceMenu = new VoiceMenu($this->team, new InternalNumber('1'), '~/file.mp3');
+        $this->voiceMenu = new VoiceMenu($this->team);
     }
 
     public function getAll(): array

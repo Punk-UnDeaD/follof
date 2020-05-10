@@ -22,7 +22,7 @@ class VoiceMenuDataType extends JsonType
         if (!$data) {
             return $data;
         }
-        $data = array_merge_recursive($data, self::default());
+        $data = array_merge(self::default(), $data);
         foreach ($data['points'] as $k => $p) {
             $data['points'][$k] = new InternalNumber($p);
         }
@@ -32,6 +32,6 @@ class VoiceMenuDataType extends JsonType
 
     public static function default()
     {
-        return ['points' => []];
+        return ['points' => [], 'label' => null];
     }
 }

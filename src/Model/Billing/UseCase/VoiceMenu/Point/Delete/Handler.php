@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\UseCase\VoiceMenu\Block;
+namespace App\Model\Billing\UseCase\VoiceMenu\Point\Delete;
 
 use App\Model\Billing\Entity\Account\VoiceMenu;
 use App\Model\Billing\UseCase\VoiceMenu\BaseHandlerTrait;
@@ -11,8 +11,8 @@ class Handler
 {
     use BaseHandlerTrait;
 
-    protected function handle(VoiceMenu $voiceMenu): void
+    protected function handle(VoiceMenu $voiceMenu, Command $command): void
     {
-        $voiceMenu->block();
+        $voiceMenu->removePoint($command->key);
     }
 }

@@ -17,22 +17,28 @@ customElements.define('x-auto-save-button', class extends HTMLButtonElement {
         this._input.classList.remove('is-invalid', 'is-valid');
         this._input.classList.add('is-changed');
         this._toolpip.hide();
-
     }
 
     onClick() {
         this._input.disabled = true;
         this._toolpip.hide();
-        fetch(this.dataset.save,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Csrf-token': this.dataset.csrf,
-                },
-                body: JSON.stringify({value: this._input.value}) // body data type must match "Content-Type" header
+        const request = {
+            method: 'POST',
+            headers: {
+                'Csrf-token': this.dataset.csrf,
             }
-        )
+        }
+        if ('file' === this._input.type) {
+            const formData = new FormData();
+            let name = this._input.name || ('file' + (this._input.hasAttribute('multiple') ? '[]' : ''))
+            this._input.files.forEach(f => formData.append(name, f));
+            request.body = formData;
+        } else {
+
+            request.headers['Content-Type'] = 'application/json';
+            request.body = JSON.stringify({value: this._input.value})
+        }
+        fetch(this.dataset.save, request)
             .then(resp => resp.json())
             .catch(resp => resp.json())
             .then(data => {
@@ -41,12 +47,14 @@ customElements.define('x-auto-save-button', class extends HTMLButtonElement {
 
                 if ('error' === data.status) {
                     this._input.focus();
-                    console.log(this._toolpip);
                     this._toolpip.updateContent('Error', data.message);
                     this._toolpip.show();
                     this._input.classList.add('is-invalid')
                 } else {
                     this._input.classList.add('is-valid')
+                    if (data.reload) {
+                        window.location.reload();
+                    }
                 }
 
             })

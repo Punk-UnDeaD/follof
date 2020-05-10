@@ -1,0 +1,109 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Voice menu{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Home</li>
+        <li class="breadcrumb-item"><a href="{{ path('billing.team', {team: voiceMenu.team.id }) }}">Team</a></li>
+        <li class="breadcrumb-item">Voice menus</li>
+        <li class="breadcrumb-item">Edit</li>
+    </ol>
+{% endblock %}
+{% block body %}
+    <div class="card">
+        <div class="card-body">
+            <h4>Info</h4>
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th scope="row"><label for="label">Label</label>
+                    <td>
+                        <div class="d-inline-flex w-20em">
+                            <input type="text" value="{{ voiceMenu.label }}" id="label" class="ml-1 form-control">
+                            <button class="btn btn-dark btn-sm" data-for="label" is="x-auto-save-button"
+                                    data-save="{{ path('billing.team.voiceMenu.label', {voiceMenu: voiceMenu.id }) }}"
+                                    data-csrf="{{ csrf_token("billing.team.voiceMenu.label") }}">
+                                <i class="fa-save fa"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="internalNumber">Internal number</label>
+                    <td>
+                        <div class="d-inline-flex w-20em">
+                            <input type="text" value="{{ voiceMenu.internalNumber }}" id="internalNumber"
+                                   class="ml-1 form-control">
+                            <button class="btn btn-dark btn-sm" data-for="internalNumber" is="x-auto-save-button"
+                                    data-save="{{ path('billing.team.voiceMenu.internalNumber', {voiceMenu: voiceMenu.id }) }}"
+                                    data-csrf="{{ csrf_token("billing.team.voiceMenu.internalNumber") }}">
+                                <i class="fa-save fa"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="file">File</label> {% if voiceMenu.file %}
+                            <a href="{{ '/'~voiceMenu.file }}">(current)</a>
+                        {% endif %}
+                    <td>
+                        <div></div>
+                        <div class="d-inline-flex w-20em">
+                            <input type="file" id="file" autocomplete="off"
+                                   class="ml-1 form-control h-auto">
+                            <button class="btn btn-dark btn-sm" data-for="file" is="x-auto-save-button"
+                                    data-save="{{ path('billing.team.voiceMenu.file', {voiceMenu: voiceMenu.id }) }}"
+                                    data-csrf="{{ csrf_token("billing.team.voiceMenu.file") }}">
+                                <i class="fa-save fa"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <h4>Points</h4>
+            <form action="{{ path('billing.team.voiceMenu.addPoint', {voiceMenu: voiceMenu.id}) }}" method="post">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('billing.team.voiceMenu.addPoint') }}">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#
+                        <th scope="col">Number
+                        <th scope="col">
+                    <tbody>
+                    {% for k, point in voiceMenu.points %}
+                        <tr>
+                            <th scope="row">{{ k }}
+                            <td>{{ point }}
+                            <td><a class="btn btn-danger btn-sm"
+                                   href="{{ path('billing.team.voiceMenu.point.delete', {key: k, voiceMenu:voiceMenu.id, _csrf_token: csrf_token('billing.team.voiceMenu.point.delete') }) }}">Delete</a>
+                        </tr>
+                    {% endfor %}
+                    <th scope="row"><input type="text" name="key">
+                    <td><input type="text" name="number">
+                    <td>
+                        <button name="op" value="add" class="btn btn-sm btn-primary">Add</button>
+                </table>
+
+            </form>
+            <div class="actions">
+                {#                <form action="{{ path('billing.team.member.addSipAccount', {member: member.id}) }}" method="POST">#}
+                {#                    <input type="hidden" name="_csrf_token"#}
+                {#                           value="{{ csrf_token('billing.team.member.addSipAccount') }}">#}
+                {#                    <button class="btn btn-primary" name="op" value="add">Add</button>#}
+                {#                </form>#}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('x-auto-save-button') }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('x-auto-toggler') }}
+    {{ encore_entry_script_tags('x-auto-password') }}
+    {{ encore_entry_script_tags('x-auto-save-button') }}
+{% endblock %}
+

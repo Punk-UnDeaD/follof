@@ -15,9 +15,9 @@ class InternalNumber implements \JsonSerializable
     public const FORMAT = '/^\d(?>-?\d){0,4}?$/';
 
     /**
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=16, nullable=true)
      */
-    private string $number;
+    private ?string $number;
 
     public function __construct(string $number)
     {
@@ -30,22 +30,27 @@ class InternalNumber implements \JsonSerializable
         return $this->getCleanValue() === $other->getCleanValue();
     }
 
-    public function getCleanValue()
+    public function getCleanValue(): string
     {
         return str_replace('-', '', $this->number);
     }
 
-    public function getNumber()
+    public function isNull(): bool
+    {
+        return null === $this->number;
+    }
+
+    public function getNumber(): string
     {
         return $this->number;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->number;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->number;
     }

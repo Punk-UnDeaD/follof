@@ -6,5 +6,5 @@ namespace App\Model\Billing\Entity\Account;
 
 interface HasNumber
 {
-    public function getInternalNumber(): InternalNumber;
+    public function getInternalNumber(): ?InternalNumber;
 }

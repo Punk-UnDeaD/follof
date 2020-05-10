@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace App\Controller\BillingProfile;
 
 use App\Annotation\RequiresCsrf;
+use App\Controller\ErrorHandler;
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\Entity\Account\MemberRepository;
 use App\Model\Billing\Entity\Account\VoiceMenu;
 use App\Model\Billing\UseCase\Team\AddMember;
+use App\Model\Billing\UseCase\Team\AddVoiceMenu;
 use App\ReadModel\User\UserFetcher;
 use App\Security\MemberIdentity;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -22,16 +25,21 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class TeamController extends AbstractController
 {
+    private ErrorHandler $errors;
     private MemberRepository $members;
-
     private UserFetcher $users;
     private ObjectRepository $voiceMenus;
 
-    public function __construct(UserFetcher $users, MemberRepository $memberRepository, EntityManagerInterface $em)
-    {
+    public function __construct(
+        UserFetcher $users,
+        MemberRepository $memberRepository,
+        EntityManagerInterface $em,
+        ErrorHandler $errors
+    ) {
         $this->users = $users;
         $this->members = $memberRepository;
         $this->voiceMenus = $em->getRepository(VoiceMenu::class);
+        $this->errors = $errors;
     }
 
     /**
@@ -49,7 +57,7 @@ class TeamController extends AbstractController
         $voiceMenus = $this->voiceMenus->findBy(['team' => $team], ['id' => 'ASC']);
 
         return $this->render(
-            'app/billing/team.html.twig',
+            'app/billing/team/show.html.twig',
             ['member' => $member, 'team' => $team, 'members' => $members, 'voiceMenus' => $voiceMenus]
         );
     }
@@ -69,10 +77,11 @@ class TeamController extends AbstractController
 
     /**
      * @Route("/addVoiceMenu", name="billing.team.addVoiceMenu")
-     * @RequiresCsrf(tokenId="b.t.a.v")
      */
-    public function addVoiceMenu(): Response
+    public function addVoiceMenu(Request $request, AddVoiceMenu\Handler $handler): Response
     {
+        $handler(new AddVoiceMenu\Command($this->getUser()->getTeamId()));
+
         return $this->redirectToRoute('billing.team');
     }
 }

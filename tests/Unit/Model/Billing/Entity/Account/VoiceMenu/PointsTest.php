@@ -12,7 +12,8 @@ class PointsTest extends TestCase
 {
     private const NUMBER_ALPHA = '123';
 
-    public function test(){
+    public function test()
+    {
         $voiceMenu = (new TeamBuilder())->getVoiceMenu();
         for ($i = 9; $i >= 0; --$i) {
             $voiceMenu->addPoint((string) $i, new InternalNumber(self::NUMBER_ALPHA.'-'.$i));

@@ -10,7 +10,7 @@ class PhoneNumber
 {
     public const FORMAT = '/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}(?>,\d{1,5})?$/';
 
-    private string $number;
+    private ?string $number = null;
 
     public function __construct(string $number)
     {

@@ -34,10 +34,14 @@ class BillingFixture extends Fixture implements DependentFixtureInterface
         $manager->persist($team);
         new SipAccount($member, 'putin', 'kadirov');
 
-        $voiceMenu = new VoiceMenu($team, new InternalNumber('123-0'), 'menu.mp3');
-        $voiceMenu->addPoint('1', new InternalNumber('123-1'));
-        $voiceMenu->addPoint('11', new InternalNumber('123-11'));
-        $voiceMenu->addPoint('2', new InternalNumber('123-12'));
+        (new VoiceMenu($team))
+            ->setFile('menu.mp3')
+            ->setLabel('Kremlin canteen')
+            ->setInternalNumber(new InternalNumber('123'))
+            ->addPoint('1', new InternalNumber('123-1'))
+            ->addPoint('2', new InternalNumber('123-2'))
+            ->addPoint('3', new InternalNumber('123-3'))
+            ->addPoint('0', new InternalNumber('123'));
         $manager->flush();
     }
 

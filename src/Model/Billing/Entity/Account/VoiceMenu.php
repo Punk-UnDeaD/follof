@@ -37,32 +37,28 @@ class VoiceMenu implements HasNumber, AggregateRoot
     /**
      * @ORM\Embedded(class="InternalNumber")
      */
-    private InternalNumber $internalNumber;
+    private ?InternalNumber $internalNumber = null;
 
     /**
      * @ORM\Column(type="billing_voice_menu_data")
      */
     private array $data;
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
-    private string $file;
-
+    private ?string $file = null;
     /**
      * @ORM\Column(type="string", length=16)
      */
     private string $status;
 
-    public function __construct(Team $team, InternalNumber $internalNumber, string $file)
+    public function __construct(Team $team)
     {
         $this->id = Id::next();
         $this->data = VoiceMenuDataType::default();
-        Assert::true($team->checkInternalNumberFor($internalNumber, $this), 'Number can\'t be used.');
-        $this->internalNumber = $internalNumber;
         $team->addVoiceMenu($this);
         $this->team = $team;
         $this->status = self::STATUS_BLOCKED;
-        $this->setFile($file);
     }
 
     public function getId(): Id
@@ -70,20 +66,17 @@ class VoiceMenu implements HasNumber, AggregateRoot
         return $this->id;
     }
 
-    public function getInternalNumber(): InternalNumber
+    public function getInternalNumber(): ?InternalNumber
     {
         return $this->internalNumber;
     }
 
     public function setInternalNumber(InternalNumber $internalNumber): self
     {
-        if (!$this->internalNumber->isSame($internalNumber)) {
-            Assert::true(
-                ($team ?? $this->getTeam())->checkInternalNumberFor($internalNumber, $this),
-                'Number can\'t be used.'
-            );
-            $this->internalNumber = $internalNumber;
+        if ($this->internalNumber && !$this->internalNumber->isSame($internalNumber)) {
+            Assert::true(($this->getTeam())->checkInternalNumberFor($internalNumber, $this), 'Number can\'t be used.');
         }
+        $this->internalNumber = $internalNumber;
 
         return $this;
     }
@@ -122,7 +115,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
         return $this;
     }
 
-    public function getFile(): string
+    public function getFile(): ?string
     {
         return $this->file;
     }
@@ -137,6 +130,8 @@ class VoiceMenu implements HasNumber, AggregateRoot
 
     public function activate(): self
     {
+        Assert::notNull($this->file, 'File required.');
+        Assert::notNull($this->internalNumber, 'Number required.');
         Assert::false($this->isActive(), 'Already activated.');
         $this->status = static::STATUS_ACTIVE;
 
@@ -150,12 +145,39 @@ class VoiceMenu implements HasNumber, AggregateRoot
         return $this->status === static::STATUS_ACTIVE;
     }
 
+    public function isActivated(): bool
+    {
+        return (bool) $this->file && (bool) $this->internalNumber;
+    }
+
     public function block(): self
     {
         Assert::true($this->isActive(), 'Already blocked.');
         $this->status = static::STATUS_BLOCKED;
 
 //        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function checkEmbeds(): void
+    {
+        if ($this->internalNumber->isNull()) {
+            $this->internalNumber = null;
+        }
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->data['label'];
+    }
+
+    public function setLabel(?string $label = null)
+    {
+        $this->data['label'] = $label;
 
         return $this;
     }

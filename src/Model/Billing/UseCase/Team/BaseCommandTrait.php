@@ -6,7 +6,7 @@ namespace App\Model\Billing\UseCase\Team;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-abstract class AbstractCommand
+trait BaseCommandTrait
 {
     /**
      * @Assert\NotBlank()

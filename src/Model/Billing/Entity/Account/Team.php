@@ -19,6 +19,7 @@ use Webmozart\Assert\Assert;
 class Team implements AggregateRoot
 {
     use EventsTrait;
+
     /**
      * @ORM\Column(type="billing_guid")
      * @ORM\Id
@@ -139,7 +140,7 @@ class Team implements AggregateRoot
     public function checkInternalNumberFor(InternalNumber $number, HasNumber $entity): bool
     {
         foreach ($this->getVoiceMenus() as $voiceMenu) {
-            if ($voiceMenu->getInternalNumber()->isSame($number)) {
+            if ($voiceMenu->getInternalNumber() && $voiceMenu->getInternalNumber()->isSame($number)) {
                 return false;
             }
         }
