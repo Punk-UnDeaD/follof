@@ -77,6 +77,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
             Assert::true(($this->getTeam())->checkInternalNumberFor($internalNumber, $this), 'Number can\'t be used.');
         }
         $this->internalNumber = $internalNumber;
+        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -105,6 +106,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
         Assert::Regex($key, self::POINT_KEY_FORMAT, 'Wrong key.');
         Assert::keyNotExists($this->data['points'], $key, 'Key already used.');
         $this->data['points'][$key] = $numbers;
+        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -114,6 +116,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
         Assert::Regex($key, self::POINT_KEY_FORMAT, 'Wrong key.');
         Assert::keyExists($this->data['points'], $key, 'Key already empty.');
         unset($this->data['points'][$key]);
+        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -127,6 +130,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
     {
         Assert::notEmpty($file, 'Can\'t be empty.');
         $this->file = $file;
+        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -137,8 +141,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
         Assert::notNull($this->internalNumber, 'Number required.');
         Assert::false($this->isActive(), 'Already activated.');
         $this->status = static::STATUS_ACTIVE;
-
-//        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
+        $this->recordEvent(new Event\VoiceMenuStatusUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -158,7 +161,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
         Assert::true($this->isActive(), 'Already blocked.');
         $this->status = static::STATUS_BLOCKED;
 
-//        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
+        $this->recordEvent(new Event\VoiceMenuStatusUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -193,6 +196,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
     public function setInputAllowance(bool $allow): self
     {
         $this->data['isInputAllowed'] = $allow;
+        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
 
         return $this;
     }

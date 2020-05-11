@@ -21,12 +21,12 @@ class AsteriskNotificator
         $this->client = $client;
     }
 
-    public function poolUpdate($pool)
+    public function notify($data)
     {
         $this->client->post(
             $this->asteriskApiUrl,
             [
-                RequestOptions::JSON => $pool,
+                RequestOptions::JSON => $data,
             ]
         );
     }
