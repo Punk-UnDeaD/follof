@@ -95,7 +95,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
     public function onVoiceMenuStatusUpdated(VoiceMenuStatusUpdated $event)
     {
         /** @var VoiceMenu $voiceMenu */
-        $voiceMenu = $this->em->getRepository(VoiceMenuController::class)->find($event->id);
+        $voiceMenu = $this->em->getRepository(VoiceMenu::class)->find($event->id);
         if ($voiceMenu) {
             $this->menuNotify($voiceMenu);
         }
