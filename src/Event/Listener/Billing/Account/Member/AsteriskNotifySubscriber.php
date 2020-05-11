@@ -19,9 +19,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
     private MemberRepository $repository;
 
     private AsteriskNotificator $notificator;
-    /**
-     * @var EntityManagerInterface
-     */
+
     private EntityManagerInterface $em;
 
     public function __construct(
@@ -40,7 +38,6 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
             MemberSipPoolUpdated::class => 'onPoolUpdated',
             VoiceMenuStatusUpdated::class => 'onVoiceMenuStatusUpdated',
             VoiceMenuDataUpdated::class => 'onVoiceMenuDataUpdated',
-
         ];
     }
 
@@ -103,5 +100,4 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
             $this->menuNotify($voiceMenu);
         }
     }
-
 }
