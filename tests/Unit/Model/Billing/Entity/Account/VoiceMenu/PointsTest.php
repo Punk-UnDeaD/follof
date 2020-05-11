@@ -18,7 +18,7 @@ class PointsTest extends TestCase
         for ($i = 9; $i >= 0; --$i) {
             $voiceMenu->addPoint((string) $i, new InternalNumber(self::NUMBER_ALPHA.'-'.$i));
             $this->assertCount(10 - $i, $voiceMenu->getPoints());
-            $this->assertEquals(self::NUMBER_ALPHA.'-'.$i, $voiceMenu->getPoints()[$i]->getNumber());
+            $this->assertEquals(self::NUMBER_ALPHA.'-'.$i, $voiceMenu->getPoints()[$i][0]->getNumber());
         }
         for ($i = 0; $i <= 9; ++$i) {
             $voiceMenu->removePoint((string) $i);

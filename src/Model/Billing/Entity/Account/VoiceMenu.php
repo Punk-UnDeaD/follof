@@ -90,18 +90,21 @@ class VoiceMenu implements HasNumber, AggregateRoot
     }
 
     /**
-     * @return InternalNumber[]
+     * @return InternalNumber[][]
      */
     public function getPoints(): array
     {
         return $this->data['points'];
     }
 
-    public function addPoint(string $key, InternalNumber $number): self
+    /**
+     * @return $this
+     */
+    public function addPoint(string $key, InternalNumber ...$numbers): self
     {
         Assert::Regex($key, self::POINT_KEY_FORMAT, 'Wrong key.');
         Assert::keyNotExists($this->data['points'], $key, 'Key already used.');
-        $this->data['points'][$key] = $number;
+        $this->data['points'][$key] = $numbers;
 
         return $this;
     }
@@ -178,6 +181,18 @@ class VoiceMenu implements HasNumber, AggregateRoot
     public function setLabel(?string $label = null)
     {
         $this->data['label'] = $label;
+
+        return $this;
+    }
+
+    public function isInputAllowed(): bool
+    {
+        return $this->data['isInputAllowed'];
+    }
+
+    public function setInputAllowance(bool $allow): self
+    {
+        $this->data['isInputAllowed'] = $allow;
 
         return $this;
     }

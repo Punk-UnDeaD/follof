@@ -9,7 +9,7 @@ use App\Model\Billing\Entity\Account\VoiceMenu;
 use App\Tests\Builder\Billing\TeamBuilder;
 use PHPUnit\Framework\TestCase;
 
-class VoiceMenuTest extends TestCase
+class Test extends TestCase
 {
     private const NUMBER_ALPHA = '123';
     private const NUMBER_BRAVO = '123-45';
@@ -35,6 +35,7 @@ class VoiceMenuTest extends TestCase
         $this->assertFalse($voiceMenu->isActive());
         $this->assertTrue($voiceMenu->isActivated());
         $this->assertNull($voiceMenu->getLabel());
+        $this->assertFalse($voiceMenu->isInputAllowed());
     }
 
     public function testAdding()

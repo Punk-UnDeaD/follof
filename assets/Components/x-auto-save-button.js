@@ -34,7 +34,6 @@ customElements.define('x-auto-save-button', class extends HTMLButtonElement {
             this._input.files.forEach(f => formData.append(name, f));
             request.body = formData;
         } else {
-
             request.headers['Content-Type'] = 'application/json';
             request.body = JSON.stringify({value: this._input.value})
         }

@@ -14,6 +14,7 @@ class Handler
 
     protected function handle(VoiceMenu $voiceMenu, Command $command): void
     {
-        $voiceMenu->addPoint($command->key, new InternalNumber($command->number));
+        $numbers = array_map(fn ($number) => new InternalNumber(trim($number)), explode(',', $command->number));
+        $voiceMenu->addPoint($command->key, ...$numbers);
     }
 }

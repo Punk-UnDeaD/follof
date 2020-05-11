@@ -59,6 +59,19 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row"><label for="inputAllowance">Allow input</label></th>
+                    <td>
+                        <label class="switch switch-label switch-pill switch-success">
+                            <input type="checkbox" class="switch-input" {{ voiceMenu.inputAllowed?"checked" }}
+                                   is="x-auto-toggler"
+                                   data-toggle="{{ path('billing.team.voiceMenu.inputAllowance', {voiceMenu: voiceMenu.id}) }}"
+                                   data-csrf="{{ csrf_token("billing.team.voiceMenu.inputAllowance") }}"
+                            >
+                            <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                        </label>
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <h4>Points</h4>
@@ -74,7 +87,7 @@
                     {% for k, point in voiceMenu.points %}
                         <tr>
                             <th scope="row">{{ k }}
-                            <td>{{ point }}
+                            <td>{{ point|join(', ') }}
                             <td><a class="btn btn-danger btn-sm"
                                    href="{{ path('billing.team.voiceMenu.point.delete', {key: k, voiceMenu:voiceMenu.id, _csrf_token: csrf_token('billing.team.voiceMenu.point.delete') }) }}">Delete</a>
                         </tr>

@@ -16,6 +16,7 @@ use App\Model\Billing\UseCase\VoiceMenu\Block;
 use App\Model\Billing\UseCase\VoiceMenu\Delete;
 use App\Model\Billing\UseCase\VoiceMenu\Point\Delete as PointDelete;
 use App\Model\Billing\UseCase\VoiceMenu\SetFile;
+use App\Model\Billing\UseCase\VoiceMenu\SetInputAllowance;
 use App\Model\Billing\UseCase\VoiceMenu\SetInternalNumber;
 use App\Model\Billing\UseCase\VoiceMenu\SetLabel;
 use Doctrine\ORM\EntityNotFoundException;
@@ -175,5 +176,19 @@ class VoiceMenuController extends AbstractController
         }
 
         return $this->json(['status' => 'ok', 'reload' => true]);
+    }
+
+    /**
+     * @Route("/inputAllowance", name=".inputAllowance", defaults={"_format": "json"})
+     * @RequiresCsrf()
+     *
+     * @throws EntityNotFoundException
+     */
+    public function inputAllowance(string $voiceMenu, SetInputAllowance\Handler $handler, Request $request)
+    {
+        $allowance = json_decode($request->getContent());
+        $handler(new SetInputAllowance\Command($voiceMenu, $allowance));
+
+        return $this->json(['status' => 'ok']);
     }
 }
