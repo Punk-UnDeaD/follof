@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Event\Listener\Billing\Account\Member;
 
-use App\Controller\BillingProfile\VoiceMenuController;
 use App\Model\Billing\Entity\Account\Event\MemberSipPoolUpdated;
 use App\Model\Billing\Entity\Account\Event\VoiceMenuDataUpdated;
 use App\Model\Billing\Entity\Account\Event\VoiceMenuStatusUpdated;

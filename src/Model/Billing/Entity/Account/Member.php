@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\AggregateRoot;
+use App\Model\Billing\Entity\Account\Fields\InternalNumberTrait;
+use App\Model\Billing\Entity\Account\Fields\LabelTrait;
 use App\Model\EventsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,10 +18,13 @@ use Webmozart\Assert\Assert;
  *
  * @ORM\Entity
  * @ORM\Table(name="billing_members")
+ * @ORM\HasLifecycleCallbacks
  */
 class Member implements AggregateRoot
 {
     use EventsTrait;
+    use InternalNumberTrait;
+    use LabelTrait;
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
@@ -27,69 +32,63 @@ class Member implements AggregateRoot
     private const DEFAULT_DATA = [
         'label' => null,
     ];
-
+    /**
+     * @ORM\Column(type="json", options={"default" : "{}"})
+     */
+    protected array $data;
     /**
      * @ORM\Column(type="billing_guid")
      * @ORM\Id
      */
     private Id $id;
-
     /**
      * @ORM\Column(type="string", length=25, nullable=true))
      */
     private ?string $login = null;
-
     /**
      * @ORM\Column(type="string", length=128, nullable=true))
      */
     private ?string $email = null;
-
     /**
      * @ORM\Column(type="string", name="password_hash", nullable=true)
      */
     private ?string $passwordHash = null;
-
     /**
      * @ORM\Column(type="billing_member_role", length=32)
      */
     private Role $role;
-
     /**
      * @ORM\ManyToOne(targetEntity="Team", inversedBy="members")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private Team $team;
-
     /**
      * @ORM\Column(type="string", length=16)
      */
     private string $status;
-
     /**
      * @var SipAccount[]|Collection
      * @ORM\OneToMany(targetEntity="App\Model\Billing\Entity\Account\SipAccount", mappedBy="member", orphanRemoval=true, cascade={"all"})
      */
     private Collection $sipAccounts;
 
-    /**
-     * @ORM\Column(type="json", options={"default" : "{}"})
-     */
-    private array $data;
-
     public function __construct(Team $team)
     {
         $this->id = Id::next();
+        $this->data = self::DEFAULT_DATA;
+        $this->team = $team;
         if ($team->getMembers()->count()) {
             $this->role = Role::member();
             $this->status = static::STATUS_BLOCKED;
+            $this->setLabel('member-'.count($team->getMembers()));
         } else {
             $this->role = Role::owner();
             $this->status = static::STATUS_ACTIVE;
+            $this->setLabel('owner');
+            $this->setInternalNumber(new InternalNumber('000'));
         }
-        $this->team = $team;
         $team->addMember($this);
         $this->sipAccounts = new ArrayCollection();
-        $this->data = self::DEFAULT_DATA;
     }
 
     public function removeCredentials(): self
@@ -139,6 +138,11 @@ class Member implements AggregateRoot
     public function getLogin(): ?string
     {
         return $this->login;
+    }
+
+    public function isActivated(): bool
+    {
+        return (bool)$this->internalNumber;
     }
 
     public function getEmail(): ?string
@@ -195,5 +199,18 @@ class Member implements AggregateRoot
     public function getSipAccounts(): Collection
     {
         return $this->sipAccounts;
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function checkData(): void
+    {
+        $this->data = array_merge(self::DEFAULT_DATA, $this->data);
+    }
+
+    protected function onUpdateInternalNumber()
+    {
+        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
     }
 }

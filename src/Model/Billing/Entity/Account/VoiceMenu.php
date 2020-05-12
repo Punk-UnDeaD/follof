@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\AggregateRoot;
+use App\Model\Billing\Entity\Account\Fields\InternalNumberTrait;
+use App\Model\Billing\Entity\Account\Fields\LabelTrait;
 use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert;
@@ -17,6 +19,8 @@ use Webmozart\Assert\Assert;
 class VoiceMenu implements HasNumber, AggregateRoot
 {
     use EventsTrait;
+    use InternalNumberTrait;
+    use LabelTrait;
 
     protected const DEFAULT_DATA = ['points' => [], 'label' => null, 'isInputAllowed' => false];
 
@@ -37,14 +41,9 @@ class VoiceMenu implements HasNumber, AggregateRoot
     private ?Team $team = null;
 
     /**
-     * @ORM\Embedded(class="InternalNumber")
-     */
-    private ?InternalNumber $internalNumber = null;
-
-    /**
      * @ORM\Column(type="json", options={"default" : "{}"})
      */
-    private array $data = [];
+    protected array $data;
     /**
      * @ORM\Column(type="string", nullable=true)
      */
@@ -63,33 +62,12 @@ class VoiceMenu implements HasNumber, AggregateRoot
         $this->status = self::STATUS_BLOCKED;
     }
 
-    public function getInternalNumber(): ?InternalNumber
-    {
-        return $this->internalNumber;
-    }
-
-    public function setInternalNumber(InternalNumber $internalNumber): self
-    {
-        if ($this->internalNumber && !$this->internalNumber->isSame($internalNumber)) {
-            Assert::true(($this->getTeam())->checkInternalNumberFor($internalNumber, $this), 'Number can\'t be used.');
-        }
-        $this->internalNumber = $internalNumber;
-        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
-
-        return $this;
-    }
-
     /**
      * @return Team
      */
     public function getTeam(): ?Team
     {
         return $this->team;
-    }
-
-    public function getId(): Id
-    {
-        return $this->id;
     }
 
     /**
@@ -111,6 +89,11 @@ class VoiceMenu implements HasNumber, AggregateRoot
         $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
 
         return $this;
+    }
+
+    public function getId(): Id
+    {
+        return $this->id;
     }
 
     public function removePoint(string $key): self
@@ -155,7 +138,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
 
     public function isActivated(): bool
     {
-        return (bool)$this->file && (bool)$this->internalNumber;
+        return (bool) $this->file && (bool) $this->internalNumber;
     }
 
     public function block(): self
@@ -171,36 +154,13 @@ class VoiceMenu implements HasNumber, AggregateRoot
     /**
      * @ORM\PostLoad()
      */
-    public function checkEmbeds(): void
-    {
-        if ($this->internalNumber->isNull()) {
-            $this->internalNumber = null;
-        }
-    }
-
-    /**
-     * @ORM\PostLoad()
-     */
     public function checkData(): void
     {
         $this->data = array_merge(self::DEFAULT_DATA, $this->data);
 
         foreach ($this->data['points'] as $k => $points) {
-            $this->data['points'][$k] = array_map(fn($point) => new InternalNumber($point), $points);
+            $this->data['points'][$k] = array_map(fn ($point) => new InternalNumber($point), $points);
         }
-
-    }
-
-    public function getLabel(): ?string
-    {
-        return $this->data['label'];
-    }
-
-    public function setLabel(?string $label = null)
-    {
-        $this->data['label'] = $label;
-
-        return $this;
     }
 
     public function isInputAllowed(): bool
@@ -214,5 +174,10 @@ class VoiceMenu implements HasNumber, AggregateRoot
         $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
 
         return $this;
+    }
+
+    protected function onUpdateInternalNumber()
+    {
+        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
     }
 }

@@ -4,7 +4,7 @@
 {% block breadcrumbs %}
     <ol class="breadcrumb">
         <li class="breadcrumb-item">Home</li>
-        <li class="breadcrumb-item">Team</li>
+        <li class="breadcrumb-item"><a href="{{ path('billing.team') }}">Team</a></li>
         <li class="breadcrumb-item">Member account</li>
     </ol>
 {% endblock %}
@@ -29,7 +29,42 @@
                     </div>
                 </form>
             {% endif %}
-            <h2>Sip accounts</h2>
+
+            <h4>Info</h4>
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th scope="row"><label for="label">Label</label>
+                    <td>
+                        <div class="d-inline-flex w-20em">
+                            <input type="text" value="{{ member.label }}" id="label" class="ml-1 form-control">
+                            <button class="btn btn-dark btn-sm" data-for="label" is="x-auto-save-button"
+                                    data-save="{{ path('billing.team.member.label', {member: member.id }) }}"
+                                    data-csrf="{{ csrf_token("billing.team.member.label") }}">
+                                <i class="fa-save fa"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row"><label for="internalNumber">Internal number</label>
+                    <td>
+                        <div class="d-inline-flex w-20em">
+                            <input type="text" value="{{ member.internalNumber }}" id="internalNumber"
+                                   class="ml-1 form-control">
+                            <button class="btn btn-dark btn-sm" data-for="internalNumber" is="x-auto-save-button"
+                                    data-save="{{ path('billing.team.member.internalNumber', {member: member.id }) }}"
+                                    data-csrf="{{ csrf_token("billing.team.member.internalNumber") }}">
+                                <i class="fa-save fa"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
+            <h4>Sip accounts</h4>
             <table class="table">
                 <thead>
                 <tr>

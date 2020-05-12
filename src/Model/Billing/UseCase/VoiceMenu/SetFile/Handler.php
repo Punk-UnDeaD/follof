@@ -16,7 +16,7 @@ class Handler
     protected function handle(VoiceMenu $voiceMenu, Command $command): void
     {
         $file = $voiceMenu->getFile();
-        if (is_file($file)) {
+        if ($file && is_file($file)) {
             unlink($file);
         }
         $voiceMenu->setFile($command->file);

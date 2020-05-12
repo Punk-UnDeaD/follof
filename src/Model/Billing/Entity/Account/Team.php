@@ -82,14 +82,6 @@ class Team implements AggregateRoot
         return $this->owner;
     }
 
-    /**
-     * @return Member[]|Collection
-     */
-    public function getMembers(): Collection
-    {
-        return $this->members;
-    }
-
     public function addMember(Member $member): self
     {
         Assert::eq($this, $member->getTeam(), '$member in other Team.');
@@ -137,10 +129,15 @@ class Team implements AggregateRoot
         return $this;
     }
 
-    public function checkInternalNumberFor(InternalNumber $number, HasNumber $entity): bool
+    public function checkInternalNumberFor(InternalNumber $number): bool
     {
         foreach ($this->getVoiceMenus() as $voiceMenu) {
             if ($voiceMenu->getInternalNumber() && $voiceMenu->getInternalNumber()->isSame($number)) {
+                return false;
+            }
+        }
+        foreach ($this->getMembers() as $member) {
+            if ($member->getInternalNumber() && $member->getInternalNumber()->isSame($number)) {
                 return false;
             }
         }
@@ -154,5 +151,13 @@ class Team implements AggregateRoot
     public function getVoiceMenus(): Collection
     {
         return $this->voiceMenus;
+    }
+
+    /**
+     * @return Member[]|Collection
+     */
+    public function getMembers(): Collection
+    {
+        return $this->members;
     }
 }
