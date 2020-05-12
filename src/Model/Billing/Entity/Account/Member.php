@@ -20,8 +20,13 @@ use Webmozart\Assert\Assert;
 class Member implements AggregateRoot
 {
     use EventsTrait;
+
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
+
+    private const DEFAULT_DATA = [
+        'label' => null,
+    ];
 
     /**
      * @ORM\Column(type="billing_guid")
@@ -67,8 +72,10 @@ class Member implements AggregateRoot
     private Collection $sipAccounts;
 
     /**
-     * Member constructor.
+     * @ORM\Column(type="json", options={"default" : "{}"})
      */
+    private array $data;
+
     public function __construct(Team $team)
     {
         $this->id = Id::next();
@@ -82,11 +89,7 @@ class Member implements AggregateRoot
         $this->team = $team;
         $team->addMember($this);
         $this->sipAccounts = new ArrayCollection();
-    }
-
-    public function getId(): Id
-    {
-        return $this->id;
+        $this->data = self::DEFAULT_DATA;
     }
 
     public function removeCredentials(): self
@@ -160,6 +163,11 @@ class Member implements AggregateRoot
     public function isActive(): bool
     {
         return $this->status === static::STATUS_ACTIVE;
+    }
+
+    public function getId(): Id
+    {
+        return $this->id;
     }
 
     public function block(): self

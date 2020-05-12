@@ -18,6 +18,8 @@ class VoiceMenu implements HasNumber, AggregateRoot
 {
     use EventsTrait;
 
+    protected const DEFAULT_DATA = ['points' => [], 'label' => null, 'isInputAllowed' => false];
+
     public const POINT_KEY_FORMAT = '/\d{1,3}/';
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
@@ -40,9 +42,9 @@ class VoiceMenu implements HasNumber, AggregateRoot
     private ?InternalNumber $internalNumber = null;
 
     /**
-     * @ORM\Column(type="billing_voice_menu_data")
+     * @ORM\Column(type="json", options={"default" : "{}"})
      */
-    private array $data;
+    private array $data = [];
     /**
      * @ORM\Column(type="string", nullable=true)
      */
@@ -59,11 +61,6 @@ class VoiceMenu implements HasNumber, AggregateRoot
         $team->addVoiceMenu($this);
         $this->team = $team;
         $this->status = self::STATUS_BLOCKED;
-    }
-
-    public function getId(): Id
-    {
-        return $this->id;
     }
 
     public function getInternalNumber(): ?InternalNumber
@@ -88,6 +85,11 @@ class VoiceMenu implements HasNumber, AggregateRoot
     public function getTeam(): ?Team
     {
         return $this->team;
+    }
+
+    public function getId(): Id
+    {
+        return $this->id;
     }
 
     /**
@@ -153,7 +155,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
 
     public function isActivated(): bool
     {
-        return (bool) $this->file && (bool) $this->internalNumber;
+        return (bool)$this->file && (bool)$this->internalNumber;
     }
 
     public function block(): self
@@ -174,6 +176,19 @@ class VoiceMenu implements HasNumber, AggregateRoot
         if ($this->internalNumber->isNull()) {
             $this->internalNumber = null;
         }
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function checkData(): void
+    {
+        $this->data = array_merge(self::DEFAULT_DATA, $this->data);
+
+        foreach ($this->data['points'] as $k => $points) {
+            $this->data['points'][$k] = array_map(fn($point) => new InternalNumber($point), $points);
+        }
+
     }
 
     public function getLabel(): ?string
