@@ -57,7 +57,7 @@ class VoiceMenu implements HasNumber, AggregateRoot
     public function __construct(Team $team)
     {
         $this->id = Id::next();
-        $this->data = VoiceMenuDataType::default();
+        $this->data = self::DEFAULT_DATA;
         $team->addVoiceMenu($this);
         $this->team = $team;
         $this->status = self::STATUS_BLOCKED;
