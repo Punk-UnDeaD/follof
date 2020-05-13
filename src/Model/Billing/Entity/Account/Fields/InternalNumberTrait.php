@@ -31,7 +31,7 @@ trait InternalNumberTrait
 
     public function setInternalNumber(InternalNumber $internalNumber): self
     {
-        if ($this->internalNumber && !$this->internalNumber->isSame($internalNumber)) {
+        if (!$this->internalNumber || !$this->internalNumber->isSame($internalNumber)) {
             Assert::true(($this->getTeam())->checkInternalNumberFor($internalNumber), 'Number can\'t be used.');
         }
         $this->internalNumber = $internalNumber;

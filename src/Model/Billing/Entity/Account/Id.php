@@ -7,7 +7,7 @@ namespace App\Model\Billing\Entity\Account;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
-class Id
+class Id implements \JsonSerializable
 {
     private $value;
 
@@ -30,5 +30,10 @@ class Id
     public function getValue(): string
     {
         return $this->value;
+    }
+
+    public function jsonSerialize(): string
+    {
+        return $this->getValue();
     }
 }

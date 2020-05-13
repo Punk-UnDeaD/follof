@@ -142,7 +142,7 @@ class Member implements AggregateRoot
 
     public function isActivated(): bool
     {
-        return (bool)$this->internalNumber;
+        return (bool) $this->internalNumber && (bool) $this->sipAccounts->count();
     }
 
     public function getEmail(): ?string
@@ -159,7 +159,7 @@ class Member implements AggregateRoot
     {
         Assert::false($this->isActive(), 'Already activated.');
         $this->status = static::STATUS_ACTIVE;
-        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
+        $this->recordEvent(new Event\MemberStatusUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -179,7 +179,7 @@ class Member implements AggregateRoot
         Assert::true($this->isActive(), 'Already blocked.');
         Assert::false($this->role->isOwner(), 'Cannot block owner.');
         $this->status = static::STATUS_BLOCKED;
-        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
+        $this->recordEvent(new Event\MemberStatusUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -188,7 +188,7 @@ class Member implements AggregateRoot
     {
         Assert::null($sipAccount->getMember(), 'Already added.');
         $this->sipAccounts->add($sipAccount);
-        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
+        $this->recordEvent(new Event\MemberDataUpdated($this->getId()->getValue()));
 
         return $this;
     }
@@ -211,6 +211,6 @@ class Member implements AggregateRoot
 
     protected function onUpdateInternalNumber()
     {
-        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getId()->getValue()));
+        $this->recordEvent(new Event\MemberDataUpdated($this->getId()->getValue()));
     }
 }

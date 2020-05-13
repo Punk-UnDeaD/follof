@@ -74,7 +74,7 @@ class SipAccount implements AggregateRoot
         $this->login = $login;
 
         if ($this->isActive()) {
-            $this->recordEvent(new Event\MemberSipPoolUpdated($this->getMember()->getId()->getValue()));
+            $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
         }
 
         return $this;
@@ -91,7 +91,7 @@ class SipAccount implements AggregateRoot
         $this->password = $password;
 
         if ($this->isActive()) {
-            $this->recordEvent(new Event\MemberSipPoolUpdated($this->getMember()->getId()->getValue()));
+            $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
         }
 
         return $this;
@@ -111,7 +111,7 @@ class SipAccount implements AggregateRoot
     {
         Assert::false($this->isActive(), 'Sip account is already active.');
         $this->status = self::STATUS_ACTIVE;
-        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getMember()->getId()->getValue()));
+        $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
 
         return $this;
     }
@@ -120,7 +120,7 @@ class SipAccount implements AggregateRoot
     {
         Assert::false($this->isBlocked(), 'Sip account is already blocked.');
         $this->status = self::STATUS_BLOCKED;
-        $this->recordEvent(new Event\MemberSipPoolUpdated($this->getMember()->getId()->getValue()));
+        $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
 
         return $this;
     }

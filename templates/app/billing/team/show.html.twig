@@ -22,6 +22,7 @@
                     <td><label class="switch switch-label switch-pill switch-success">
                             <input type="checkbox" class="switch-input" {{ member.active?"checked" }}
                                     {{ member.role.isOwner() ? "disabled" }}
+                                    {{ member.activated ?: "disabled" }}
                                    is="x-auto-toggler"
                                    data-on="{{ path('billing.team.member.activate', {member: member.id }) }}"
                                    data-off="{{ path('billing.team.member.block', {member: member.id }) }}"
