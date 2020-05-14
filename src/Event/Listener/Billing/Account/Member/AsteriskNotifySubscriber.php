@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Event\Listener\Billing\Account\Member;
 
+use App\Event\Dispatcher\MessengerEventDispatcher;
 use App\Model\Billing\Entity\Account\Event\MemberDataUpdated;
 use App\Model\Billing\Entity\Account\Event\MemberStatusUpdated;
 use App\Model\Billing\Entity\Account\Event\VoiceMenuDataUpdated;
@@ -23,14 +24,21 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
 
     private EntityManagerInterface $em;
 
+    private MessengerEventDispatcher $eventDispatcher;
+    private int $delay;
+
     public function __construct(
         MemberRepository $memberRepository,
         AsteriskNotificator $notificator,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        MessengerEventDispatcher $eventDispatcher,
+        $asteriskNotificatorDelay
     ) {
         $this->memberRepository = $memberRepository;
         $this->notificator = $notificator;
         $this->em = $em;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->delay = (int) $asteriskNotificatorDelay;
     }
 
     public static function getSubscribedEvents(): array
@@ -40,6 +48,8 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
             MemberDataUpdated::class => 'onMemberDataUpdated',
             VoiceMenuStatusUpdated::class => 'onVoiceMenuStatusUpdated',
             VoiceMenuDataUpdated::class => 'onVoiceMenuDataUpdated',
+            self::class.'::memberNotify' => 'onMemberNotify',
+            self::class.'::menuNotify' => 'onMenuNotify',
         ];
     }
 
@@ -48,11 +58,11 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
         /** @var VoiceMenu $voiceMenu */
         $voiceMenu = $this->em->getRepository(VoiceMenu::class)->find($event->id);
         if ($voiceMenu && $voiceMenu->isActive()) {
-            $this->menuNotify($voiceMenu);
+            $this->eventDispatcher->dispatchDebounce($event, $event->id, $this->delay, self::class.'::menuNotify');
         }
     }
 
-    private function menuNotify(VoiceMenu $voiceMenu)
+    public function menuNotify(VoiceMenu $voiceMenu)
     {
         $data = [
             'type' => 'voiceMenu',
@@ -77,7 +87,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
         /** @var VoiceMenu $voiceMenu */
         $voiceMenu = $this->em->getRepository(VoiceMenu::class)->find($event->id);
         if ($voiceMenu) {
-            $this->menuNotify($voiceMenu);
+            $this->eventDispatcher->dispatchDebounce($event, $event->id, $this->delay, self::class.'::menuNotify');
         }
     }
 
@@ -85,11 +95,18 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
     {
         $member = $this->memberRepository->find($event->id);
         if ($member && $member->isActive()) {
+            $this->eventDispatcher->dispatchDebounce($event, $event->id, $this->delay, self::class.'::memberNotify');
+        }
+    }
+
+    public function onMemberNotify($event)
+    {
+        if ($member = $this->memberRepository->find($event->id)) {
             $this->memberNotify($member);
         }
     }
 
-    public function memberNotify(Member $member)
+    private function memberNotify(Member $member)
     {
         $accounts = [];
         if ($member && $member->isActive() && $member->getTeam()->getUser()->isActive()) {
@@ -117,7 +134,16 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
     {
         $member = $this->memberRepository->find($event->id);
         if ($member) {
-            $this->memberNotify($member);
+            $this->eventDispatcher->dispatchDebounce($event, $event->id, $this->delay, self::class.'::memberNotify');
+        }
+    }
+
+    public function onMenuNotify($event)
+    {
+        /** @var VoiceMenu $voiceMenu */
+        $voiceMenu = $this->em->getRepository(VoiceMenu::class)->find($event->id);
+        if ($voiceMenu) {
+            $this->menuNotify($voiceMenu);
         }
     }
 }

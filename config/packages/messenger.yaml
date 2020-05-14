@@ -17,4 +17,5 @@ framework:
         routing:
             # Route your messages to the transports
             'App\Event\Dispatcher\Message\Message': async
+            'App\Event\Dispatcher\Message\DebounceMessage': async
             'Symfony\Component\Mailer\Messenger\SendEmailMessage': async

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Event\Listener\Billing\Account\Member;
 
 use App\Event\Dispatcher\MessengerEventDispatcher;
-use App\Model\Billing\Entity\Account\Event\MemberSipPoolUpdated;
+use App\Model\Billing\Entity\Account\Event\MemberStatusUpdated;
 use App\Model\Billing\Entity\Account\Team;
 use App\Model\User\Entity\User\Event\UserActivated;
 use App\Model\User\Entity\User\Event\UserBlocked;
@@ -24,8 +24,11 @@ class SipPoolUpdateSubscriber implements EventSubscriberInterface
 
     private UserRepository $users;
 
-    public function __construct(EntityManagerInterface $em, MessengerEventDispatcher $eventDispatcher, UserRepository $users)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        MessengerEventDispatcher $eventDispatcher,
+        UserRepository $users
+    ) {
         $this->teamRepository = $em->getRepository(Team::class);
         $this->eventDispatcher = $eventDispatcher;
         $this->users = $users;
@@ -46,7 +49,7 @@ class SipPoolUpdateSubscriber implements EventSubscriberInterface
             /** @var Team $team */
             $team = $this->teamRepository->findOneBy(['user' => $user]);
             foreach ($team->getMembers() as $member) {
-                $event = new MemberSipPoolUpdated($member->getId()->getValue());
+                $event = new MemberStatusUpdated($member->getId()->getValue());
                 $this->eventDispatcher->dispatch([$event]);
             }
         }
