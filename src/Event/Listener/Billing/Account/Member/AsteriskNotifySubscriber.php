@@ -126,6 +126,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
                 'accounts' => $accounts,
                 'billingId' => $member->getTeam()->getBillingId(),
                 'internalNumber' => $member->getInternalNumber(),
+                'fallbackNumber' => $member->getFallbackNumber(),
             ]
         );
     }

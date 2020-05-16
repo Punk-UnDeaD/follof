@@ -61,6 +61,20 @@
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <th scope="row"><label for="internalNumber">Fallback number</label>
+                    <td>
+                        <div class="d-inline-flex w-20em">
+                            <input type="text" value="{{ member.fallbackNumber }}" id="fallbackNumber"
+                                   class="ml-1 form-control">
+                            <button class="btn btn-dark btn-sm" data-for="fallbackNumber" is="x-auto-save-button"
+                                    data-save="{{ path('billing.team.member.fallbackNumber', {member: member.id }) }}"
+                                    data-csrf="{{ csrf_token("billing.team.member.fallbackNumber") }}">
+                                <i class="fa-save fa"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
 
             </table>

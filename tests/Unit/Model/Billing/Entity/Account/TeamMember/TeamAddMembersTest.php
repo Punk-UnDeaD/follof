@@ -31,13 +31,13 @@ class TeamAddMembersTest extends TestCase
         /** @var Member $member */
         /** @var Team $team */
         ['team' => $team, 'member' => $member] = (new TeamBuilder())->getAll();
-        $this->expectExceptionMessage('$member already added.');
+        $this->expectExceptionMessage('Already added.');
         $team->addMember($member);
     }
 
     public function testTeamAlienAdding()
     {
-        $this->expectExceptionMessage('$member in other Team.');
+        $this->expectExceptionMessage('Already added.');
         (new TeamBuilder())->getTeam()->addMember((new TeamBuilder())->getMember());
     }
 }

@@ -12,6 +12,7 @@ use App\Model\Billing\UseCase\Member\Activate;
 use App\Model\Billing\UseCase\Member\AddSipAccount;
 use App\Model\Billing\UseCase\Member\Block;
 use App\Model\Billing\UseCase\Member\SetInternalNumber;
+use App\Model\Billing\UseCase\Member\SetFallbackNumber;
 use App\Model\Billing\UseCase\Member\SetLabel;
 use App\Model\Billing\UseCase\Member\UpdateCredentials;
 use Doctrine\ORM\EntityNotFoundException;
@@ -119,7 +120,6 @@ class MemberController extends AbstractController
      * @Route("/internalNumber", name=".internalNumber", defaults={"_format": "json"})
      * @RequiresCsrf()
      *
-     * @throws EntityNotFoundException
      */
     public function internalNumber(
         string $member,
@@ -128,6 +128,21 @@ class MemberController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $handler(new SetInternalNumber\Command($member, $data['value'] ?: null));
+
+        return $this->json(['status' => 'ok']);
+    }
+    /**
+     * @Route("/fallbackNumber", name=".fallbackNumber", defaults={"_format": "json"})
+     * @RequiresCsrf()
+     *
+     */
+    public function fallbackNumber(
+        string $member,
+        SetFallbackNumber\Handler $handler,
+        Request $request
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $handler(new SetFallbackNumber\Command($member, $data['value'] ?: null));
 
         return $this->json(['status' => 'ok']);
     }

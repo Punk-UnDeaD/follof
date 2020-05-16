@@ -31,6 +31,7 @@ class Member implements AggregateRoot
 
     private const DEFAULT_DATA = [
         'label' => null,
+        'fallbackNumber' => null,
     ];
     /**
      * @ORM\Column(type="json", options={"default" : "{}"})
@@ -61,7 +62,7 @@ class Member implements AggregateRoot
      * @ORM\ManyToOne(targetEntity="Team", inversedBy="members")
      * @ORM\JoinColumn(name="team_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    private Team $team;
+    private ?Team $team = null;
     /**
      * @ORM\Column(type="string", length=16)
      */
@@ -76,18 +77,18 @@ class Member implements AggregateRoot
     {
         $this->id = Id::next();
         $this->data = self::DEFAULT_DATA;
+        $team->addMember($this);
         $this->team = $team;
-        if ($team->getMembers()->count()) {
-            $this->role = Role::member();
-            $this->status = static::STATUS_BLOCKED;
-            $this->setLabel('member-'.count($team->getMembers()));
-        } else {
+        if (1 === $team->getMembers()->count()) {
             $this->role = Role::owner();
             $this->status = static::STATUS_ACTIVE;
             $this->setLabel('owner');
             $this->setInternalNumber(new InternalNumber('000'));
+        } else {
+            $this->role = Role::member();
+            $this->status = static::STATUS_BLOCKED;
+            $this->setLabel('member-'.count($team->getMembers()));
         }
-        $team->addMember($this);
         $this->sipAccounts = new ArrayCollection();
     }
 
@@ -207,6 +208,22 @@ class Member implements AggregateRoot
     public function checkData(): void
     {
         $this->data = array_merge(self::DEFAULT_DATA, $this->data);
+        if ($this->data['fallbackNumber']) {
+            $this->data['fallbackNumber'] = new InternalNumber($this->data['fallbackNumber']);
+        }
+    }
+
+    public function getFallbackNumber(): ?InternalNumber
+    {
+        return $this->data['fallbackNumber'];
+    }
+
+    public function setFallbackNumber(?InternalNumber $number): self
+    {
+        $this->data['fallbackNumber'] = $number;
+        $this->recordEvent(new Event\MemberDataUpdated($this->getId()->getValue()));
+
+        return $this;
     }
 
     protected function onUpdateInternalNumber()

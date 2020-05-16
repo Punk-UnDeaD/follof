@@ -84,8 +84,7 @@ class Team implements AggregateRoot
 
     public function addMember(Member $member): self
     {
-        Assert::eq($this, $member->getTeam(), '$member in other Team.');
-        Assert::False($this->members->contains($member), '$member already added.');
+        Assert::null($member->getTeam(), 'Already added.');
         $this->members->add($member);
 
         return $this;
