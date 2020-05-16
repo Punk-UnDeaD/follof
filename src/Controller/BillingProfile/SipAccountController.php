@@ -7,24 +7,35 @@ namespace App\Controller\BillingProfile;
 use App\Annotation\RequiresCsrf;
 use App\Annotation\RequiresSameMemberSipAccount;
 use App\Annotation\RequiresSameTeamMember;
+use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\UseCase\SipAccount\Activate;
 use App\Model\Billing\UseCase\SipAccount\Block;
 use App\Model\Billing\UseCase\SipAccount\UpdateLogin;
 use App\Model\Billing\UseCase\SipAccount\UpdatePassword;
+use App\Model\Billing\UseCase\SipAccount\SetLabel;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/profile/team/member/{member}/{sipAccount}")
+ * @Route("/profile/team/member/{member}/{sipAccount}", name="billing.team.member.sipAccount")
  * @RequiresSameTeamMember
  * @RequiresSameMemberSipAccount
  */
 class SipAccountController extends AbstractController
 {
+
     /**
-     * @Route("/updatePassword", name="billing.team.member.sipAccount.updatePassword", format="json")
+     * @Route("", name="")
+     */
+    public function show(SipAccount $sipAccount)
+    {
+        return $this->render('app/billing/sipAccount/show.html.twig', ['sipAccount'=>$sipAccount]);
+    }
+
+    /**
+     * @Route("/updatePassword", name=".updatePassword", format="json")
      * @RequiresCsrf()
      */
     public function updatePassword(string $sipAccount, UpdatePassword\Handler $handler, Request $request): JsonResponse
@@ -36,7 +47,7 @@ class SipAccountController extends AbstractController
     }
 
     /**
-     * @Route("/updateLogin", name="billing.team.member.sipAccount.updateLogin", format="json")
+     * @Route("/updateLogin", name=".updateLogin", format="json")
      * @RequiresCsrf()
      */
     public function updateLogin(string $sipAccount, UpdateLogin\Handler $handler, Request $request): JsonResponse
@@ -48,7 +59,7 @@ class SipAccountController extends AbstractController
     }
 
     /**
-     * @Route("/block", name="billing.team.member.sipAccount.block", defaults={"_format": "json"})
+     * @Route("/block", name=".block", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.sipAccount.toggleStatus")
      */
     public function block(string $sipAccount, Block\Handler $handler): JsonResponse
@@ -59,7 +70,7 @@ class SipAccountController extends AbstractController
     }
 
     /**
-     * @Route("/activate", name="billing.team.member.sipAccount.activate", defaults={"_format": "json"})
+     * @Route("/activate", name=".activate", defaults={"_format": "json"})
      * @RequiresCsrf(tokenId="billing.team.member.sipAccount.toggleStatus")
      */
     public function activate(string $sipAccount, Activate\Handler $handler): JsonResponse
@@ -68,4 +79,17 @@ class SipAccountController extends AbstractController
 
         return $this->json(['status' => 'ok']);
     }
+
+    /**
+     * @Route("/label", name=".label", defaults={"_format": "json"})
+     * @RequiresCsrf()
+     */
+    public function label(string $sipAccount, SetLabel\Handler $handler, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $handler(new SetLabel\Command($sipAccount, $data['value'] ?: null));
+
+        return $this->json(['status' => 'ok']);
+    }
+
 }

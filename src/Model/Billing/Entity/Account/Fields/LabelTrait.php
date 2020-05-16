@@ -6,7 +6,12 @@ namespace App\Model\Billing\Entity\Account\Fields;
 
 trait LabelTrait
 {
-    protected array $data;
+    use DataTrait;
+
+    protected static function defaultData(): array
+    {
+        return ['label' => null];
+    }
 
     public function getLabel(): ?string
     {

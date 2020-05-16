@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\AggregateRoot;
+use App\Model\Billing\Entity\Account\Fields\DataTrait;
+use App\Model\Billing\Entity\Account\Fields\LabelTrait;
 use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert;
@@ -16,6 +18,9 @@ use Webmozart\Assert\Assert;
 class SipAccount implements AggregateRoot
 {
     use EventsTrait;
+    use LabelTrait {
+        defaultData as labelDefaultData;
+    }
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
@@ -52,6 +57,7 @@ class SipAccount implements AggregateRoot
         $member->addSipAccount($this);
         $this->member = $member;
         $this->setLogin($login);
+        $this->setLabel('sip-'.$member->getSipAccounts()->count());
     }
 
     public function getLogin(): ?string

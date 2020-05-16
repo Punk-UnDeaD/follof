@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\AggregateRoot;
+use App\Model\Billing\Entity\Account\Fields\DataTrait;
 use App\Model\Billing\Entity\Account\Fields\InternalNumberTrait;
 use App\Model\Billing\Entity\Account\Fields\LabelTrait;
 use App\Model\EventsTrait;
@@ -24,19 +25,16 @@ class Member implements AggregateRoot
 {
     use EventsTrait;
     use InternalNumberTrait;
-    use LabelTrait;
+    use DataTrait {
+        checkData as baseCheckData;
+    }
+    use LabelTrait {
+        defaultData as labelDefaultData;
+    }
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
 
-    private const DEFAULT_DATA = [
-        'label' => null,
-        'fallbackNumber' => null,
-    ];
-    /**
-     * @ORM\Column(type="json", options={"default" : "{}"})
-     */
-    protected array $data;
     /**
      * @ORM\Column(type="billing_guid")
      * @ORM\Id
@@ -76,7 +74,7 @@ class Member implements AggregateRoot
     public function __construct(Team $team)
     {
         $this->id = Id::next();
-        $this->data = self::DEFAULT_DATA;
+        $this->data = static::defaultData();
         $team->addMember($this);
         $this->team = $team;
         if (1 === $team->getMembers()->count()) {
@@ -90,6 +88,11 @@ class Member implements AggregateRoot
             $this->setLabel('member-'.count($team->getMembers()));
         }
         $this->sipAccounts = new ArrayCollection();
+    }
+
+    protected static function defaultData(): array
+    {
+        return static::labelDefaultData() + ['fallbackNumber' => null];
     }
 
     public function removeCredentials(): self
@@ -143,7 +146,7 @@ class Member implements AggregateRoot
 
     public function isActivated(): bool
     {
-        return (bool) $this->internalNumber && (bool) $this->sipAccounts->count();
+        return (bool)$this->internalNumber && (bool)$this->sipAccounts->count();
     }
 
     public function getEmail(): ?string
@@ -207,7 +210,7 @@ class Member implements AggregateRoot
      */
     public function checkData(): void
     {
-        $this->data = array_merge(self::DEFAULT_DATA, $this->data);
+        $this->baseCheckData();
         if ($this->data['fallbackNumber']) {
             $this->data['fallbackNumber'] = new InternalNumber($this->data['fallbackNumber']);
         }

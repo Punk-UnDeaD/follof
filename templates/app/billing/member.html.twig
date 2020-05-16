@@ -89,7 +89,7 @@
                 <tbody>
                 {% for account in member.sipAccounts %}
                 <tr>
-                    <th scope="row">{{ account.id.value }}
+                    <th scope="row"><a href="{{ path('billing.team.member.sipAccount', {sipAccount: account.id, member:member.id }) }}">{{ account.label?:account.id }}</a>
                     <td>
                         <div class="d-inline-flex w-20em">
                             <input class="ml-1 form-control" type="text" name="login" value="{{ account.login }}" id="id-login-{{ account.id.value }}">
