@@ -8,7 +8,7 @@ trait LabelTrait
 {
     use DataTrait;
 
-    protected static function defaultData(): array
+    public static function defaultData(): array
     {
         return ['label' => null];
     }

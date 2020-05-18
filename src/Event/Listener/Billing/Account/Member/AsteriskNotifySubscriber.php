@@ -115,6 +115,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
                     $accounts[] = [
                         'login' => $account->getLogin().'/'.$member->getTeam()->getBillingId(),
                         'password' => $account->getPassword(),
+                        'waitTime' => $account->getWaitTime()
                     ];
                 }
             }

@@ -7,6 +7,7 @@ namespace App\Model\Billing\Entity\Account;
 use App\Model\AggregateRoot;
 use App\Model\Billing\Entity\Account\Fields\DataTrait;
 use App\Model\Billing\Entity\Account\Fields\LabelTrait;
+use App\Model\Billing\Entity\Account\Fields\WaitTimeTrait;
 use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert;
@@ -17,9 +18,9 @@ use Webmozart\Assert\Assert;
  */
 class SipAccount implements AggregateRoot
 {
-    use EventsTrait;
-    use LabelTrait {
-        defaultData as labelDefaultData;
+    use EventsTrait, DataTrait, LabelTrait, WaitTimeTrait {
+        DataTrait::checkData insteadof WaitTimeTrait;
+        DataTrait::checkData insteadof LabelTrait;
     }
 
     public const STATUS_ACTIVE = 'active';
@@ -57,7 +58,13 @@ class SipAccount implements AggregateRoot
         $member->addSipAccount($this);
         $this->member = $member;
         $this->setLogin($login);
+        $this->data = static::defaultData();
         $this->setLabel('sip-'.$member->getSipAccounts()->count());
+    }
+
+    public static function defaultData(): array
+    {
+        return LabelTrait::defaultData() + WaitTimeTrait::defaultData();
     }
 
     public function getLogin(): ?string
@@ -150,4 +157,10 @@ class SipAccount implements AggregateRoot
     {
         return $this->id;
     }
+
+    protected function onUpdateWaitTime()
+    {
+        $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
+    }
+
 }

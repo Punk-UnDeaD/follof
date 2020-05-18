@@ -30,6 +30,18 @@
                             </button>
                         </div>
                     </td>
+                </tr><tr>
+                    <th scope="row"><label for="label">Wait time</label>
+                    <td>
+                        <div class="d-inline-flex w-20em">
+                            <input type="number" min="15" max="90" value="{{ sipAccount.waitTime }}" id="waitTime" class="ml-1 form-control" placeholder="{{ sipAccount.defaultData.waitTime }}">
+                            <button class="btn btn-dark btn-sm" data-for="waitTime" is="x-auto-save-button"
+                                    data-save="{{ path('billing.team.member.sipAccount.waitTime', { member: sipAccount.member.id,sipAccount: sipAccount.id }) }}"
+                                    data-csrf="{{ csrf_token("billing.team.member.sipAccount.waitTime") }}">
+                                <i class="fa-save fa"></i>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
