@@ -1,0 +1,13 @@
+monolog:
+  channels: ['asteriskIn', 'asteriskOut']
+  handlers:
+    asteriskIn:
+      type: stream
+      path: "%kernel.logs_dir%/asteriskIn.log"
+      level: debug
+      channels: ["asteriskIn"]
+    asteriskOut:
+      type: stream
+      path: "%kernel.logs_dir%/asteriskOut.log"
+      level: debug
+      channels: ["asteriskOut"]

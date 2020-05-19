@@ -61,3 +61,9 @@ services:
 
 
   GuzzleHttp\Client: ~
+  App\Controller\Api\AsteriskController:
+    arguments:
+      # the '@' symbol is important: that's what tells the container
+      # you want to pass the *service* whose id is 'monolog.logger.request',
+      # and not just the *string* 'monolog.logger.request'
+      $logger: '@monolog.logger.asteriskIn'
