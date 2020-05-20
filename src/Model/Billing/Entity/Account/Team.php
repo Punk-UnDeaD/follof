@@ -8,6 +8,7 @@ use App\Model\AggregateRoot;
 use App\Model\Billing\Entity\Account\DataType\Balance;
 use App\Model\Billing\Entity\Account\DataType\Id;
 use App\Model\Billing\Entity\Account\DataType\InternalNumber;
+use App\Model\Billing\Entity\Account\Field\IdTrait;
 use App\Model\EventsTrait;
 use App\Model\User\Entity\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,15 +22,11 @@ use Webmozart\Assert\Assert;
  */
 class Team implements AggregateRoot
 {
+    use IdTrait;
+
     use EventsTrait;
 
-    /**
-     * @ORM\Column(type="billing_guid")
-     * @ORM\Id
-     */
-    private Id $id;
-
-    /**
+     /**
      * @ORM\Column(type="string", name="billing_id")
      */
     private string $billingId;
@@ -93,16 +90,6 @@ class Team implements AggregateRoot
         return $this;
     }
 
-    public function removeMember(Member $member): self
-    {
-        Assert::False($member->getRole()->isOwner(), 'Can\'t remove owner.');
-        Assert::eq($this, $member->getTeam(), '$member in other Team.');
-        Assert::true($this->members->contains($member), '$member already not in Team.');
-        $this->members->removeElement($member);
-
-        return $this;
-    }
-
     public function getBillingId(): string
     {
         return $this->billingId;
@@ -113,10 +100,6 @@ class Team implements AggregateRoot
         return $this->balance;
     }
 
-    public function getId(): Id
-    {
-        return $this->id;
-    }
 
     public function getUser(): User
     {

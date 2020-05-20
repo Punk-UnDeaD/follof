@@ -7,6 +7,7 @@ namespace App\Model\Billing\Entity\Account;
 use App\Model\AggregateRoot;
 use App\Model\Billing\Entity\Account\DataType\Id;
 use App\Model\Billing\Entity\Account\Field\DataTrait;
+use App\Model\Billing\Entity\Account\Field\IdTrait;
 use App\Model\Billing\Entity\Account\Field\LabelTrait;
 use App\Model\Billing\Entity\Account\Field\StatusTrait;
 use App\Model\Billing\Entity\Account\Field\WaitTimeTrait;
@@ -20,6 +21,8 @@ use Webmozart\Assert\Assert;
  */
 class SipAccount implements AggregateRoot
 {
+    use IdTrait;
+
     use EventsTrait,
         DataTrait,
         LabelTrait,
@@ -32,11 +35,6 @@ class SipAccount implements AggregateRoot
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
 
-    /**
-     * @ORM\Column(type="billing_guid")
-     * @ORM\Id
-     */
-    private Id $id;
     /**
      * @ORM\Column(type="string", length=32)
      */
@@ -120,11 +118,6 @@ class SipAccount implements AggregateRoot
     public function isSameLogin($login): bool
     {
         return $this->login === $login;
-    }
-
-    public function getId(): Id
-    {
-        return $this->id;
     }
 
     protected function onUpdateWaitTime(): self

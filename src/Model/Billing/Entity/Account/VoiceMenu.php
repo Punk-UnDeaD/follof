@@ -7,6 +7,7 @@ namespace App\Model\Billing\Entity\Account;
 use App\Model\AggregateRoot;
 use App\Model\Billing\Entity\Account\DataType\Id;
 use App\Model\Billing\Entity\Account\Field\DataTrait;
+use App\Model\Billing\Entity\Account\Field\IdTrait;
 use App\Model\Billing\Entity\Account\Field\InternalNumberTrait;
 use App\Model\Billing\Entity\Account\Field\LabelTrait;
 use App\Model\Billing\Entity\Account\Field\MenuPointsTrait;
@@ -22,6 +23,8 @@ use Webmozart\Assert\Assert;
  */
 class VoiceMenu implements AggregateRoot
 {
+    use IdTrait;
+
     use EventsTrait;
     use InternalNumberTrait;
     use DataTrait,
@@ -34,12 +37,6 @@ class VoiceMenu implements AggregateRoot
 
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
-
-    /**
-     * @ORM\Column(type="billing_guid")
-     * @ORM\Id
-     */
-    private Id $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Team", inversedBy="voiceMenus")
@@ -90,10 +87,6 @@ class VoiceMenu implements AggregateRoot
         return $this;
     }
 
-    public function getId(): Id
-    {
-        return $this->id;
-    }
 
     /**
      * @ORM\PostLoad()

@@ -9,6 +9,7 @@ use App\Model\Billing\Entity\Account\DataType\Id;
 use App\Model\Billing\Entity\Account\DataType\InternalNumber;
 use App\Model\Billing\Entity\Account\DataType\Role;
 use App\Model\Billing\Entity\Account\Field\DataTrait;
+use App\Model\Billing\Entity\Account\Field\IdTrait;
 use App\Model\Billing\Entity\Account\Field\InternalNumberTrait;
 use App\Model\Billing\Entity\Account\Field\LabelTrait;
 use App\Model\Billing\Entity\Account\Field\StatusTrait;
@@ -27,6 +28,7 @@ use Webmozart\Assert\Assert;
  */
 class Member implements AggregateRoot
 {
+    use IdTrait;
     use EventsTrait;
     use InternalNumberTrait;
     use DataTrait,
@@ -39,11 +41,6 @@ class Member implements AggregateRoot
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
 
-    /**
-     * @ORM\Column(type="billing_guid")
-     * @ORM\Id
-     */
-    private Id $id;
     /**
      * @ORM\Column(type="string", length=25, nullable=true))
      */
@@ -146,7 +143,7 @@ class Member implements AggregateRoot
 
     public function isActivated(): bool
     {
-        return (bool) $this->internalNumber && (bool) $this->sipAccounts->count();
+        return (bool)$this->internalNumber && (bool)$this->sipAccounts->count();
     }
 
     public function getEmail(): ?string
@@ -164,11 +161,6 @@ class Member implements AggregateRoot
         Assert::false($this->role->isOwner(), 'Cannot block owner.');
 
         return $this->baseBlock();
-    }
-
-    public function getId(): Id
-    {
-        return $this->id;
     }
 
     public function addSipAccount(SipAccount $sipAccount): self
