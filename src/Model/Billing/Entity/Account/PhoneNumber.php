@@ -2,20 +2,25 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\Entity\Account\DataType;
+namespace App\Model\Billing\Entity\Account;
 
+use App\Model\Billing\Entity\Account\DataType\Id;
+use App\Model\Billing\Entity\Account\Field\IdTrait;
 use Webmozart\Assert\Assert;
 
 class PhoneNumber
 {
-    public const FORMAT = '/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}(?>,\d{1,5})?$/';
+    use IdTrait;
 
-    private ?string $number = null;
+    public const FORMAT = '/^\+7\(\d{3}\)\d{3}-\d{2}-\d{2}?$/';
+
+    private string $number;
 
     public function __construct(string $number)
     {
         Assert::regex($number, static::FORMAT, 'Wrong format.');
         $this->number = $number;
+        $this->id = Id::next();
     }
 
     public function isSame(self $other): bool
@@ -32,4 +37,5 @@ class PhoneNumber
     {
         return $this->number;
     }
+
 }

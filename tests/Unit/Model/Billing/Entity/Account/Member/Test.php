@@ -12,7 +12,7 @@ class Test extends TestCase
     {
         $team = (new TeamBuilder())->getTeam();
         $owner = $team->getOwner();
-        $this->assertEquals($team, $owner->getTeam());
+        $this->assertSame($team, $owner->getTeam());
         $this->assertTrue($owner instanceof Member);
         $this->assertTrue($owner->getRole()->isOwner());
         $this->assertContains($owner, $team->getMembers());
@@ -25,7 +25,7 @@ class Test extends TestCase
     {
         $team = (new TeamBuilder())->getTeam();
         $member = new Member($team);
-        $this->assertEquals($team, $member->getTeam());
+        $this->assertSame($team, $member->getTeam());
         $this->assertTrue($member->getRole()->isMember());
         $this->assertContains($member, $team->getMembers());
         $this->assertNull($member->getInternalNumber());

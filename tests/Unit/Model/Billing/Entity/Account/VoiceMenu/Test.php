@@ -20,7 +20,7 @@ class Test extends TestCase
     {
         $team = (new TeamBuilder())->getTeam();
         $voiceMenu = new VoiceMenu($team);
-        $this->assertEquals($team, $voiceMenu->getTeam());
+        $this->assertSame($team, $voiceMenu->getTeam());
         $this->assertNull($voiceMenu->getInternalNumber());
         $this->assertNull($voiceMenu->getFile());
         $voiceMenu->setInternalNumber(new InternalNumber(self::NUMBER_ALPHA));

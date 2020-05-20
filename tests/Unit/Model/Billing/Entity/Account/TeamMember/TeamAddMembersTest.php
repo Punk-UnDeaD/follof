@@ -16,7 +16,7 @@ class TeamAddMembersTest extends TestCase
         /** @var Team $team */
         ['owner' => $owner, 'team' => $team, 'member' => $member] = (new TeamBuilder())->getAll();
         $this->assertTrue($member->getRole()->isMember());
-        $this->assertEquals($team, $member->getTeam());
+        $this->assertSame($team, $member->getTeam());
 
         $this->assertCount(2, $team->getMembers());
         $this->assertContains($owner, $team->getMembers());

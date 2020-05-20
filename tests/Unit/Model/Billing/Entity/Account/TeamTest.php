@@ -14,8 +14,8 @@ class TeamTest extends TestCase
         $billingId = '000000';
         $user = (new TeamBuilder())->getUser();
         $team = new Team($user, $billingId);
-        self::assertEquals(0.0, $team->getBalance()->getValue());
-        self::assertEquals($user, $team->getUser());
+        $this->assertSame($user, $team->getUser());
+        $this->assertEquals(0.0, $team->getBalance()->getValue());
     }
 
     public function testCreateWithoutBillingId()
