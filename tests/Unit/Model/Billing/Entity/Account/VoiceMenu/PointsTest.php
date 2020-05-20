@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Model\Billing\Entity\Account\VoiceMenu;
 
-use App\Model\Billing\Entity\Account\InternalNumber;
+use App\Model\Billing\Entity\Account\DataType\InternalNumber;
 use App\Tests\Builder\Billing\TeamBuilder;
 use PHPUnit\Framework\TestCase;
 
@@ -38,11 +38,11 @@ class PointsTest extends TestCase
     /**
      * @dataProvider getWrongKeys
      */
-    public function testPointWrongKey(string $method, ...$params)
+    public function testPointWrongKey(...$params)
     {
         $this->expectExceptionMessage('Wrong key.');
         (new TeamBuilder())->getVoiceMenu()
-            ->$method(
+            ->addPoint(
                 ...$params
             );
     }
@@ -58,9 +58,8 @@ class PointsTest extends TestCase
 
     public function getWrongKeys(): iterable
     {
-        yield ['addPoint', 'a', new InternalNumber(self::NUMBER_ALPHA)];
-        yield ['addPoint', '-', new InternalNumber(self::NUMBER_ALPHA)];
-        yield ['removePoint', 'a'];
-        yield ['removePoint', '-'];
+        yield ['a', new InternalNumber(self::NUMBER_ALPHA)];
+        yield ['-', new InternalNumber(self::NUMBER_ALPHA)];
+        yield ['9999', new InternalNumber(self::NUMBER_ALPHA)];
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\Entity\Account;
+namespace App\Model\Billing\Entity\Account\DataType;
 
 use Webmozart\Assert\Assert;
 

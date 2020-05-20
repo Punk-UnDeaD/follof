@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\AggregateRoot;
-use App\Model\Billing\Entity\Account\Fields\DataTrait;
-use App\Model\Billing\Entity\Account\Fields\LabelTrait;
-use App\Model\Billing\Entity\Account\Fields\WaitTimeTrait;
+use App\Model\Billing\Entity\Account\DataType\Id;
+use App\Model\Billing\Entity\Account\Field\DataTrait;
+use App\Model\Billing\Entity\Account\Field\LabelTrait;
+use App\Model\Billing\Entity\Account\Field\StatusTrait;
+use App\Model\Billing\Entity\Account\Field\WaitTimeTrait;
 use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert;
@@ -18,7 +20,11 @@ use Webmozart\Assert\Assert;
  */
 class SipAccount implements AggregateRoot
 {
-    use EventsTrait, DataTrait, LabelTrait, WaitTimeTrait {
+    use EventsTrait,
+        DataTrait,
+        LabelTrait,
+        WaitTimeTrait,
+        StatusTrait {
         DataTrait::checkData insteadof WaitTimeTrait;
         DataTrait::checkData insteadof LabelTrait;
     }
@@ -39,10 +45,6 @@ class SipAccount implements AggregateRoot
      * @ORM\Column(type="string", length=128)
      */
     private string $password;
-    /**
-     * @ORM\Column(type="string", length=32)
-     */
-    private string $status;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Model\Billing\Entity\Account\Member", inversedBy="sipAccounts")
@@ -110,37 +112,9 @@ class SipAccount implements AggregateRoot
         return $this;
     }
 
-    public function isActive(): bool
-    {
-        return self::STATUS_ACTIVE === $this->status;
-    }
-
     public function getMember(): ?Member
     {
         return $this->member;
-    }
-
-    public function activate(): self
-    {
-        Assert::false($this->isActive(), 'Sip account is already active.');
-        $this->status = self::STATUS_ACTIVE;
-        $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
-
-        return $this;
-    }
-
-    public function block(): self
-    {
-        Assert::false($this->isBlocked(), 'Sip account is already blocked.');
-        $this->status = self::STATUS_BLOCKED;
-        $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
-
-        return $this;
-    }
-
-    public function isBlocked(): bool
-    {
-        return self::STATUS_BLOCKED === $this->status;
     }
 
     public function isSameLogin($login): bool
@@ -148,19 +122,23 @@ class SipAccount implements AggregateRoot
         return $this->login === $login;
     }
 
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
     public function getId(): Id
     {
         return $this->id;
     }
 
-    protected function onUpdateWaitTime()
+    protected function onUpdateWaitTime(): self
     {
-        $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
+        return  $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
     }
 
+    public function isActivated(): bool
+    {
+        return true;
+    }
+
+    protected function onUpdateStatus(): self
+    {
+        return $this->recordEvent(new Event\MemberDataUpdated($this->getMember()->getId()->getValue()));
+    }
 }

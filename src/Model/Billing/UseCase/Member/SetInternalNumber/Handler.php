@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\Member\SetInternalNumber;
 
-use App\Model\Billing\Entity\Account\InternalNumber;
+use App\Model\Billing\Entity\Account\DataType\InternalNumber;
 use App\Model\Billing\Entity\Account\Member;
 use App\Model\Billing\UseCase\Member\BaseHandlerTrait;
 

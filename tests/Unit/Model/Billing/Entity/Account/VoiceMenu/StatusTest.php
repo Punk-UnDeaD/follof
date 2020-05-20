@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Model\Billing\Entity\Account\VoiceMenu;
 
-use App\Model\Billing\Entity\Account\InternalNumber;
+use App\Model\Billing\Entity\Account\DataType\InternalNumber;
 use App\Tests\Builder\Billing\TeamBuilder;
 use PHPUnit\Framework\TestCase;
 
@@ -40,7 +40,7 @@ class StatusTest extends TestCase
 
     public function testNoFile()
     {
-        $this->expectExceptionMessage('File required.');
+        $this->expectExceptionMessage('Can\'t activate.');
         (new TeamBuilder())
             ->getVoiceMenu()
             ->setInternalNumber(new InternalNumber('444'))
@@ -49,7 +49,7 @@ class StatusTest extends TestCase
 
     public function testNoNumber()
     {
-        $this->expectExceptionMessage('Number required.');
+        $this->expectExceptionMessage('Can\'t activate.');
         (new TeamBuilder())
             ->getVoiceMenu()
             ->setFile('~~')

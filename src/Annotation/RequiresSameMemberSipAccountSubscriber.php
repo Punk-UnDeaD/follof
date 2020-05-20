@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Annotation;
 
-use App\Model\Billing\Entity\Account\SipAccountRepository;
+use App\Model\Billing\Entity\Account\Repository\SipAccountRepository;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;

@@ -7,7 +7,7 @@ namespace App\Controller\BillingProfile;
 use App\Annotation\Guid;
 use App\Annotation\RequiresCsrf;
 use App\Annotation\RequiresSameTeamMember;
-use App\Model\Billing\Entity\Account\MemberRepository;
+use App\Model\Billing\Entity\Account\Repository\MemberRepository;
 use App\Model\Billing\UseCase\Member\Activate;
 use App\Model\Billing\UseCase\Member\AddSipAccount;
 use App\Model\Billing\UseCase\Member\Block;

@@ -13,6 +13,6 @@ class Handler
 
     protected function handle(SipAccount $sipAccount, Command $command): void
     {
-        $sipAccount->setWaitTime(...($command->waitTime?[$command->waitTime]:[]) );
+        $sipAccount->setWaitTime(...($command->waitTime ? [$command->waitTime] : []));
     }
 }

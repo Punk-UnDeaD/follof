@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\Entity\Account;
+namespace App\Model\Billing\Entity\Account\DataType;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Embeddable
  */
-class Ballance
+class Balance
 {
     /**
      * @ORM\Column(type="decimal", precision=8, scale=2)

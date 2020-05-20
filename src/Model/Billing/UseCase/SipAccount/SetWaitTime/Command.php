@@ -10,7 +10,6 @@ class Command
 {
     use BaseCommandTrait;
 
-
     public ?int $waitTime;
 
     public function __construct(string $id, ?int $waitTime)

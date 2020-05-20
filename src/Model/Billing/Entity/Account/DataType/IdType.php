@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\Entity\Account;
+namespace App\Model\Billing\Entity\Account\DataType;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\GuidType;

@@ -30,8 +30,8 @@ services:
     exclude: '../src/{DependencyInjection,Model/User/Entity,Model/Billing/Entity,Model/Work/Entity,Migrations,Tests,Kernel.php}'
 
   App\Model\User\Entity\User\UserRepository: ~
-  App\Model\Billing\Entity\Account\MemberRepository: ~
-  App\Model\Billing\Entity\Account\SipAccountRepository: ~
+  App\Model\Billing\Entity\Account\Repository\MemberRepository: ~
+  App\Model\Billing\Entity\Account\Repository\SipAccountRepository: ~
   #    App\Model\Work\Entity\Members\Group\GroupRepository: ~
   #    App\Model\Work\Entity\Members\Member\MemberRepository: ~
   #    App\Model\Work\Entity\Projects\Role\RoleRepository: ~

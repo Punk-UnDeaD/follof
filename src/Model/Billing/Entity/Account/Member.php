@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\AggregateRoot;
-use App\Model\Billing\Entity\Account\Fields\DataTrait;
-use App\Model\Billing\Entity\Account\Fields\InternalNumberTrait;
-use App\Model\Billing\Entity\Account\Fields\LabelTrait;
+use App\Model\Billing\Entity\Account\DataType\Id;
+use App\Model\Billing\Entity\Account\DataType\InternalNumber;
+use App\Model\Billing\Entity\Account\DataType\Role;
+use App\Model\Billing\Entity\Account\Field\DataTrait;
+use App\Model\Billing\Entity\Account\Field\InternalNumberTrait;
+use App\Model\Billing\Entity\Account\Field\LabelTrait;
+use App\Model\Billing\Entity\Account\Field\StatusTrait;
 use App\Model\EventsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,11 +29,11 @@ class Member implements AggregateRoot
 {
     use EventsTrait;
     use InternalNumberTrait;
-    use DataTrait {
-        checkData as baseCheckData;
-    }
-    use LabelTrait {
-        defaultData as labelDefaultData;
+    use DataTrait,
+        LabelTrait,
+        StatusTrait {
+        DataTrait::checkData as protected baseCheckData;
+        StatusTrait::block as protected baseBlock;
     }
 
     public const STATUS_ACTIVE = 'active';
@@ -62,10 +66,6 @@ class Member implements AggregateRoot
      */
     private ?Team $team = null;
     /**
-     * @ORM\Column(type="string", length=16)
-     */
-    private string $status;
-    /**
      * @var SipAccount[]|Collection
      * @ORM\OneToMany(targetEntity="App\Model\Billing\Entity\Account\SipAccount", mappedBy="member", orphanRemoval=true, cascade={"all"})
      */
@@ -92,7 +92,7 @@ class Member implements AggregateRoot
 
     protected static function defaultData(): array
     {
-        return static::labelDefaultData() + ['fallbackNumber' => null];
+        return LabelTrait::defaultData() + ['fallbackNumber' => null];
     }
 
     public function removeCredentials(): self
@@ -146,7 +146,7 @@ class Member implements AggregateRoot
 
     public function isActivated(): bool
     {
-        return (bool)$this->internalNumber && (bool)$this->sipAccounts->count();
+        return (bool) $this->internalNumber && (bool) $this->sipAccounts->count();
     }
 
     public function getEmail(): ?string
@@ -159,33 +159,16 @@ class Member implements AggregateRoot
         return $this->passwordHash;
     }
 
-    public function activate(): self
+    public function block(): self
     {
-        Assert::false($this->isActive(), 'Already activated.');
-        $this->status = static::STATUS_ACTIVE;
-        $this->recordEvent(new Event\MemberStatusUpdated($this->getId()->getValue()));
+        Assert::false($this->role->isOwner(), 'Cannot block owner.');
 
-        return $this;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->status === static::STATUS_ACTIVE;
+        return $this->baseBlock();
     }
 
     public function getId(): Id
     {
         return $this->id;
-    }
-
-    public function block(): self
-    {
-        Assert::true($this->isActive(), 'Already blocked.');
-        Assert::false($this->role->isOwner(), 'Cannot block owner.');
-        $this->status = static::STATUS_BLOCKED;
-        $this->recordEvent(new Event\MemberStatusUpdated($this->getId()->getValue()));
-
-        return $this;
     }
 
     public function addSipAccount(SipAccount $sipAccount): self
@@ -232,5 +215,10 @@ class Member implements AggregateRoot
     protected function onUpdateInternalNumber()
     {
         $this->recordEvent(new Event\MemberDataUpdated($this->getId()->getValue()));
+    }
+
+    protected function onUpdateStatus(): self
+    {
+        return $this->recordEvent(new Event\MemberStatusUpdated($this->getId()->getValue()));
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\ReadModel\Billing;
 
+use App\Model\Billing\Entity\Account\DataType\Role;
 use App\Model\Billing\Entity\Account\Member;
-use App\Model\Billing\Entity\Account\Role;
 use App\ReadModel\NotFoundException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;

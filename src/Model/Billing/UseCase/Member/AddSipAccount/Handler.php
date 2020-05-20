@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Model\Billing\UseCase\Member\AddSipAccount;
 
 use App\Model\Billing\Entity\Account\Member;
-use App\Model\Billing\Entity\Account\MemberRepository;
+use App\Model\Billing\Entity\Account\Repository\MemberRepository;
 use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\Service\SipLoginGenerator;
 use App\Model\Billing\UseCase\Member\BaseHandlerTrait;

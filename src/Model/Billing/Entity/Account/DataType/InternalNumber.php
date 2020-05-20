@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\Entity\Account;
+namespace App\Model\Billing\Entity\Account\DataType;
 
 use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert;
@@ -12,7 +12,7 @@ use Webmozart\Assert\Assert;
  */
 class InternalNumber implements \JsonSerializable
 {
-    public const FORMAT = '/^\d(?>-?\d){0,4}?$/';
+    public const FORMAT = '/^\d(?>-?\d){2,4}?$/';
 
     /**
      * @ORM\Column(type="string", length=16, nullable=true)

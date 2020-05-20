@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\Entity\Account\Fields;
+namespace App\Model\Billing\Entity\Account\Field;
 
-use App\Model\Billing\Entity\Account\InternalNumber;
+use App\Model\Billing\Entity\Account\DataType\InternalNumber;
 use Webmozart\Assert\Assert;
 
 trait InternalNumberTrait
 {
     /**
-     * @ORM\Embedded(class="InternalNumber")
+     * @ORM\Embedded(class="App\Model\Billing\Entity\Account\DataType\InternalNumber")
      */
     protected ?InternalNumber $internalNumber = null;
 

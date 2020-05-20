@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\Entity\Account\Fields;
+namespace App\Model\Billing\Entity\Account\Field;
 
 trait DataTrait
 {

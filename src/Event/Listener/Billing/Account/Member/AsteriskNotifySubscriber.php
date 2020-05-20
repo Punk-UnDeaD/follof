@@ -10,7 +10,7 @@ use App\Model\Billing\Entity\Account\Event\MemberStatusUpdated;
 use App\Model\Billing\Entity\Account\Event\VoiceMenuDataUpdated;
 use App\Model\Billing\Entity\Account\Event\VoiceMenuStatusUpdated;
 use App\Model\Billing\Entity\Account\Member;
-use App\Model\Billing\Entity\Account\MemberRepository;
+use App\Model\Billing\Entity\Account\Repository\MemberRepository;
 use App\Model\Billing\Entity\Account\VoiceMenu;
 use App\Service\AsteriskNotificator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -115,7 +115,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
                     $accounts[] = [
                         'login' => $account->getLogin().'/'.$member->getTeam()->getBillingId(),
                         'password' => $account->getPassword(),
-                        'waitTime' => $account->getWaitTime()
+                        'waitTime' => $account->getWaitTime(),
                     ];
                 }
             }

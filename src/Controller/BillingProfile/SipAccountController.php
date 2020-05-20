@@ -10,10 +10,10 @@ use App\Annotation\RequiresSameTeamMember;
 use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\UseCase\SipAccount\Activate;
 use App\Model\Billing\UseCase\SipAccount\Block;
-use App\Model\Billing\UseCase\SipAccount\UpdateLogin;
-use App\Model\Billing\UseCase\SipAccount\UpdatePassword;
 use App\Model\Billing\UseCase\SipAccount\SetLabel;
 use App\Model\Billing\UseCase\SipAccount\SetWaitTime;
+use App\Model\Billing\UseCase\SipAccount\UpdateLogin;
+use App\Model\Billing\UseCase\SipAccount\UpdatePassword;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,13 +26,12 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SipAccountController extends AbstractController
 {
-
     /**
      * @Route("", name="")
      */
     public function show(SipAccount $sipAccount)
     {
-        return $this->render('app/billing/sipAccount/show.html.twig', ['sipAccount'=>$sipAccount]);
+        return $this->render('app/billing/sipAccount/show.html.twig', ['sipAccount' => $sipAccount]);
     }
 
     /**
@@ -92,6 +91,7 @@ class SipAccountController extends AbstractController
 
         return $this->json(['status' => 'ok']);
     }
+
     /**
      * @Route("/waitTime", name=".waitTime", defaults={"_format": "json"})
      * @RequiresCsrf()
@@ -99,7 +99,7 @@ class SipAccountController extends AbstractController
     public function waitTime(string $sipAccount, SetWaitTime\Handler $handler, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-        $handler(new SetWaitTime\Command($sipAccount, $data['value'] ? (int)$data['value'] : null));
+        $handler(new SetWaitTime\Command($sipAccount, $data['value'] ? (int) $data['value'] : null));
 
         return $this->json(['status' => 'ok']);
     }

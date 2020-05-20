@@ -14,7 +14,7 @@ class TeamTest extends TestCase
         $billingId = '000000';
         $user = (new TeamBuilder())->getUser();
         $team = new Team($user, $billingId);
-        self::assertEquals(0.0, $team->getBallance()->getValue());
+        self::assertEquals(0.0, $team->getBalance()->getValue());
         self::assertEquals($user, $team->getUser());
     }
 

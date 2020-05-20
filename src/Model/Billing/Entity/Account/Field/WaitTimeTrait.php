@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Billing\Entity\Account\Fields;
+namespace App\Model\Billing\Entity\Account\Field;
 
 use Webmozart\Assert\Assert;
 
@@ -31,9 +31,5 @@ trait WaitTimeTrait
         return $this;
     }
 
-    protected function onUpdateWaitTime()
-    {
-
-    }
-
+    abstract protected function onUpdateWaitTime(): self;
 }

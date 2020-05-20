@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\AggregateRoot;
-use App\Model\Billing\Entity\Account\Fields\InternalNumberTrait;
-use App\Model\Billing\Entity\Account\Fields\LabelTrait;
+use App\Model\Billing\Entity\Account\DataType\Id;
+use App\Model\Billing\Entity\Account\Field\DataTrait;
+use App\Model\Billing\Entity\Account\Field\InternalNumberTrait;
+use App\Model\Billing\Entity\Account\Field\LabelTrait;
+use App\Model\Billing\Entity\Account\Field\MenuPointsTrait;
+use App\Model\Billing\Entity\Account\Field\StatusTrait;
 use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Webmozart\Assert\Assert;
@@ -16,15 +20,18 @@ use Webmozart\Assert\Assert;
  * @ORM\Table(name="billing_voice_menus")
  * @ORM\HasLifecycleCallbacks
  */
-class VoiceMenu implements HasNumber, AggregateRoot
+class VoiceMenu implements AggregateRoot
 {
     use EventsTrait;
     use InternalNumberTrait;
-    use LabelTrait;
+    use DataTrait,
+        LabelTrait,
+        MenuPointsTrait,
+        StatusTrait {
+        DataTrait::checkData as protected baseCheckData;
+        MenuPointsTrait::checkData as protected pointsCheckData;
+    }
 
-    protected const DEFAULT_DATA = ['points' => [], 'label' => null, 'isInputAllowed' => false];
-
-    public const POINT_KEY_FORMAT = '/\d{1,3}/';
     public const STATUS_ACTIVE = 'active';
     public const STATUS_BLOCKED = 'blocked';
 
@@ -41,25 +48,24 @@ class VoiceMenu implements HasNumber, AggregateRoot
     private ?Team $team = null;
 
     /**
-     * @ORM\Column(type="json", options={"default" : "{}"})
-     */
-    protected array $data;
-    /**
      * @ORM\Column(type="string", nullable=true)
      */
     private ?string $file = null;
-    /**
-     * @ORM\Column(type="string", length=16)
-     */
-    private string $status;
 
     public function __construct(Team $team)
     {
         $this->id = Id::next();
-        $this->data = self::DEFAULT_DATA;
+        $this->data = self::defaultData();
         $team->addVoiceMenu($this);
         $this->team = $team;
         $this->status = self::STATUS_BLOCKED;
+    }
+
+    public static function defaultData(): array
+    {
+        return LabelTrait::defaultData()
+            + MenuPointsTrait::defaultData()
+            + ['isInputAllowed' => false];
     }
 
     /**
@@ -68,42 +74,6 @@ class VoiceMenu implements HasNumber, AggregateRoot
     public function getTeam(): ?Team
     {
         return $this->team;
-    }
-
-    /**
-     * @return InternalNumber[][]
-     */
-    public function getPoints(): array
-    {
-        return $this->data['points'];
-    }
-
-    /**
-     * @return $this
-     */
-    public function addPoint(string $key, InternalNumber ...$numbers): self
-    {
-        Assert::Regex($key, self::POINT_KEY_FORMAT, 'Wrong key.');
-        Assert::keyNotExists($this->data['points'], $key, 'Key already used.');
-        $this->data['points'][$key] = $numbers;
-        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
-
-        return $this;
-    }
-
-    public function getId(): Id
-    {
-        return $this->id;
-    }
-
-    public function removePoint(string $key): self
-    {
-        Assert::Regex($key, self::POINT_KEY_FORMAT, 'Wrong key.');
-        Assert::keyExists($this->data['points'], $key, 'Key already empty.');
-        unset($this->data['points'][$key]);
-        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
-
-        return $this;
     }
 
     public function getFile(): ?string
@@ -120,35 +90,9 @@ class VoiceMenu implements HasNumber, AggregateRoot
         return $this;
     }
 
-    public function activate(): self
+    public function getId(): Id
     {
-        Assert::notNull($this->file, 'File required.');
-        Assert::notNull($this->internalNumber, 'Number required.');
-        Assert::false($this->isActive(), 'Already activated.');
-        $this->status = static::STATUS_ACTIVE;
-        $this->recordEvent(new Event\VoiceMenuStatusUpdated($this->getId()->getValue()));
-
-        return $this;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->status === static::STATUS_ACTIVE;
-    }
-
-    public function isActivated(): bool
-    {
-        return (bool) $this->file && (bool) $this->internalNumber;
-    }
-
-    public function block(): self
-    {
-        Assert::true($this->isActive(), 'Already blocked.');
-        $this->status = static::STATUS_BLOCKED;
-
-        $this->recordEvent(new Event\VoiceMenuStatusUpdated($this->getId()->getValue()));
-
-        return $this;
+        return $this->id;
     }
 
     /**
@@ -156,11 +100,8 @@ class VoiceMenu implements HasNumber, AggregateRoot
      */
     public function checkData(): void
     {
-        $this->data = array_merge(self::DEFAULT_DATA, $this->data);
-
-        foreach ($this->data['points'] as $k => $points) {
-            $this->data['points'][$k] = array_map(fn ($point) => new InternalNumber($point), $points);
-        }
+        $this->baseCheckData();
+        $this->pointsCheckData();
     }
 
     public function isInputAllowed(): bool
@@ -179,5 +120,20 @@ class VoiceMenu implements HasNumber, AggregateRoot
     protected function onUpdateInternalNumber()
     {
         $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
+    }
+
+    protected function onUpdateMenuPoints(): self
+    {
+        return $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
+    }
+
+    public function isActivated(): bool
+    {
+        return (bool) $this->file && (bool) $this->internalNumber;
+    }
+
+    protected function onUpdateStatus(): self
+    {
+        return $this->recordEvent(new Event\VoiceMenuStatusUpdated($this->getId()->getValue()));
     }
 }

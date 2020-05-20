@@ -9,8 +9,8 @@ doctrine:
             user_user_id: 'App\Model\User\Entity\User\IdType'
             user_user_email: 'App\Model\User\Entity\User\EmailType'
             user_user_role: 'App\Model\User\Entity\User\RoleType'
-            billing_guid: 'App\Model\Billing\Entity\Account\IdType'
-            billing_member_role: 'App\Model\Billing\Entity\Account\RoleType'
+            billing_guid: 'App\Model\Billing\Entity\Account\DataType\IdType'
+            billing_member_role: 'App\Model\Billing\Entity\Account\DataType\RoleType'
 
     orm:
         auto_generate_proxy_classes: true

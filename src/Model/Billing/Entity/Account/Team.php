@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Model\Billing\Entity\Account;
 
 use App\Model\AggregateRoot;
+use App\Model\Billing\Entity\Account\DataType\Balance;
+use App\Model\Billing\Entity\Account\DataType\Id;
+use App\Model\Billing\Entity\Account\DataType\InternalNumber;
 use App\Model\EventsTrait;
 use App\Model\User\Entity\User\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -56,9 +59,9 @@ class Team implements AggregateRoot
     private Collection $voiceMenus;
 
     /**
-     * @ORM\Embedded(class="Ballance")
+     * @ORM\Embedded(class="App\Model\Billing\Entity\Account\DataType\Balance")
      */
-    private Ballance $ballance;
+    private Balance $balance;
 
     /**
      * Team constructor.
@@ -72,7 +75,7 @@ class Team implements AggregateRoot
         $this->voiceMenus = new ArrayCollection();
         $this->owner = new Member($this);
         $this->id = Id::next();
-        $this->ballance = new Ballance();
+        $this->balance = new Balance();
         $this->billingId = $billingId;
         $this->user = $user;
     }
@@ -105,9 +108,9 @@ class Team implements AggregateRoot
         return $this->billingId;
     }
 
-    public function getBallance(): Ballance
+    public function getBalance(): Balance
     {
-        return $this->ballance;
+        return $this->balance;
     }
 
     public function getId(): Id

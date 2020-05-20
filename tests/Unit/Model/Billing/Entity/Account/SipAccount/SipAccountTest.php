@@ -89,13 +89,13 @@ class SipAccountTest extends TestCase
 
     public function testTwiceActivate()
     {
-        $this->expectExceptionMessage('Sip account is already active.');
+        $this->expectExceptionMessage('Already activated.');
         (new TeamBuilder())->getSipAccount()->activate()->activate();
     }
 
     public function testTwiceBlock()
     {
-        $this->expectExceptionMessage('Sip account is already blocked.');
+        $this->expectExceptionMessage('Already blocked.');
         (new TeamBuilder())->getSipAccount()->block();
     }
 }

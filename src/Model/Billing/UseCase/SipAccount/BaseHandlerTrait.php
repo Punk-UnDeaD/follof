@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model\Billing\UseCase\SipAccount;
 
+use App\Model\Billing\Entity\Account\Repository\SipAccountRepository;
 use App\Model\Billing\Entity\Account\SipAccount;
-use App\Model\Billing\Entity\Account\SipAccountRepository;
 use App\Model\Flusher;
 
 trait BaseHandlerTrait

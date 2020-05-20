@@ -12,10 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AsteriskController extends AbstractController
 {
-
-    /**
-     * @var LoggerInterface
-     */
     private LoggerInterface $logger;
 
     public function __construct(LoggerInterface $logger)

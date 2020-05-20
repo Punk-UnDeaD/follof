@@ -7,7 +7,7 @@ namespace App\Controller\BillingProfile;
 use App\Annotation\RequiresCsrf;
 use App\Controller\ErrorHandler;
 use App\Model\Billing\Entity\Account\Member;
-use App\Model\Billing\Entity\Account\MemberRepository;
+use App\Model\Billing\Entity\Account\Repository\MemberRepository;
 use App\Model\Billing\Entity\Account\VoiceMenu;
 use App\Model\Billing\UseCase\Team\AddMember;
 use App\Model\Billing\UseCase\Team\AddVoiceMenu;
