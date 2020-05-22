@@ -87,7 +87,6 @@ class VoiceMenu implements AggregateRoot
         return $this;
     }
 
-
     /**
      * @ORM\PostLoad()
      */

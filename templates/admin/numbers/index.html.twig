@@ -1,0 +1,49 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Numbers{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+        <li class="breadcrumb-item">Admin</li>
+        <li class="breadcrumb-item active">Numbers</li>
+    </ol>
+{% endblock %}
+{% block body %}
+
+    <div class="box p-2 mb-3">
+        <form action="{{ path("admin.numbers.add") }}"
+              class="form-inline" method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token("admin.numbers.add") }}">
+            <div class="form-group mr-3">
+                <label>Number
+                    <input class="ml-1" type="text" name="number" value="" autocomplete="new-password"></label>
+            </div>
+            <div class="form-group">
+                <button name="op" value="save" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Number</th>
+                <th>Team</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for number in numbers %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td><a href="{{ path('admin.numbers.number', {number: number.number} ) }}">{{ number }}</a></td>
+                    <td>{{ number.team? number.team.billingId }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

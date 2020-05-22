@@ -143,7 +143,7 @@ class Member implements AggregateRoot
 
     public function isActivated(): bool
     {
-        return (bool)$this->internalNumber && (bool)$this->sipAccounts->count();
+        return (bool) $this->internalNumber && (bool) $this->sipAccounts->count();
     }
 
     public function getEmail(): ?string

@@ -14,12 +14,8 @@ trait IdTrait
      */
     private Id $id;
 
-    /**
-     * @return Id
-     */
     public function getId(): Id
     {
         return $this->id;
     }
-
 }

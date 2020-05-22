@@ -1,0 +1,20 @@
+{% if team.numbers|length %}
+    <section class="mb-3">
+        <h4>Numbers</h4>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#
+                <th scope="col">Number
+            </thead>
+            <tbody>
+            {% for number in team.numbers %}
+                <tr>
+                    <th scope="row">{{ loop.index }}</th>
+                    <td>{{ number }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endif %}

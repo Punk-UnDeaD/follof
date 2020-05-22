@@ -1,0 +1,41 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+        <li class="breadcrumb-item">Admin</li>
+        <li class="breadcrumb-item active"><a href="{{ path('admin.numbers') }}">Numbers</a></li>
+        <li class="breadcrumb-item active">Edit</li>
+    </ol>
+{% endblock %}
+{% block title %}Number - {{ number }}{% endblock %}
+
+{% block body %}
+    <div class="box">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th>Number</th>
+                <td>{{ number }}</td>
+            </tr>
+            <tr>
+                <th>Team</th>
+                <td>
+                    <div class="d-inline-flex w-20em">
+                        <input type="text" value="{{ number.team?number.team.billingId }}" id="team"
+                               class="ml-1 form-control" is="x-autocomplete"
+                               data-url="{{ path('api.autocomplete.teamBillingId') }}"
+                        >
+                        <button class="btn btn-dark btn-sm" data-for="team" is="x-auto-save-button"
+                                data-save="{{ path('admin.numbers.number.setTeam', { number: number.number }) }}"
+                                data-csrf="{{ csrf_token("admin.numbers.number.setTeam") }}">
+                            <i class="fa-save fa"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+

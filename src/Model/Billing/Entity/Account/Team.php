@@ -26,7 +26,7 @@ class Team implements AggregateRoot
 
     use EventsTrait;
 
-     /**
+    /**
      * @ORM\Column(type="string", name="billing_id")
      */
     private string $billingId;
@@ -56,6 +56,12 @@ class Team implements AggregateRoot
     private Collection $voiceMenus;
 
     /**
+     * @var Number[]|Collection
+     * @ORM\OneToMany(targetEntity="Number", mappedBy="team")
+     */
+    private Collection $numbers;
+
+    /**
      * @ORM\Embedded(class="App\Model\Billing\Entity\Account\DataType\Balance")
      */
     private Balance $balance;
@@ -70,6 +76,7 @@ class Team implements AggregateRoot
         Assert::notEmpty($billingId, 'Cannot create. Empty $billingId.');
         $this->members = new ArrayCollection();
         $this->voiceMenus = new ArrayCollection();
+        $this->numbers = new ArrayCollection();
         $this->owner = new Member($this);
         $this->id = Id::next();
         $this->balance = new Balance();
@@ -99,7 +106,6 @@ class Team implements AggregateRoot
     {
         return $this->balance;
     }
-
 
     public function getUser(): User
     {
@@ -131,7 +137,7 @@ class Team implements AggregateRoot
     }
 
     /**
-     * @return VoiceMenu[]
+     * @return VoiceMenu[]|Collection
      */
     public function getVoiceMenus(): Collection
     {
@@ -144,5 +150,31 @@ class Team implements AggregateRoot
     public function getMembers(): Collection
     {
         return $this->members;
+    }
+
+    /**
+     * @return Number[]|Collection
+     */
+    public function getNumbers(): Collection
+    {
+        return $this->numbers;
+    }
+
+    public function addNumber(Number $number): self
+    {
+        Assert::same($this, $number->getTeam(), 'Number not for team.');
+        Assert::false($this->numbers->contains($number), 'Already contains.');
+        $this->numbers->add($number);
+
+        return $this;
+    }
+
+    public function removeNumber(Number $number): self
+    {
+        Assert::null($number->getTeam(), 'Can\'t remove.');
+        Assert::true($this->numbers->contains($number), 'Already not contains.');
+        $this->numbers->removeElement($number);
+
+        return $this;
     }
 }

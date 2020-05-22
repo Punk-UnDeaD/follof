@@ -6,6 +6,7 @@ namespace App\DataFixtures;
 
 use App\Model\Billing\Entity\Account\DataType\InternalNumber;
 use App\Model\Billing\Entity\Account\Member;
+use App\Model\Billing\Entity\Account\Number;
 use App\Model\Billing\Entity\Account\SipAccount;
 use App\Model\Billing\Entity\Account\Team;
 use App\Model\Billing\Entity\Account\VoiceMenu;
@@ -42,6 +43,14 @@ class BillingFixture extends Fixture implements DependentFixtureInterface
             ->addPoint('2', new InternalNumber('123-2'))
             ->addPoint('3', new InternalNumber('123-3'))
             ->addPoint('0', new InternalNumber('123'));
+
+        $number = new Number('+7(988)123-45-67');
+        $number->setTeam($team);
+        $manager->persist($number);
+        $number = new Number('+7(988)234-56-78');
+        $number->setTeam($team);
+        $manager->persist($number);
+
         $manager->flush();
     }
 

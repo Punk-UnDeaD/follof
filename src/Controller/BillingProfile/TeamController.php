@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/profile/team")
+ * @Route("/profile/team", name="billing.team")
  */
 class TeamController extends AbstractController
 {
@@ -43,9 +43,9 @@ class TeamController extends AbstractController
     }
 
     /**
-     * @Route("", name="billing.team")
+     * @Route("", name="")
      */
-    public function index(): Response
+    public function show(): Response
     {
         $member_id = $this->getUser()->getId();
 
@@ -63,7 +63,7 @@ class TeamController extends AbstractController
     }
 
     /**
-     * @Route("/addMember", name="billing.team.addMember", methods={"POST"})
+     * @Route("/addMember", name=".addMember", methods={"POST"})
      * @RequiresCsrf(tokenId="b.t.a")
      */
     public function addMember(AddMember\Handler $handler): Response
@@ -76,7 +76,7 @@ class TeamController extends AbstractController
     }
 
     /**
-     * @Route("/addVoiceMenu", name="billing.team.addVoiceMenu")
+     * @Route("/addVoiceMenu", name=".addVoiceMenu")
      */
     public function addVoiceMenu(Request $request, AddVoiceMenu\Handler $handler): Response
     {

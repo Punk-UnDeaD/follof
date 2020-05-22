@@ -12,6 +12,7 @@
         "bootstrap": "^4.3.1",
         "brotli-webpack-plugin": "^1.1.0",
         "centrifuge": "^2.2.1",
+        "debounce": "^1.2.0",
         "font-awesome": "^4.7.0",
         "jquery": "^3.4.1",
         "perfect-scrollbar": "^1.4.0",
