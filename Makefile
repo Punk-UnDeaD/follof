@@ -5,6 +5,7 @@ test:
 
 prod-self-update:
 	make pause
+	git pull
 	docker-compose exec php composer i -o --no-dev
 	docker-compose exec php bin/console doctrine:migrations:migrate -n
 	docker-compose up node
