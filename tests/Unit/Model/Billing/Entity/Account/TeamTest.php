@@ -2,6 +2,7 @@
 
 namespace App\Tests\Unit\Model\Billing\Entity\Account;
 
+use App\Model\Billing\Entity\Account\Number;
 use App\Model\Billing\Entity\Account\Team;
 use App\Model\User\Entity\User\Role;
 use App\Tests\Builder\Billing\TeamBuilder;
@@ -35,5 +36,24 @@ class TeamTest extends TestCase
     {
         $this->expectExceptionMessage('Cannot create. Wrong user role.');
         new Team((new TeamBuilder())->getUser()->changeRole(Role::admin()), '--');
+    }
+
+    public function testFreeNumber()
+    {
+        $teamBuilder = new TeamBuilder();
+        $team = $teamBuilder->getTeam();
+        $this->assertEquals([], $team->getFreeNumbers());
+        $number_alpha = (new Number('+7(988)123-45-67'))->setTeam($team);
+        $this->assertContains($number_alpha, $team->getFreeNumbers());
+        $number_bravo = (new Number('+7(988)123-45-68'))->setTeam($team);
+        $this->assertContains($number_bravo, $team->getFreeNumbers());
+        $number_charlie = (new Number('+7(988)123-45-69'))->setTeam($team);
+        $this->assertContains($number_charlie, $team->getFreeNumbers());
+        $teamBuilder->getOwner()->setNumber($number_alpha);
+        $this->assertNotContains($number_alpha, $team->getFreeNumbers());
+        $teamBuilder->getMember()->setNumber($number_bravo);
+        $this->assertNotContains($number_alpha, $team->getFreeNumbers());
+        $teamBuilder->getVoiceMenu()->setNumber($number_charlie);
+        $this->assertNotContains($number_charlie, $team->getFreeNumbers());
     }
 }

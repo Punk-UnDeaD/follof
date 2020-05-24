@@ -12,6 +12,7 @@ use App\Model\Billing\Entity\Account\Field\DataTrait;
 use App\Model\Billing\Entity\Account\Field\IdTrait;
 use App\Model\Billing\Entity\Account\Field\InternalNumberTrait;
 use App\Model\Billing\Entity\Account\Field\LabelTrait;
+use App\Model\Billing\Entity\Account\Field\NumberTrait;
 use App\Model\Billing\Entity\Account\Field\StatusTrait;
 use App\Model\EventsTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +31,7 @@ class Member implements AggregateRoot
 {
     use IdTrait;
     use EventsTrait;
+    use NumberTrait;
     use InternalNumberTrait;
     use DataTrait,
         LabelTrait,
@@ -212,5 +214,15 @@ class Member implements AggregateRoot
     protected function onUpdateStatus(): self
     {
         return $this->recordEvent(new Event\MemberStatusUpdated($this->getId()->getValue()));
+    }
+
+    protected function onUpdateExternalNumber()
+    {
+        $this->recordEvent(new Event\MemberDataUpdated($this->getId()->getValue()));
+    }
+
+    protected function onUpdateNumber()
+    {
+        $this->recordEvent(new Event\MemberDataUpdated($this->getId()->getValue()));
     }
 }

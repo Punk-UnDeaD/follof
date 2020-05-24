@@ -17,14 +17,12 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AutocompleteController extends AbstractController
 {
-
     /**
      * @Route(name=".teamBillingId", path="/teamBillingId/{search}", defaults={"search"=""})
      * @IsGranted("ROLE_MANAGE_NUMBERS")
      */
     public function teamBillingId(string $search, Request $request, Connection $connection): JsonResponse
     {
-
         $res = $connection->createQueryBuilder()
             ->from('billing_team', 'team')
             ->select('team.billing_id as billing_id')

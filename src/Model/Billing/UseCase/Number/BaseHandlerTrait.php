@@ -26,7 +26,7 @@ trait BaseHandlerTrait
     public function __invoke($command): void
     {
         /** @var Number $number */
-        if(!$number = $this->repository->find($command->number)){
+        if (!$number = $this->repository->find($command->number)) {
             throw new EntityNotFoundException(Number::class, [$command->number]);
         }
 

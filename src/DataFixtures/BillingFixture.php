@@ -46,6 +46,7 @@ class BillingFixture extends Fixture implements DependentFixtureInterface
 
         $number = new Number('+7(988)123-45-67');
         $number->setTeam($team);
+        $member->setNumber($number);
         $manager->persist($number);
         $number = new Number('+7(988)234-56-78');
         $number->setTeam($team);

@@ -28,6 +28,30 @@
                         </div>
                     </td>
                 </tr>
+
+                <tr>
+                    <th scope="row"><label for="number">Number</label>
+                    <td>
+                        <div class="d-inline-flex w-20em">
+
+                            <select id="number" class="ml-1 form-control">
+                                <option value="" {{ voiceMenu.number?: "selected" }}></option>
+                                {% if voiceMenu.number %}
+                                    <option value="{{ voiceMenu.number }}" selected>{{ voiceMenu.number }}</option>
+                                {% endif %}
+                                {% for number in voiceMenu.team.freeNumbers %}
+                                    <option value="{{ number }}">{{ number }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <button class="btn btn-dark btn-sm" data-for="number" is="x-auto-save-button"
+                                    data-save="{{ path('billing.team.voiceMenu.number', {voiceMenu: voiceMenu.id }) }}"
+                                    data-csrf="{{ csrf_token("billing.team.voiceMenu.number") }}">
+                                <i class="fa-save fa"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
                 <tr>
                     <th scope="row"><label for="internalNumber">Internal number</label>
                     <td>

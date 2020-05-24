@@ -1,0 +1,50 @@
+<h4>Sip accounts</h4>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#
+        <th scope="col">Login
+        <th scope="col">Password
+        <th scope="col">Status
+    <tbody>
+    {% for account in member.sipAccounts %}
+    <tr>
+        <th scope="row"><a href="{{ path('billing.team.member.sipAccount', {sipAccount: account.id, member:member.id }) }}">{{ account.label?:account.id }}</a>
+        <td>
+            <div class="d-inline-flex w-20em">
+                <input class="ml-1 form-control" type="text" name="login" value="{{ account.login }}" id="id-login-{{ account.id.value }}">
+                <button class="btn btn-dark btn-sm" data-for="id-login-{{ account.id.value }}" is="x-auto-save-button"
+                        data-save="{{ path('billing.team.member.sipAccount.updateLogin', {sipAccount: account.id, member:member.id }) }}"
+                        data-csrf="{{ csrf_token("billing.team.member.sipAccount.updateLogin") }}"
+
+                ><i class="fa-save fa"></i></button>
+            </div>
+        <td>
+            <div class="d-inline-flex w-20em">
+                <input class="ml-1 form-control" type="text" name="password" value="{{ account.password }}" id="id-password-{{ account.id.value }}">
+            </div>
+            <button class="btn btn-dark btn-sm" data-for="id-password-{{ account.id.value }}" is="x-auto-password"><i class="icon-reload"></i></button>
+            <button class="btn btn-dark btn-sm" data-for="id-password-{{ account.id.value }}" is="x-auto-save-button"
+                    data-save="{{ path('billing.team.member.sipAccount.updatePassword', {sipAccount: account.id, member:member.id }) }}"
+                    data-csrf="{{ csrf_token("billing.team.member.sipAccount.updatePassword") }}"
+
+            ><i class="fa-save fa"></i></button>
+
+        <td><label class="switch switch-label switch-pill switch-success">
+                <input type="checkbox" class="switch-input" {{ account.active?"checked" }}
+                       is="x-auto-toggler"
+                       data-on="{{ path('billing.team.member.sipAccount.activate', {sipAccount: account.id, member:member.id }) }}"
+                       data-off="{{ path('billing.team.member.sipAccount.block', {sipAccount: account.id, member:member.id }) }}"
+                       data-csrf="{{ csrf_token("billing.team.member.sipAccount.toggleStatus") }}"
+                >
+                <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+            </label>
+            {% endfor %}
+</table>
+<div class="actions">
+    <form action="{{ path('billing.team.member.addSipAccount', {member: member.id}) }}" method="POST">
+        <input type="hidden" name="_csrf_token"
+               value="{{ csrf_token('billing.team.member.addSipAccount') }}">
+        <button class="btn btn-primary" name="op" value="add">Add</button>
+    </form>
+</div>

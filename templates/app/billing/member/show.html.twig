@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Member account{% endblock %}
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Home</li>
+        <li class="breadcrumb-item"><a href="{{ path('billing.team') }}">Team</a></li>
+        <li class="breadcrumb-item">Member account</li>
+    </ol>
+{% endblock %}
+{% block body %}
+    <div class="card">
+        <div class="card-body">
+            {% include 'app/billing/member/info.html.twig' %}
+            {% include 'app/billing/member/sipAccounts.html.twig' %}
+
+        </div>
+    </div>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('x-auto-save-button') }}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('x-auto-toggler') }}
+    {{ encore_entry_script_tags('x-auto-password') }}
+    {{ encore_entry_script_tags('x-auto-save-button') }}
+{% endblock %}
+

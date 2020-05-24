@@ -14,6 +14,7 @@ use App\Model\Billing\UseCase\Member\Block;
 use App\Model\Billing\UseCase\Member\SetFallbackNumber;
 use App\Model\Billing\UseCase\Member\SetInternalNumber;
 use App\Model\Billing\UseCase\Member\SetLabel;
+use App\Model\Billing\UseCase\Member\SetNumber;
 use App\Model\Billing\UseCase\Member\UpdateCredentials;
 use Doctrine\ORM\EntityNotFoundException;
 use Exception;
@@ -36,7 +37,7 @@ class MemberController extends AbstractController
      */
     public function show(string $member, MemberRepository $members): Response
     {
-        return $this->render('app/billing/member.html.twig', ['member' => $members->get($member)]);
+        return $this->render('app/billing/member/show.html.twig', ['member' => $members->get($member)]);
     }
 
     /**
@@ -127,6 +128,21 @@ class MemberController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $handler(new SetInternalNumber\Command($member, $data['value'] ?: null));
+
+        return $this->json(['status' => 'ok']);
+    }
+
+    /**
+     * @Route("/number", name=".number", defaults={"_format": "json"})
+     * @RequiresCsrf()
+     */
+    public function number(
+        string $member,
+        SetNumber\Handler $handler,
+        Request $request
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $handler(new SetNumber\Command($member, $data['value'] ?: null));
 
         return $this->json(['status' => 'ok']);
     }

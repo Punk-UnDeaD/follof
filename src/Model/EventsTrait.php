@@ -8,9 +8,9 @@ trait EventsTrait
 {
     private $recordedEvents = [];
 
-    protected function recordEvent(object $event): self
+    protected function recordEvent(object ...$events): self
     {
-        $this->recordedEvents[] = $event;
+        $this->recordedEvents = array_merge($this->recordedEvents, $events);
 
         return $this;
     }

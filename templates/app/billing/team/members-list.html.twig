@@ -5,6 +5,7 @@
         <thead>
         <tr>
             <th scope="col">#
+            <th scope="col">Number
             <th scope="col">Internal number
             <th scope="col">Login
             <th scope="col">Role
@@ -14,6 +15,7 @@
             <tr>
                 <th scope="row"><a
                             href="{{ path('billing.team.member', {member:member.id  }) }}">{{ member.label?:member.id }}</a>
+                <td>{{ member.number }}
                 <td>{{ member.internalNumber }}
                 <td>{{ member.login }}
                 <td>{{ member.role.name }}

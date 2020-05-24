@@ -17,7 +17,7 @@ trait InternalNumberTrait
     /**
      * @ORM\PostLoad()
      */
-    public function checkEmbedsInternalNumber(): void
+    public function checkEmbeds(): void
     {
         if ($this->internalNumber->isNull()) {
             $this->internalNumber = null;

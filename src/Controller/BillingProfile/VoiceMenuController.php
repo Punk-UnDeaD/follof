@@ -19,6 +19,7 @@ use App\Model\Billing\UseCase\VoiceMenu\SetFile;
 use App\Model\Billing\UseCase\VoiceMenu\SetInputAllowance;
 use App\Model\Billing\UseCase\VoiceMenu\SetInternalNumber;
 use App\Model\Billing\UseCase\VoiceMenu\SetLabel;
+use App\Model\Billing\UseCase\VoiceMenu\SetNumber;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -145,6 +146,23 @@ class VoiceMenuController extends AbstractController
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         $handler(new SetInternalNumber\Command($voiceMenu, $data['value'] ?: null));
+
+        return $this->json(['status' => 'ok']);
+    }
+
+    /**
+     * @Route("/number", name=".number", defaults={"_format": "json"})
+     * @RequiresCsrf()
+     *
+     * @throws EntityNotFoundException
+     */
+    public function number(
+        string $voiceMenu,
+        SetNumber\Handler $handler,
+        Request $request
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+        $handler(new SetNumber\Command($voiceMenu, $data['value'] ?: null));
 
         return $this->json(['status' => 'ok']);
     }

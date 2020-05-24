@@ -4,6 +4,7 @@
         <thead>
         <tr>
             <th scope="col">#
+            <th scope="col">Number
             <th scope="col">Internal number
             <th scope="col">File
             <th scope="col">Status
@@ -13,6 +14,7 @@
             <tr>
                 <th scope="row"><a
                             href="{{ path('billing.team.voiceMenu', {voiceMenu: vm.id  }) }}">{{ vm.label?:vm.id }}</a>
+                <td>{{ vm.number }}
                 <td>{{ vm.internalNumber }}
                 <td>{{ vm.file }}
                 <td><label class="switch switch-label switch-pill switch-success">

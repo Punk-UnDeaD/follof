@@ -75,7 +75,7 @@ class NumbersController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        $handler(new SetTeam\Command($number, $data['value']??null));
+        $handler(new SetTeam\Command($number, $data['value'] ?? null));
 
         return $this->json(['status' => 'ok']);
     }

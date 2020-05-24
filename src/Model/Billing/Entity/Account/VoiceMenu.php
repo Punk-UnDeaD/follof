@@ -11,6 +11,7 @@ use App\Model\Billing\Entity\Account\Field\IdTrait;
 use App\Model\Billing\Entity\Account\Field\InternalNumberTrait;
 use App\Model\Billing\Entity\Account\Field\LabelTrait;
 use App\Model\Billing\Entity\Account\Field\MenuPointsTrait;
+use App\Model\Billing\Entity\Account\Field\NumberTrait;
 use App\Model\Billing\Entity\Account\Field\StatusTrait;
 use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,6 +25,7 @@ use Webmozart\Assert\Assert;
 class VoiceMenu implements AggregateRoot
 {
     use IdTrait;
+    use NumberTrait;
 
     use EventsTrait;
     use InternalNumberTrait;
@@ -127,5 +129,10 @@ class VoiceMenu implements AggregateRoot
     protected function onUpdateStatus(): self
     {
         return $this->recordEvent(new Event\VoiceMenuStatusUpdated($this->getId()->getValue()));
+    }
+
+    protected function onUpdateNumber()
+    {
+        $this->recordEvent(new Event\VoiceMenuDataUpdated($this->getId()->getValue()));
     }
 }

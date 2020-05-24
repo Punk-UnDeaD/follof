@@ -152,6 +152,33 @@ class Team implements AggregateRoot
         return $this->members;
     }
 
+    public function isNumberFree(Number $number)
+    {
+        Assert::same($this, $number->getTeam(), 'Team can\'t contain this Number.');
+
+        foreach ($this->getVoiceMenus() as $voiceMenu) {
+            if ($number === $voiceMenu->getNumber()) {
+                return false;
+            }
+        }
+        foreach ($this->getMembers() as $member) {
+            if ($number === $member->getNumber()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function getFreeNumbers(): array
+    {
+        $numbers = $this->numbers->toArray();
+        $numbers = array_diff($numbers, array_map(fn ($e) => $e->getNumber(), $this->getVoiceMenus()->toArray()));
+        $numbers = array_diff($numbers, array_map(fn ($e) => $e->getNumber(), $this->getMembers()->toArray()));
+
+        return $numbers;
+    }
+
     /**
      * @return Number[]|Collection
      */
@@ -174,6 +201,19 @@ class Team implements AggregateRoot
         Assert::null($number->getTeam(), 'Can\'t remove.');
         Assert::true($this->numbers->contains($number), 'Already not contains.');
         $this->numbers->removeElement($number);
+
+        foreach ($this->getVoiceMenus() as $voiceMenu) {
+            if ($number === $voiceMenu->getNumber()) {
+                $this->recordEvent(...$voiceMenu->setNumber()->releaseEvents());
+                break;
+            }
+        }
+        foreach ($this->getMembers() as $member) {
+            if ($number === $member->getNumber()) {
+                $this->recordEvent(...$member->setNumber()->releaseEvents());
+                break;
+            }
+        }
 
         return $this;
     }

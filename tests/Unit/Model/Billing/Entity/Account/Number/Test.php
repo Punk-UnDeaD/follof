@@ -83,5 +83,4 @@ class Test extends TestCase
         $number->setTeam($team)->setTeam();
         $team->removeNumber($number);
     }
-
 }

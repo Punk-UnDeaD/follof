@@ -38,7 +38,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
         $this->notificator = $notificator;
         $this->em = $em;
         $this->eventDispatcher = $eventDispatcher;
-        $this->delay = (int) $asteriskNotificatorDelay;
+        $this->delay = (int)$asteriskNotificatorDelay;
     }
 
     public static function getSubscribedEvents(): array
@@ -60,26 +60,6 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
         if ($voiceMenu && $voiceMenu->isActive()) {
             $this->eventDispatcher->dispatchDebounce($event, $event->id, $this->delay, self::class.'::menuNotify');
         }
-    }
-
-    public function menuNotify(VoiceMenu $voiceMenu)
-    {
-        $data = [
-            'type' => 'voiceMenu',
-            'id' => $voiceMenu->getId(),
-            'billingId' => $voiceMenu->getTeam()->getBillingId(),
-        ];
-        if ($voiceMenu->isActive() && $voiceMenu->getTeam()->getUser()->isActive()) {
-            $data +=
-                [
-                    'isInputAllowed' => $voiceMenu->isInputAllowed(),
-                    'file' => $voiceMenu->getFile(),
-                    'internalNumber' => $voiceMenu->getInternalNumber(),
-                    'points' => $voiceMenu->getPoints(),
-                ];
-        }
-
-        $this->notificator->notify($data);
     }
 
     public function onVoiceMenuStatusUpdated(VoiceMenuStatusUpdated $event)
@@ -109,6 +89,11 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
     private function memberNotify(Member $member)
     {
         $accounts = [];
+        $data = [
+            'type' => 'member',
+            'id' => $member->getId(),
+            'billingId' => $member->getTeam()->getBillingId(),
+        ];
         if ($member && $member->isActive() && $member->getTeam()->getUser()->isActive()) {
             foreach ($member->getSipAccounts() as $account) {
                 if ($account->isActive()) {
@@ -119,17 +104,14 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
                     ];
                 }
             }
-        }
-        $this->notificator->notify(
-            [
-                'type' => 'member',
-                'id' => $member->getId(),
+            $data += [
                 'accounts' => $accounts,
-                'billingId' => $member->getTeam()->getBillingId(),
+                'number' => (string)$member->getNumber(),
                 'internalNumber' => $member->getInternalNumber(),
                 'fallbackNumber' => $member->getFallbackNumber(),
-            ]
-        );
+            ];
+        }
+        $this->notificator->notify($data);
     }
 
     public function onMemberStatusUpdated(MemberStatusUpdated $event)
@@ -147,5 +129,26 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
         if ($voiceMenu) {
             $this->menuNotify($voiceMenu);
         }
+    }
+
+    public function menuNotify(VoiceMenu $voiceMenu)
+    {
+        $data = [
+            'type' => 'voiceMenu',
+            'id' => $voiceMenu->getId(),
+            'billingId' => $voiceMenu->getTeam()->getBillingId(),
+        ];
+        if ($voiceMenu->isActive() && $voiceMenu->getTeam()->getUser()->isActive()) {
+            $data +=
+                [
+                    'isInputAllowed' => $voiceMenu->isInputAllowed(),
+                    'file' => $voiceMenu->getFile(),
+                    'number' => (string)$voiceMenu->getNumber(),
+                    'internalNumber' => $voiceMenu->getInternalNumber(),
+                    'points' => $voiceMenu->getPoints(),
+                ];
+        }
+
+        $this->notificator->notify($data);
     }
 }

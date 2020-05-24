@@ -7,6 +7,7 @@ namespace App\Model\Billing\Entity\Account;
 use App\Model\AggregateRoot;
 use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Webmozart\Assert\Assert;
 
 /**
@@ -15,7 +16,7 @@ use Webmozart\Assert\Assert;
  * @ORM\Entity
  * @ORM\Table(name="billing_numbers")
  */
-class Number implements AggregateRoot
+class Number implements AggregateRoot, \JsonSerializable
 {
     use EventsTrait;
 
@@ -61,11 +62,19 @@ class Number implements AggregateRoot
         if ($oldTeam = $this->team) {
             $this->team = null;
             $oldTeam->removeNumber($this);
+            $this->recordEvent(...$oldTeam->releaseEvents());
         }
         if ($this->team = $team) {
             $team->addNumber($this);
+            $this->recordEvent(...$team->releaseEvents());
         }
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->number;
+
     }
 }

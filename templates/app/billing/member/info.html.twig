@@ -1,0 +1,92 @@
+{% if not member.role.isOwner() %}
+    <form action="{{ path("billing.team.member.updateCredentials", {member: member.id }) }}"
+          class="form-inline mb-3" method="post">
+        <input type="hidden" name="_csrf_token"
+               value="{{ csrf_token("billing.team.member.updateCredentials") }}" autocomplete="new-password">
+        <div class="form-group mr-3">
+            <label>Login <input class="ml-1" type="text" name="login" value="{{ member.login }}"></label>
+        </div>
+        <div class="form-group mr-3">
+            <label for="password">Password</label>
+            <input class="ml-1" type="password" name="password" placeholder="*********" id="password"
+                   autocomplete="new-password">
+            <button class="btn btn-dark btn-sm" data-for="password" is="x-auto-password"><i class="icon-reload"></i>
+            </button>
+        </div>
+        <div class="form-group">
+            <button name="op" value="save" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+{% endif %}
+
+<h4>Info</h4>
+<table class="table">
+    <tbody>
+    <tr>
+        <th scope="row"><label for="label">Label</label>
+        <td>
+            <div class="d-inline-flex w-20em">
+                <input type="text" value="{{ member.label }}" id="label" class="ml-1 form-control">
+                <button class="btn btn-dark btn-sm" data-for="label" is="x-auto-save-button"
+                        data-save="{{ path('billing.team.member.label', {member: member.id }) }}"
+                        data-csrf="{{ csrf_token("billing.team.member.label") }}">
+                    <i class="fa-save fa"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row"><label for="number">Number</label>
+        <td>
+            <div class="d-inline-flex w-20em">
+
+                <select id="number" class="ml-1 form-control">
+                    <option value="" {{ member.number?:"selected" }}></option>
+
+                    {% if member.number %}
+                        <option value="{{ member.number }}" selected>{{ member.number }}</option>
+                    {% endif %}
+                    {% for number in member.team.freeNumbers %}
+                        <option value="{{ number }}">{{ number }}</option>
+                    {% endfor %}
+                </select>
+
+                <button class="btn btn-dark btn-sm" data-for="number" is="x-auto-save-button"
+                        data-save="{{ path('billing.team.member.number', {member: member.id }) }}"
+                        data-csrf="{{ csrf_token("billing.team.member.number") }}">
+                    <i class="fa-save fa"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row"><label for="internalNumber">Internal number</label>
+        <td>
+            <div class="d-inline-flex w-20em">
+                <input type="text" value="{{ member.internalNumber }}" id="internalNumber"
+                       class="ml-1 form-control">
+                <button class="btn btn-dark btn-sm" data-for="internalNumber" is="x-auto-save-button"
+                        data-save="{{ path('billing.team.member.internalNumber', {member: member.id }) }}"
+                        data-csrf="{{ csrf_token("billing.team.member.internalNumber") }}">
+                    <i class="fa-save fa"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <th scope="row"><label for="internalNumber">Fallback number</label>
+        <td>
+            <div class="d-inline-flex w-20em">
+                <input type="text" value="{{ member.fallbackNumber }}" id="fallbackNumber"
+                       class="ml-1 form-control">
+                <button class="btn btn-dark btn-sm" data-for="fallbackNumber" is="x-auto-save-button"
+                        data-save="{{ path('billing.team.member.fallbackNumber', {member: member.id }) }}"
+                        data-csrf="{{ csrf_token("billing.team.member.fallbackNumber") }}">
+                    <i class="fa-save fa"></i>
+                </button>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+
+</table>

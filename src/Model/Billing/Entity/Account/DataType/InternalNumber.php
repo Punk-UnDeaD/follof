@@ -25,9 +25,9 @@ class InternalNumber implements \JsonSerializable
         $this->number = $number;
     }
 
-    public function isSame(self $other): bool
+    public function isSame(?self $other): bool
     {
-        return $this->getCleanValue() === $other->getCleanValue();
+        return $other && $this->getCleanValue() === $other->getCleanValue();
     }
 
     public function getCleanValue(): string
