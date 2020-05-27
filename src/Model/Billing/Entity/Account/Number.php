@@ -7,7 +7,6 @@ namespace App\Model\Billing\Entity\Account;
 use App\Model\AggregateRoot;
 use App\Model\EventsTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Webmozart\Assert\Assert;
 
 /**
@@ -75,6 +74,5 @@ class Number implements AggregateRoot, \JsonSerializable
     public function jsonSerialize()
     {
         return $this->number;
-
     }
 }

@@ -1,0 +1,55 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Teams | Admin{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('admin') }}">Admin</a></li>
+        <li class="breadcrumb-item">Teams</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+
+    <div class="card">
+        <div class="card-body">
+
+            {{ form_start(form) }}
+            <div class="row">
+                <div class="col-md-2">{{ form_widget(form.billingId) }}</div>
+                <div class="col-md-2">{{ form_widget(form.email) }}</div>
+                <div class="col-md-2">{{ form_widget(form.balanceMin) }}</div>
+                <div class="col-md-2">{{ form_widget(form.balanceMax) }}</div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ path('admin.teams') }}" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </div>
+            {{ form_end(form) }}
+
+        </div>
+    </div>
+
+    <div class="box">
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>{{ knp_pagination_sortable(pagination, 'Billing Id', 'billingId') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Balance', 'balance') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'Email', 'email') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for team in pagination %}
+                <tr>
+                    <td>{{ team.billing_id }}
+                    <td>{{ team.balance }}
+                    <td>{{ team.email }}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

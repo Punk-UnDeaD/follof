@@ -1,0 +1,20 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('home') }}">Home</a></li>
+        <li class="breadcrumb-item">Admin</li>
+    </ol>
+{% endblock %}
+
+{% block body %}
+    <div class="box p-2 mb-3">
+        <a href="{{ path('admin.users') }}">Users</a>
+    </div>
+    <div class="box p-2 mb-3">
+        <a href="{{ path('admin.numbers') }}">Numbers</a>
+    </div>
+    <div class="box p-2 mb-3">
+        <a href="{{ path('admin.teams') }}">Teams</a>
+    </div>
+{% endblock %}

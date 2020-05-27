@@ -3,7 +3,6 @@ import debounce from 'debounce';
 customElements.define('x-autocomplete', class extends HTMLInputElement {
     onChange() {
         if (!this.value) return;
-        console.log('change')
         fetch(this.dataset.url + '/' + this.value,
             {
                 method: 'GET',

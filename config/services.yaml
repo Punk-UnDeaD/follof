@@ -67,3 +67,6 @@ services:
       # you want to pass the *service* whose id is 'monolog.logger.request',
       # and not just the *string* 'monolog.logger.request'
       $logger: '@monolog.logger.asteriskIn'
+
+  security.untracked_token_storage:
+    class: App\Security\MyTokenStorage

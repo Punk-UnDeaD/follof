@@ -92,4 +92,9 @@ class MemberIdentity implements UserInterface, EquatableInterface
     {
         return $this->team_id;
     }
+
+    public function getUserId(): string
+    {
+        return $this->user_id;
+    }
 }

@@ -74,6 +74,12 @@ class UserIdentity implements UserInterface, EquatableInterface
 
     public function isEqualTo(UserInterface $user): bool
     {
+        if ($user instanceof MemberIdentity) {
+            return $this->id === $user->getUserId() &&
+                $this->password === $user->getPassword() &&
+                $this->isActive() === $user->isActive();
+        }
+
         if (!$user instanceof self) {
             return false;
         }

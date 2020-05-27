@@ -45,6 +45,12 @@ class UserProvider implements UserProviderInterface
             throw new BadCredentialsException('');
         }
 
+        if ($identity instanceof UserIdentity) {
+            if ($member = $this->members->loadByLogin($identity->getUsername())) {
+                return self::identityByMember($member);
+            }
+        }
+
         if (!$identity instanceof UserIdentity) {
             throw new UnsupportedUserException('Invalid user class '.\get_class($identity));
         }

@@ -26,6 +26,6 @@ class Handler
 
         $user->confirmSignUp();
 
-        $this->flusher->flush();
+        $this->flusher->flush($user);
     }
 }

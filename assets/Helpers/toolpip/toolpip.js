@@ -1,29 +1,49 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+const _createClass = function () {
+    function defineProperties(target, props) {
+        for (let i = 0; i < props.length; i++) {
+            const descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ("value" in descriptor) descriptor.writable = true;
+            Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }
+
+    return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);
+        if (staticProps) defineProperties(Constructor, staticProps);
+        return Constructor;
+    };
+}();
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
-var div = function div(className) {
-    var node = document.createElement('div');
+const div = function div(className) {
+    const node = document.createElement('div');
 
     node.classList.add(className);
     return node;
 };
 
-var defaultOffset = 12;
-var positions = ['top', 'right', 'bottom'];
+const defaultOffset = 12;
+const positions = ['top', 'right', 'bottom'];
 
-var Toolpip = function () {
+const Toolpip = function () {
     function Toolpip() {
-        var _this = this;
+        const _this = this;
 
-        var rootNode = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-        var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+        const rootNode = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+        const options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
         _classCallCheck(this, Toolpip);
 
@@ -48,28 +68,28 @@ var Toolpip = function () {
     _createClass(Toolpip, [{
         key: 'position',
         value: function position(target) {
-            var _this2 = this;
+            const _this2 = this;
 
-            var _position = arguments.length <= 1 || arguments[1] === undefined ? 'top' : arguments[1];
+            const _position = arguments.length <= 1 || arguments[1] === undefined ? 'top' : arguments[1];
 
-            var rects = target.getBoundingClientRect();
-            var bodyTop = Math.abs(document.body.getBoundingClientRect().top);
+            const rects = target.getBoundingClientRect();
+            const bodyTop = Math.abs(document.body.getBoundingClientRect().top);
             this.positionClass = _position;
             this.target = target;
             positions.forEach(function (className) {
                 return _this2.toolpip.classList.remove(className);
             });
-            if (_position == 'top') {
+            if ('top' === _position) {
                 this.toolpip.style.left = rects.left - this.toolpip.clientWidth / 2 + rects.width / 2 + 'px';
                 this.toolpip.style.top = rects.top + bodyTop - defaultOffset - this.toolpip.clientHeight + 'px';
             }
 
-            if (_position == 'right') {
+            if ('right' === _position) {
                 this.toolpip.style.left = rects.left + rects.width + 'px';
                 this.toolpip.style.top = rects.top + bodyTop + 'px';
             }
 
-            if (_position == 'bottom') {
+            if ('bottom' === _position) {
                 this.toolpip.style.left = rects.left - this.toolpip.clientWidth / 2 + rects.width / 2 + 'px';
                 this.toolpip.style.top = rects.bottom + bodyTop - defaultOffset + 'px';
             }
@@ -79,19 +99,19 @@ var Toolpip = function () {
     }, {
         key: 'createToolpip',
         value: function createToolpip() {
-            var _this3 = this;
+            const _this3 = this;
 
-            var toolpip = div('toolpip');
-            var title = div('toolpip-title');
-            var subtitle = div('toolpip-subtitle');
+            const toolpip = div('toolpip');
+            const title = div('toolpip-title');
+            const subtitle = div('toolpip-subtitle');
 
             if (this.type) {
                 toolpip.classList.add(this.type);
             }
 
-            var updateContent = this.updateContent = function () {
-                var titleText = arguments.length <= 0 || arguments[0] === undefined ? _this3.title : arguments[0];
-                var subtitleText = arguments.length <= 1 || arguments[1] === undefined ? _this3.subtitle : arguments[1];
+            const updateContent = this.updateContent = function () {
+                const titleText = arguments.length <= 0 || arguments[0] === undefined ? _this3.title : arguments[0];
+                const subtitleText = arguments.length <= 1 || arguments[1] === undefined ? _this3.subtitle : arguments[1];
 
                 title.textContent = titleText;
                 subtitle.textContent = subtitleText;

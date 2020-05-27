@@ -86,7 +86,6 @@ class User implements AggregateRoot
         $this->name = $name;
         $this->role = Role::user();
         $this->networks = new ArrayCollection();
-        $this->recordEvent(new Event\UserCreated($this->id->getValue()));
     }
 
     public static function create(Id $id, DateTimeImmutable $date, Name $name, Email $email, string $hash): self
@@ -145,6 +144,7 @@ class User implements AggregateRoot
         if (!$this->isWait()) {
             throw new DomainException('User is already confirmed.');
         }
+        $this->recordEvent(new Event\UserConfirmed($this->id->getValue()));
 
         $this->status = self::STATUS_ACTIVE;
         $this->confirmToken = null;

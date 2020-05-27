@@ -10,7 +10,6 @@ use App\ReadModel\NotFoundException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
@@ -20,7 +19,7 @@ class MemberFetcher
 
     private TagAwareCacheInterface $cachePool;
 
-    public function __construct(Connection $connection, EntityManagerInterface $em, TagAwareCacheInterface $myCachePool)
+    public function __construct(Connection $connection, TagAwareCacheInterface $myCachePool)
     {
         $this->connection = $connection;
         $this->cachePool = $myCachePool;

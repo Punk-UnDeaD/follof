@@ -38,7 +38,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
         $this->notificator = $notificator;
         $this->em = $em;
         $this->eventDispatcher = $eventDispatcher;
-        $this->delay = (int)$asteriskNotificatorDelay;
+        $this->delay = (int) $asteriskNotificatorDelay;
     }
 
     public static function getSubscribedEvents(): array
@@ -106,7 +106,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
             }
             $data += [
                 'accounts' => $accounts,
-                'number' => (string)$member->getNumber(),
+                'number' => (string) $member->getNumber(),
                 'internalNumber' => $member->getInternalNumber(),
                 'fallbackNumber' => $member->getFallbackNumber(),
             ];
@@ -143,7 +143,7 @@ class AsteriskNotifySubscriber implements EventSubscriberInterface
                 [
                     'isInputAllowed' => $voiceMenu->isInputAllowed(),
                     'file' => $voiceMenu->getFile(),
-                    'number' => (string)$voiceMenu->getNumber(),
+                    'number' => (string) $voiceMenu->getNumber(),
                     'internalNumber' => $voiceMenu->getInternalNumber(),
                     'points' => $voiceMenu->getPoints(),
                 ];
