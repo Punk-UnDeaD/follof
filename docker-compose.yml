@@ -6,8 +6,10 @@ services:
     container_name: "${PROJECT_NAME}_php"
     environment:
       COLUMNS: 160 # Set 80 columns for docker exec -it.
+      PHP_OPCACHE_PRELOAD: /var/www/html/var/cache/prod/App_KernelProdContainer.preload.php
     volumes:
       - ./:/var/www/html
+      - ./etc/php/docker-php-ext-opcache.ini.tmpl:/etc/gotpl/docker-php-ext-opcache.ini.tmpl
     depends_on:
       - postgres
       - rabbitmq
@@ -21,8 +23,6 @@ services:
       COLUMNS: 160 # Set 80 columns for docker exec -it.
     volumes:
       - ./:/var/www/html
-    depends_on:
-      - php
 
   nginx:
     image: wodby/nginx:$NGINX_TAG
