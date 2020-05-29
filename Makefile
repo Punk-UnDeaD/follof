@@ -14,7 +14,7 @@ pause:
 	touch .stopped
 	docker-compose stop nginx
 	docker-compose stop php
-	docker-compose exec php bin/console messenger:stop-workers
+	docker-compose run php-workers bin/console messenger:stop-workers
 
 play:
 	if [ -f .stopped ]; then (rm .stopped) fi
