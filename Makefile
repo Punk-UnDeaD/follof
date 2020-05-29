@@ -6,8 +6,8 @@ test:
 prod-self-update:
 	make pause
 	git pull
-	docker-compose exec php-workers composer i -o --no-dev
-	docker-compose exec php-workers bin/console doctrine:migrations:migrate -n
+	docker-compose run php-workers composer i -o --no-dev
+	docker-compose run php-workers bin/console doctrine:migrations:migrate -n
 	docker-compose up node
 	make play
 pause:
