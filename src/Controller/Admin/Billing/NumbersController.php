@@ -9,6 +9,7 @@ use App\Controller\ErrorHandler;
 use App\Model\Billing\Entity\Account\Number;
 use App\Model\Billing\UseCase\CreateNumber;
 use App\Model\Billing\UseCase\Number\SetTeam;
+use App\ReadModel\Billing\Number\NumberFetcher;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -30,22 +31,26 @@ class NumbersController extends AbstractController
     private ObjectRepository $repository;
 
     private ErrorHandler $errors;
+    /**
+     * @var NumberFetcher
+     */
+    private NumberFetcher $numberFetcher;
 
-    public function __construct(EntityManagerInterface $em, ErrorHandler $errors)
+    public function __construct(EntityManagerInterface $em, ErrorHandler $errors, NumberFetcher $numberFetcher)
     {
         $this->repository = $em->getRepository(Number::class);
         $this->errors = $errors;
+        $this->numberFetcher = $numberFetcher;
     }
 
     /**
      * @Route(path="", name="")
      */
-    public function index()
+    public function index(Request $request)
     {
         /** @var Number[] $numbers */
-        $numbers = $this->repository->findAll();
-
-        return $this->render('admin/numbers/index.html.twig', ['numbers' => $numbers]);
+        $pag = $this->numberFetcher->all((int)$request->get('page', 1), 20);
+        return $this->render('admin/numbers/index.html.twig', ['numbers' => $pag]);
     }
 
     /**

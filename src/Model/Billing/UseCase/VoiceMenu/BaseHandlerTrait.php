@@ -36,7 +36,7 @@ trait BaseHandlerTrait
                     (array) $violationList
                 )
             );
-            Assert::true('false', $message);
+            Assert::true(false, $message);
         }
 
         /** @var VoiceMenu $voiceMenu */

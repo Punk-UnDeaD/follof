@@ -1,0 +1,24 @@
+{%- macro item(i, l, context) -%}
+    {%- if i>=1 and i<=context.max -%}
+        <li class="page-item{{ i==context.current?' active' }}">
+            <a class="page-link" href="{{ path(context.route, context.params|default({})|merge({page:i})) }}">{{ l|raw }}</a></li>
+    {%- endif -%}
+{%- endmacro -%}
+{%- macro filler(l) -%}
+    <li class="page-item disabled"><span class="page-link">{{ l|raw }}</span></li>
+{%- endmacro -%}
+{%- if max>1 -%}
+    <ul class="pagination">
+        {{- current>1?_self.item(current-1,'&laquo;', _context):_self.filler('&laquo;') -}}
+        {% if current>3 %}{{ _self.item(1,1,_context) }}{% endif %}
+        {% if current>4 %}{{ _self.item(2,2,_context) }}{% endif %}
+        {% if current>5 %}{{ _self.filler('...') }}{% endif %}
+        {% for i in range(current-2, current+2) %}
+            {{ _self.item(i,i, _context) }}
+        {% endfor %}
+        {% if current<max-4 %}{{ _self.filler('...') }}{% endif %}
+        {% if current<max-3 %}{{ _self.item(max-1,max-1, _context) }}{% endif %}
+        {% if current<max-2 %}{{ _self.item(max,max, _context) }}{% endif %}
+        {{- current<max?_self.item(current+1,'&raquo;', _context):_self.filler('&raquo;') -}}
+    </ul>
+{%- endif -%}

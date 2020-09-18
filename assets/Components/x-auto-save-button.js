@@ -1,7 +1,6 @@
 import Toolpip from '../Helpers/toolpip/toolpip';
 import '../Helpers/toolpip/toolpip.scss';
 
-
 customElements.define('x-auto-save-button', class extends HTMLButtonElement {
     connectedCallback() {
         this.addEventListener('click', (e) => {

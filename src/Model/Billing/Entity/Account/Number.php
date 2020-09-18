@@ -12,7 +12,7 @@ use Webmozart\Assert\Assert;
 /**
  * Class Member.
  *
- * @ORM\Entity
+ * @ORM\Entity()
  * @ORM\Table(name="billing_numbers")
  */
 class Number implements AggregateRoot, \JsonSerializable

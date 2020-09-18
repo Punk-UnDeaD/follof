@@ -36,14 +36,15 @@
             </tr>
             </thead>
             <tbody>
-            {% for number in numbers %}
+            {% for i, number in numbers %}
                 <tr>
-                    <th scope="row">{{ loop.index }}</th>
-                    <td><a href="{{ path('admin.numbers.number', {number: number.number} ) }}">{{ number }}</a></td>
-                    <td>{{ number.team? number.team.billingId }}</td>
+                    <th scope="row">{{ i }}</th>
+                    <td><a href="{{ path('admin.numbers.number', {number: number.number} ) }}">{{ number.number }}</a></td>
+                    <td>{{ number.billing_id }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
+    {% include "_pager.html.twig" with {route:'admin.numbers', current:numbers.currentPage, max:numbers.pageCount} only %}
 {% endblock %}
